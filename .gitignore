@@ -1,0 +1,8 @@
+__pycache__
+.venv/bin/
+.venv/
+instance/webuntis.sqlite
+src/data/untis.log
+src/upload/Student_*
+.vscode/
+untis.code-workspace

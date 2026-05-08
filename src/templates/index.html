@@ -1,0 +1,58 @@
+{% extends "basis.html" %}
+
+{% block content %}
+<h3>Anmeldung - Ausbilderbetriebe WebUntis</h3>
+<form method="POST" action="{{ url_for('bestaetigung') }}">
+    {{ form.csrf_token }}
+
+    {{ form.ausbilder_betrieb.label }}
+    {{ form.ausbilder_betrieb }}
+
+    {{ form.ausbilder_name.label }}
+    {{ form.ausbilder_name }}
+
+    {{ form.ausbilder_vorname.label }}
+    {{ form.ausbilder_vorname }}
+
+    {{ form.ausbilder_email.label }}
+    {{ form.ausbilder_email }}
+
+    {{ form.anzahl_schueler.label }}
+    {{ form.anzahl_schueler }}
+
+
+    <label id="labelSchuelerEingabe" style="display: none; margin-top:15px;">Schüler:</label>
+    <table id="schuelerEingabe">
+        <tbody>
+
+        </tbody>
+    </table>
+
+    {{ form.submit }}
+</form>
+
+
+<script>
+    const anzahl_schueler = document.getElementById('anzahl_schueler');
+    var xTable = document.getElementById('schuelerEingabe');
+
+    // Wird ausgeführt, sobald sich das Dropdown der Personen ändert
+    anzahl_schueler.addEventListener('change', function () {
+        const anzSchueler = this.value;
+        const labelSchuelerEingabe = document.getElementById("labelSchuelerEingabe");
+        if (anzSchueler) {
+            labelSchuelerEingabe.style.display = "inline";
+            xTable.innerHTML = '';
+            for (let step = 1; step <= anzSchueler; step++) {
+                var tr = document.createElement('tr');
+                tr.innerHTML = '<td >Schüler ' + step + ':</td> <td><input type="text" placeholder="Profilname des Schülers in Untis" name="schueler_untis_id[]"></td>'
+                xTable.appendChild(tr);
+            }
+        } else {
+            anzahl_schueler.innerHTML = '<option value="">Wähle zuerst eine Person aus</option>';
+            anzahl_schueler.disabled = true;
+        }
+    });
+</script>
+
+{% endblock %}

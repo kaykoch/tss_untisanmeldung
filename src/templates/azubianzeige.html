@@ -1,0 +1,102 @@
+{% extends "basis.html" %} {% block content %}
+
+<form method="POST">
+  {{ form.csrf_token }} {{ form.klassen.label }} {{ form.klassen }} {{
+  form.submit }}
+</form>
+
+<div>
+  <table id="untisTabelle">
+    <tbody></tbody>
+  </table>
+</div>
+
+<script>
+  const klassenSelect = document.getElementById("klassen");
+  var xTable = document.getElementById("untisTabelle");
+
+  // Wird ausgeführt, sobald sich das Dropdown der Klassen ändert
+  klassenSelect.addEventListener("change", function () {
+    const klasseName = this.value;
+
+    if (klasseName) {
+      // Bei unserem Flask-Server nachfragen
+      fetch(`/api/zugeordete_schueler/${klasseName}`)
+        .then((response) => response.json())
+        .then((azubis) => {
+          // Alte Tabelle leeren
+          xTable.innerHTML = "";
+          // Überschrift einfügen
+          var caption = document.createElement("caption");
+          xTable.appendChild(caption);
+
+          // Zeile mit Überschriften einfügen
+          var tr = document.createElement("tr");
+
+          if (klasseName == "all") {
+            // Klassenname wird zusätzlich eingefügt
+            withKlasse = '<th style="width:110px;">Klasse</th>';
+            title = "Klasse: Alle Klassen";
+          } else {
+            withKlasse = "";
+            "Klasse: " + klasseName;
+          }
+
+          tr.innerHTML =
+            '<th style="width:110px;">Profilname</th><th style="width:170px;">Nachname</th><th style="width:170px;">Vorname</th>' +
+            withKlasse +
+            "<th>Mail</th>";
+          xTable.appendChild(tr);
+          letzteKlasse = "";
+          cssClass = "odd";
+
+          // Inhalte einfügen
+
+          caption.innerHTML = "Klasse: Alle Klassen";
+          azubis.forEach((azubi) => {
+            // CSS-Klasse nach jeder neuen Klasse ändern
+            if (azubi.klasse != letzteKlasse) {
+              if (cssClass == "even") {
+                cssClass = "odd";
+              } else {
+                cssClass = "even";
+              }
+              letzteKlasse = azubi.klasse;
+            }
+            // null in Mailspalte durch Leerzeichen ersetzen
+            if (azubi.ausbilder_email == null) {
+              mail = "";
+            } else {
+              mail = azubi.ausbilder_email;
+            }
+            // Spalte Klasse nur bei Anzeige aller Klassen einfügen
+            if (klasseName == "all") {
+              klasse = "<td>" + azubi.klasse + "</td>";
+            } else {
+              klasse = "";
+            }
+            // Neue Schülerzeile hinzufügen
+            var tr = document.createElement("tr");
+            tr.classList.add(cssClass);
+            tr.innerHTML =
+              "<td>" +
+              azubi.schueler_untis_id +
+              "<td>" +
+              azubi.schueler_familienname +
+              "</td><td>" +
+              azubi.schueler_rufname +
+              "</td>" +
+              klasse +
+              "<td>" +
+              mail +
+              "</td>";
+            xTable.appendChild(tr);
+          });
+        })
+        .catch((error) =>
+          console.error("Fehler beim Laden der Zeiten:", error),
+        );
+    }
+  });
+</script>
+{% endblock %}

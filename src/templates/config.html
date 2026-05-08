@@ -1,0 +1,64 @@
+{% extends "basis.html" %} {% block content %}
+<form method="POST">
+    {{ form.csrf_token }}
+    <h2>Admin Zugang</h2>
+    <div class="grid">
+        <div class="field">
+            {{ form.admin_login.label }} {{ form.admin_login(class="form-control") }}
+        </div>
+        <div class="field">
+            {{ form.admin_password.label }} {{ form.admin_password(class="form-control") }}
+        </div>
+    </div>
+    <h2>Kontaktdaten</h2>
+    <div class="grid">
+        <div class="field">
+            {{ form.kontakt_person_name.label }} {{
+            form.kontakt_person_name(class="form-control") }}
+        </div>
+        <div class="field">
+            {{ form.kontakt_person_mail.label }} {{
+            form.kontakt_person_mail(class="form-control") }}
+        </div>
+    </div>
+    <h2>Sonstiges</h2>
+    <div class="grid">
+        <div class="field">
+            {{ form.timetowait.label }} {{
+            form.timetowait(class="form-control") }}
+        </div>
+        <div class="field"><label></label></div>
+    </div>    
+    <h2>Mailserver</h2>
+    <div class="grid">
+        <div class="field">
+            {{ form.mail_server.label }} {{ form.mail_server(class="form-control") }}
+        </div>
+        <div class="field">
+            {{ form.mail_port.label }} {{ form.mail_port(class="form-control") }}
+        </div>
+
+        <div class="field">
+            {{ form.mail_use_ssl.label }} {{ form.mail_use_ssl(class="form-control") }}
+        </div>
+        <div class="field">
+            {{ form.mail_use_tls.label }} {{ form.mail_use_tls(class="form-control") }}
+        </div>
+
+        <div class="field">
+            {{ form.mail_username.label }} {{ form.mail_username(class="form-control") }}
+        </div>
+        <div class="field">
+            {{ form.mail_password.label }} {{ form.mail_password(class="form-control")}}
+        </div>
+
+        <div class="field">
+            {{ form.mail_default_sender.label }} {{
+            form.mail_default_sender(class="form-control") }}
+        </div>
+        <div class="field"><label></label></div>
+    </div>
+
+    <div class="field">{{ form.submit(class="btn btn-primary big") }}</div>
+</form>
+{% endblock %}
