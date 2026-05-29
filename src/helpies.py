@@ -10,7 +10,7 @@ from src.config import ALLOWD_EXTENSIONS
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(
-    filename="./src/data/untis.log",
+    filename="./src/data/logfile.log",
     format="%(asctime)s %(message)s",
     encoding="utf-8",
     level=logging.WARNING,
@@ -37,12 +37,11 @@ def _set_config(app, config_data):
     app.config["MAIL_DEFAULT_SENDER"] = config_data.mail_default_sender
 
     # UNTIS-Konfiguration
-    app.config["UNTIS_KONTAKTPERSON"] = (
-        {
-            "name": config_data.kontakt_person_name,
-            "mail": config_data.kontakt_person_mail,
-        },
-    )
+    app.config["UNTIS_KONTAKTPERSON"] = {
+        "name": config_data.kontakt_person_name,
+        "mail": config_data.kontakt_person_mail,
+    }
+
     app.config["UNTIS_USERNAME"] = config_data.admin_login
     app.config["UNTIS_PASSWORD"] = config_data.admin_password
     app.config["UNTIS_TIMETOWAIT"] = config_data.timetowait
@@ -69,7 +68,8 @@ def _initialize_app(app, db, ConfigSetting):
             print("Datenbank erfolgreich initialisiert.")
             _log_message("Datenbank erfolgreich initialisiert", "warning")
     else:
-        print("Datenbank existiert bereits.")
+        pass
+        # print("Datenbank existiert bereits.")
 
 
 def _is_not_valid_mail(email: str) -> bool:
@@ -191,7 +191,20 @@ def _log_message(message: str, category: str = "info"):
 # + ----------------------------------------------------------------------------
 # + AUTHENTIFIZIERUNG
 # + ----------------------------------------------------------------------------
-def __check_auth(username, password) -> bool:
+def __check_auth_index(username, password) -> bool:
+    """Überprüft, ob username und Passwort stimmen
+
+    Args:
+        username (str): Benutzername, der überprüft werden soll
+        password (str): Passwort, das überprüft werden soll
+
+    Returns:
+        bool: True, wenn Beide mit den erlaubten übereinstimmen
+    """
+    return __check_auth_admin(username, password) or username == "test" and password == "test"
+
+
+def __check_auth_admin(username, password) -> bool:
     """Überprüft, ob username und Passwort stimmen
 
     Args:
@@ -220,8 +233,25 @@ def _requires_auth(f):
     def decorated(*args, **kwargs):
 
         auth = request.authorization
-        if not auth or not __check_auth(auth.username, auth.password):
+        if not auth or not __check_auth_admin(auth.username, auth.password):
             return __authenticate()
+
+        return f(*args, **kwargs)
+
+    return decorated
+
+
+def _requires_auth_index(f):
+    """Überprüft ob eine Authentifizierung notwendig ist oder bereits durchgeführt wurde"""
+
+    @wraps(f)
+    def decorated(*args, **kwargs):
+
+        auth = request.authorization
+        print(f.__name__, auth)
+        if not auth or not __check_auth_index(auth.username, auth.password):
+            return __authenticate()
+
         return f(*args, **kwargs)
 
     return decorated

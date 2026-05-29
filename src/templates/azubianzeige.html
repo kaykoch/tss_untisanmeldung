@@ -1,7 +1,10 @@
 {% extends "basis.html" %} {% block content %}
 
 <form method="POST">
-  {{ form.csrf_token }} {{ form.klassen.label }} {{ form.klassen }} {{
+  {{ form.csrf_token }} 
+
+  {{ form.klassen.label }} 
+  {{ form.klassen }} {{
   form.submit }}
 </form>
 
@@ -12,91 +15,95 @@
 </div>
 
 <script>
-  const klassenSelect = document.getElementById("klassen");
-  var xTable = document.getElementById("untisTabelle");
+  document.addEventListener("DOMContentLoaded", () => {
+    const klassenSelect = document.getElementById("klassen");
+    const table = document.getElementById("untisTabelle");
+    if (!klassenSelect || !table) return;
 
-  // Wird ausgeführt, sobald sich das Dropdown der Klassen ändert
-  klassenSelect.addEventListener("change", function () {
-    const klasseName = this.value;
+    klassenSelect.addEventListener("change", async function () {
+      const klasseName = (this.value || "").trim();
+      if (!klasseName) return;
 
-    if (klasseName) {
-      // Bei unserem Flask-Server nachfragen
-      fetch(`/api/zugeordete_schueler/${klasseName}`)
-        .then((response) => response.json())
-        .then((azubis) => {
-          // Alte Tabelle leeren
-          xTable.innerHTML = "";
-          // Überschrift einfügen
-          var caption = document.createElement("caption");
-          xTable.appendChild(caption);
+      try {
+        const res = await fetch(`/api/zugeordete_schueler/${encodeURIComponent(klasseName)}`, {
+          headers: { Accept: "application/json" },
+          cache: "no-store",
+        });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const azubis = await res.json();
 
-          // Zeile mit Überschriften einfügen
-          var tr = document.createElement("tr");
+        // Tabelle leeren: thead/tbody neu aufbauen
+        table.innerHTML = "";
 
-          if (klasseName == "all") {
-            // Klassenname wird zusätzlich eingefügt
-            withKlasse = '<th style="width:110px;">Klasse</th>';
-            title = "Klasse: Alle Klassen";
-          } else {
-            withKlasse = "";
-            "Klasse: " + klasseName;
+        // Caption
+        const caption = document.createElement("caption");
+        caption.textContent = klasseName === "all" ? "Klasse: Alle Klassen" : `Klasse: ${klasseName}`;
+        table.appendChild(caption);
+
+        // Kopf (thead)
+        const thead = document.createElement("thead");
+        const headRow = document.createElement("tr");
+        const addTh = (text, width) => {
+          const th = document.createElement("th");
+          th.textContent = text;
+          if (width) th.style.width = width;
+          return th;
+        };
+        headRow.appendChild(addTh("Profilname", "110px"));
+        headRow.appendChild(addTh("Nachname", "170px"));
+        headRow.appendChild(addTh("Vorname", "170px"));
+        if (klasseName === "all") headRow.appendChild(addTh("Klasse", "110px"));
+        headRow.appendChild(addTh("Mail"));
+        thead.appendChild(headRow);
+        table.appendChild(thead);
+
+        // Body (tbody)
+        const tbody = document.createElement("tbody");
+        let letzteKlasse = "";
+        let cssClass = "odd"; // Startzustand, wird direkt getoggelt
+
+        const toggleCss = () => (cssClass = cssClass === "even" ? "odd" : "even");
+
+        azubis.forEach((azubi) => {
+          if (azubi.klasse !== letzteKlasse) {
+            toggleCss();
+            letzteKlasse = azubi.klasse;
           }
 
-          tr.innerHTML =
-            '<th style="width:110px;">Profilname</th><th style="width:170px;">Nachname</th><th style="width:170px;">Vorname</th>' +
-            withKlasse +
-            "<th>Mail</th>";
-          xTable.appendChild(tr);
-          letzteKlasse = "";
-          cssClass = "odd";
+          const tr = document.createElement("tr");
+          tr.classList.add(cssClass);
 
-          // Inhalte einfügen
+          const tdProfil = document.createElement("td");
+          tdProfil.textContent = azubi.schueler_untis_id || "";
+          tr.appendChild(tdProfil);
 
-          caption.innerHTML = "Klasse: Alle Klassen";
-          azubis.forEach((azubi) => {
-            // CSS-Klasse nach jeder neuen Klasse ändern
-            if (azubi.klasse != letzteKlasse) {
-              if (cssClass == "even") {
-                cssClass = "odd";
-              } else {
-                cssClass = "even";
-              }
-              letzteKlasse = azubi.klasse;
-            }
-            // null in Mailspalte durch Leerzeichen ersetzen
-            if (azubi.ausbilder_email == null) {
-              mail = "";
-            } else {
-              mail = azubi.ausbilder_email;
-            }
-            // Spalte Klasse nur bei Anzeige aller Klassen einfügen
-            if (klasseName == "all") {
-              klasse = "<td>" + azubi.klasse + "</td>";
-            } else {
-              klasse = "";
-            }
-            // Neue Schülerzeile hinzufügen
-            var tr = document.createElement("tr");
-            tr.classList.add(cssClass);
-            tr.innerHTML =
-              "<td>" +
-              azubi.schueler_untis_id +
-              "<td>" +
-              azubi.schueler_familienname +
-              "</td><td>" +
-              azubi.schueler_rufname +
-              "</td>" +
-              klasse +
-              "<td>" +
-              mail +
-              "</td>";
-            xTable.appendChild(tr);
-          });
-        })
-        .catch((error) =>
-          console.error("Fehler beim Laden der Zeiten:", error),
-        );
-    }
+          const tdNachname = document.createElement("td");
+          tdNachname.textContent = azubi.schueler_familienname || "";
+          tr.appendChild(tdNachname);
+
+          const tdVorname = document.createElement("td");
+          tdVorname.textContent = azubi.schueler_rufname || "";
+          tr.appendChild(tdVorname);
+
+          if (klasseName === "all") {
+            const tdKlasse = document.createElement("td");
+            tdKlasse.textContent = azubi.klasse || "";
+            tr.appendChild(tdKlasse);
+          }
+
+          const tdMail = document.createElement("td");
+          tdMail.textContent = azubi.ausbilder_email ?? "";
+          tr.appendChild(tdMail);
+
+          tbody.appendChild(tr);
+        });
+
+        table.appendChild(tbody);
+      } catch (err) {
+        console.error("Fehler beim Laden der Azubi-Daten:", err);
+      }
+    });
   });
 </script>
+
 {% endblock %}

@@ -6,7 +6,7 @@
         {{ form.filename(value="NIX") }}
         {{form.upload_file }}
         <button type="submit" class="tooltip btn btn-primary midi"
-            data-tooltip="Es können nur *.csv und *.pdf Dateien hochgeladen werden">
+            data-tooltip="Es können nur *.csv Dateien hochgeladen werden">
             Datei hochladen
         </button>
     </div>
@@ -26,7 +26,7 @@
             <tr>
                 <td>{{ file }}</td>
                 <td>
-                    <button type="button" class="btn btn-danger small"
+                    <button type="button" class="btn btn-danger big"
                         onclick="submitAction('{{ file }}', 'delete_single', 'Möchten Sie {{file}} wirklich löschen?')">
                         löschen
                     </button>
@@ -35,7 +35,7 @@
             {% endfor %}
             <tr>
                 <td colspan="2" style="background-color: transparent; border: 0px">
-                    <button type="button" class="tooltip-warning btn btn-warning"
+                    <button type="button" class="tooltip-warning btn btn-warning big"
                         onclick="submitAction( 'test.txt', 'delete_all', 'Möchten Sie alle Dateien wirklich löschen?',)"
                         data-tooltip="Nur die Dateien werden gelöscht. Nicht die Datenbank">
                         Alle Dateien löschen
@@ -44,7 +44,7 @@
             </tr>
             <tr>
                 <td colspan="2" style="background-color: transparent; border: 0px">
-                    <button type="button" class="tooltip-warning btn btn-warning"
+                    <button type="button" class="tooltip-warning btn btn-warning big"
                         onclick="submitAction('test.txt', 'update_db','Möchtest du wirklich die Datenbank mit neuen Azubis ergänzen?', )"
                         data-tooltip="Die Azubi-Datenbank wird erweitert, aber es werden KEINE Daten gelöscht !!">
                         Neue Azubis hinzufügen
@@ -53,7 +53,7 @@
             </tr>
             <tr>
                 <td colspan="2" style="background-color: transparent; border: 0px">
-                    <button type="button" class="tooltip-danger btn btn-danger"
+                    <button type="button" class="tooltip-danger btn btn-danger big"
                         onclick="submitAction('test.txt','reset_db','!! Möchtest du wirklich ALLE Azubis löschen und mit neuen Azubis überschreiben? !!',)"
                         data-tooltip="!! ACHTUNG - Die Azubi-Datenbank wird überschrieben - ACHTUNG:!!">
                         Azubis löschen und neu erstellen

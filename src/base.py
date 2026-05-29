@@ -4,6 +4,7 @@ from secrets import token_urlsafe
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import delete, false
+from sqlalchemy.exc import SQLAlchemyError
 
 from src.helpies import _log_message
 
@@ -110,31 +111,36 @@ def _get_ausbilder_list() -> list:
         list: Liste mit Dictionaries
     """
     try:
-        ausbilder_list = Ausbilder.query.all()
-        result_list = []
-        for ausbilder in ausbilder_list:
-            # __dict__ wandelt das Objekt in ein Dictionary um
-            d = ausbilder.__dict__.copy()
-            # Das interne SQLAlchemy-Attribut entfernen
-            d.pop("_sa_instance_state", None)
-            result_list.append(d)
+        stmt = db.select(
+            Ausbilder.ausbilder_email,
+            Ausbilder.ausbilder_name,
+            Ausbilder.ausbilder_vorname,
+            Ausbilder.ausbilder_betrieb,
+            Ausbilder.bestaetigt,
+            Ausbilder.token,
+            Ausbilder.created_at,
+        )
 
-        return result_list
+        result = db.session.execute(stmt)
+        # Row -> dict via offiziellem Mapping
+        return [dict(row._mapping) for row in result]
 
+    except SQLAlchemyError as e:
+        _log_message(f"DB-Fehler in _get_ausbilder_list: {e}", "error")
+        return []
     except Exception as e:
-        _log_message(f"Fehler im Modul _get_ausbilder_list: {e}", "error")
-        return list()
+        _log_message(f"Fehler in _get_ausbilder_list: {e}", "error")
+        return []
 
 
-def _get_azubi_list(klasseName: str) -> list:
-    """erstellt eine Liste mit Dictionaries der Azubis
+def _get_azubi_list(klasse_name: str) -> list:
+    """Erstellt eine Liste von Dictionaries zu Azubis inkl. optionaler Ausbilderdaten.
 
     Args:
-        klasse (str): Klasse, deren Azubis als sql-Anweisung gesucht werden sollen.
-        Bei klasse = "all", werden Alle Azubis gesucht
+        klasse_name: Klassenbezeichnung. Bei "all" werden alle Azubis geliefert.
 
     Returns:
-       list: Liste mit Dictionaries
+        Liste von Dictionaries (Schüler- und Ausbilderfelder).
     """
     try:
         stmt = (
@@ -152,25 +158,22 @@ def _get_azubi_list(klasseName: str) -> list:
             .select_from(Azubis)
             .outerjoin(Ausbilder, Azubis.ausbilder_email == Ausbilder.ausbilder_email)
         )
-        if klasseName == "all":
-            stmt = stmt.order_by(Azubis.klasse.asc(), Azubis.schueler_familienname.asc())
-        else:
-            stmt = stmt.filter(Azubis.klasse == klasseName).order_by(
-                Azubis.klasse.asc(), Azubis.schueler_familienname.asc()
-            )
+        if klasse_name != "all":
+            stmt = stmt.where(Azubis.klasse == klasse_name)
+        # Eine Klasse wurde ausgewählt
+        stmt = stmt.order_by(Azubis.klasse.asc(), Azubis.schueler_familienname.asc())
 
-        result_list = []
-        # Ausführen der Abfrage [Row-Objekte]
-        results = db.session.execute(stmt).all()
-        # Umwandlung der Row-Objekte in eine Liste von Dictionaries
-        for row in results:
-            result_list.append(row._asdict())
-        # Ausführen der Abfrage
-        return result_list
+        result = db.session.execute(stmt).all()
 
+        # rows sind Sequenzen/Row-Objekte; _mapping ist stabiler als _asdict()
+        return [dict(row._mapping) for row in result]
+
+    except SQLAlchemyError as e:
+        _log_message(f"DB-Fehler in _get_azubi_list: {e}", "error")
+        return []
     except Exception as e:
-        _log_message(f"Fehler im Modul _get_azubi_list: {e}", "error")
-        return list()
+        _log_message(f"Fehler in _get_azubi_list: {e}", "error")
+        return []
 
 
 def _update_ausbilder_safe(liste: list, delete_existing: bool = False) -> tuple:
@@ -201,7 +204,6 @@ def _update_ausbilder_safe(liste: list, delete_existing: bool = False) -> tuple:
 
         # 3. Filtern: Nur Elemente hinzufügen, die NICHT in der DB existieren
         to_add = [item for email, item in unique_input.items() if email not in existing_emails]
-
         # 4. Einfügen
         if to_add:
             db.session.add_all(to_add)

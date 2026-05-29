@@ -20,9 +20,11 @@ caption, label {
   font-size: 0.65rem;
   font-weight: 600;
   color: #3c4043;
-  margin-bottom: 5px;
+  margin: 10px 0px 5px 5px;
 }
-
+caption{
+  font-size: 0.85rem;
+}
 .footer {
   width: 850px;
   display: flex;
@@ -82,15 +84,17 @@ th {
   border: 1px solid #ccc;
   background-color: #0069d9;
   color: white;
+  font-size: 0.8rem;
+  padding: 8px;
 }
 
 td {
   border: 1px solid #ccc;
   background-color: #c3defc;
   color: #0056b3;
-  padding: 5px;
+  padding: 5px ;
+  font-size: 0.8rem;
 }
-
 table.success th {
   background-color: #309203;
   color: white;
@@ -124,11 +128,18 @@ tr.odd td {
 /* -------------------- Container für Admin Seite -------------------- */
 /* Der Container, der die Boxen zusammenhält */
 .container-wrapper {
+  text-align: center;
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
   padding: 10px;
   margin-bottom: 20px;
+  justify-content: center;
+}
+
+.container-wrapper a {
+  text-decoration: none;
+  font-weight: bold;
 }
 
 /* -------------------- Tool Tips -------------------- */
@@ -218,15 +229,19 @@ li {
 }
 
 .btn {
+  width: 200px;
   padding: 8px 12px;
   border: none;
   cursor: pointer;
-  border-radius: 4px;
-  font-size: 0.7rem;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 1rem;
   margin: 5px;
   display: flex;
   justify-content: center;
-  align-items: center; 
+  align-items: center;
+  z-index: auto;
+  display: flex;
 }
 
 .btn-danger {
@@ -248,13 +263,12 @@ li {
 
 .btn-primary:hover {
   background-color: #0069d9;
-  transform: scale(1.01);
+  transform: scale(1.03);
 }
 
 .btn-warning {
   background-color: #ffc107;
   color: black;
-  margin: 0px;
 }
 
 .btn-warning:hover {
@@ -273,29 +287,6 @@ li {
   transform: scale(1.01);
 }
 
-.small {
-  max-width: 120px;
-  margin: 5px;
-}
-
-.midi {
-  max-width: 150px;
-  margin: 5px;
-}
-.big {
-  max-width: 100%;
-  margin: 5px;
-}
-
-.large {
-  width: 170px;
-  height: 50px;
-  border-radius: 8px;
-  font-size: 0.9rem;
-  font-family: Arial, sans-serif;
-  font-weight: bold;
-  border-radius: 8px;
-}
 
 .upload-form {
   padding: 10px;
@@ -347,3 +338,50 @@ li {
   margin-bottom: 10px;
 }
 
+.big {
+  width: 100%;
+  margin-top: 5px;;
+}
+
+.small {
+  width: 120px;
+}
+
+.midi {
+  width: 250px;
+}
+hr {
+  border: 1px solid #c3defc;
+  margin: 15px 20px;
+
+}
+
+.berufsschule {
+  background-color: #008000;
+  color: white;
+}
+
+div.berufsschule:hover {
+  background-color: #016d01;
+  transform: scale(1.02);
+}
+
+h1.berufsschule {
+  color: #008000;
+  background-color: transparent;
+}
+
+.vollzeitschule {
+  background-color: #007bff;
+  color: white;
+}
+
+div.vollzeitschule:hover {
+  background-color: #0069d9;
+  transform: scale(1.02);
+}
+
+h1.vollzeitschule {
+  color: #007bff;
+  background-color: transparent;
+}

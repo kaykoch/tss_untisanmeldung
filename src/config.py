@@ -21,12 +21,12 @@ CODECS = ["UTF-8", "ISO-8859-1"]
 """ Texte, die auf den einzelnen Webseiten als Info angezwigt werden (HTML-Tags sind möglich)
 """
 # Startseite der Anmeldung
-text_index_1 = "Bitte tragen Sie die Daten der verantwortlichen Person ein und  \
+text_index_1 = "<p>Bitte tragen Sie die Daten der verantwortlichen Person ein und  \
               wählen die Anzahl der Schüler aus, die sie dieser Mailadresse zuordnen wollen. \
-              Geben Sie anschließend die Untis-Profilnamen der Azubis ein. \
-              Diese erhalten Sie von ihren Auszubildenden.<br> \
-              Sollten Sie weitere Schüler dieser, oder einer anderen Mail-Adresse zuordnen wollen, \
-              rufen Sie diese Seite später erneut auf."
+              Geben Sie anschließend die Untis-Profilnamen der Azubis ein.<br>  \
+              (Diese erhalten Sie von ihren Auszubildenden.) </p>\
+              <p>Sollten Sie weitere Schüler dieser Mailadresse zuordnen wollen, \
+              rufen Sie diese Seite später mit dem Link in der Bestätigungsmail auf.</p>"
 
 text_index_2 = "Weitere Informationen finden Sie <a href='/static/info.pdf') target='_blank' >HIER</a>"
 

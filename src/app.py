@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
+from typing import Any, List, Optional
 
-from flask import flash, jsonify, redirect, render_template, request, send_file, url_for
+from flask import current_app, flash, jsonify, redirect, render_template, request, send_file, url_for
 from flask_mail import Mail, Message
 from markupsafe import Markup
+from sqlalchemy import select
+from sqlalchemy.exc import SQLAlchemyError
 
 """Import Settings"""
 
@@ -106,10 +109,15 @@ def __send_mail_to_ausbilder(ausbilder: Ausbilder):
             kontakt_person=KONTAKTPERSON,
             INFOTEXTE=INFOTEXTE,
         )
-        print(ausbilder.ausbilder_email)
+
+        # print(ausbilder.ausbilder_email)
         # print(msg.html)
-        # mail.send(msg)
-        return (f"Die Mail wurde an {ausbilder.ausbilder_email} gesendet", "success")
+        mail.send(msg)
+        info = (
+            f"Die Mail wurde an {ausbilder.ausbilder_email} gesendet<br>"
+            "Bitte bestätigen Sie Ihre Daten innerhalb von 2 Stunden"
+        )
+        return (Markup(info), "success")
 
     except Exception as e:
         _log_message(f"Fehler beim Senden der Mail: {e}", "error")
@@ -122,27 +130,32 @@ def __send_mail_to_ausbilder(ausbilder: Ausbilder):
 @app.route("/", methods=["GET", "POST"])
 def index() -> str:
     """Startseite wird aufgerufen
-    Enweder zu Beginn, oder wieder nach erfolgter Anmeldung
-
-    Returns:
-    str: Webseite
+    - optionales Prefill über token
+    - Löschen unbestätigter Ausbilder
+    - Anzeige von Infotexten und Anmeldeformular
     """
     title = "Anmeldeseite für Ausbilderbetriebe zur Nutzung von WebUntis"
-    # löscht alle Ausbilder die ihre Mail nicht bestätigt haben und ihre Vernüpfungen
+
+    # 1) Cleanup: unbestätigte Ausbilder entfernen
     _delete_unconfirmed_ausbilder(app.config["UNTIS_TIMETOWAIT"])
 
-    # Beispiel-Daten laden (falls vorhanden)
-    ausbilder = Ausbilder.query.filter_by(token=request.args.get("token")).first()
+    # 2) Optionales Prefill über token
+    token: Optional[str] = request.args.get("token")
+    ausbilder: Optional[Ausbilder] = None
 
-    # Formular mit Daten des Ausbilders vorbefüllen, falls vorhanden
-    form = AnmeldungForm(obj=ausbilder)
+    if token:
+        # Beispiel-Daten laden (falls vorhanden)
+        stmt = db.select(Ausbilder).where(Ausbilder.token == token)
+        ausbilder = db.session.execute(stmt).scalars().first()
+
+    # 3) Formular initialisieren (nur mit obj befüllen, wenn vorhanden)
+    form = AnmeldungForm(obj=ausbilder) if ausbilder else AnmeldungForm()
 
     if form.validate_on_submit():
         # Verarbeite die Daten: form.ausbilder_name.data
         return redirect(url_for("bestaetigung"))
 
-    info = f"<p>{INFOTEXTE['index_1']}</p>\
-             <p>{INFOTEXTE['index_2']}</p>"
+    info = f"<p>{INFOTEXTE['index_1']}</p><p>{INFOTEXTE['index_2']}</p>"
 
     flash(Markup(info), "success")
     return render_template("index.html", form=form, title=title, kontakt_person=KONTAKTPERSON)
@@ -152,31 +165,40 @@ def index() -> str:
 @limiter.limit("3 per minute")  # Strenges Limit für Mailversand
 def bestaetigung() -> str:
     title = "Anmeldung Ausbilderbetriebe WebUntis"
-    liste_erfolgreich = []
-    liste_fehler = []
-    ausbilder = None
-    schueler_ids = []
 
     # 1. Formular initialisieren
     form = AnmeldungForm()
 
-    # 2. Prüfen, ob das Formular valide abgeschickt wurde (inkl. CSRF-Check)
-    if form.validate_on_submit():
-        # Daten direkt aus dem Formular-Objekt gelesen (sicher, da WTForms validiert hat)
-        ausbilder_name = form.ausbilder_name.data
-        ausbilder_vorname = form.ausbilder_vorname.data
-        ausbilder_email = form.ausbilder_email.data
-        ausbilder_betrieb = form.ausbilder_betrieb.data
+    # 2) Nur bei valider Submission weiterarbeiten
+    if not form.validate_on_submit():
+        # Initiales Rendering oder Validierungsfehler
+        return render_template(
+            "bestaetigung.html",
+            form=form,
+            title=title,
+        )
 
-        # Falls schueler_ids weiterhin dynamisch per JavaScript übergeben werden,
-        # kannst du sie wie gewohnt auslesen (oder als FieldList im Formular definieren)
-        schueler_ids = request.form.getlist("schueler_untis_id[]")
+    # Daten direkt aus dem Formular-Objekt gelesen (sicher, da WTForms validiert hat)
+    ausbilder_name = form.ausbilder_name.data
+    ausbilder_vorname = form.ausbilder_vorname.data
+    ausbilder_email = form.ausbilder_email.data
+    ausbilder_betrieb = form.ausbilder_betrieb.data
 
-        # Ausbilder in Datenbank suchen
-        ausbilder = Ausbilder.query.filter_by(ausbilder_email=ausbilder_email).first()
+    # IDs einsammeln und säubern
+    schueler_ids: List[str] = [s.strip() for s in request.form.getlist("schueler_untis_id[]") if s and s.strip()]
 
-        if not ausbilder and ausbilder_email:
-            # Ausbilder anlegen
+    if not ausbilder_email:
+        flash("E-Mail-Adresse des Ausbilders fehlt.", "warning")
+        return render_template("bestaetigung.html", form=form, title=title)
+
+    # Ausbilder in Datenbank suchen
+    stmt_ausbilder = select(Ausbilder).where(Ausbilder.ausbilder_email == ausbilder_email)
+    ausbilder: Optional[Ausbilder] = db.session.execute(stmt_ausbilder).scalar_one_or_none()
+
+    try:
+        # 1) Ausbilder neu anlegen
+        neu_angelegt = False
+        if ausbilder is None:
             ausbilder = Ausbilder(
                 ausbilder_email=ausbilder_email,
                 ausbilder_name=ausbilder_name,
@@ -185,54 +207,56 @@ def bestaetigung() -> str:
                 bestaetigt=False,
             )
             db.session.add(ausbilder)
-            db.session.commit()  # Direkt committen, um Token zu generieren
+            neu_angelegt = True
 
-            # Mail an neuen Ausbilder versenden
-            answer, category = __send_mail_to_ausbilder(ausbilder)
-            flash(answer, category)
+        # 2) Schüler-Zuordnung in einem Schwung
+        liste_fehler: List[str] = []
+        if schueler_ids:
+            stmt_schueler = select(Azubis).where(Azubis.schueler_untis_id.in_(schueler_ids))
+            gefundene_azubis: List[Azubis] = list(db.session.execute(stmt_schueler).scalars())
 
-        # 3. Transaktionssichere Aktualisierung der Azubis
-        try:
-            for s_id in schueler_ids:
-                if not s_id:
-                    continue
+            gefundene_ids = {a.schueler_untis_id for a in gefundene_azubis}
+            fehlende_ids = [sid for sid in schueler_ids if sid not in gefundene_ids]
 
-                schueler = Azubis.query.filter_by(schueler_untis_id=s_id).first()
-                if schueler:
-                    schueler.ausbilder_email = ausbilder_email
-                    liste_erfolgreich.append(schueler)
-                else:
-                    liste_fehler.append(s_id)
+            for schueler in gefundene_azubis:
+                schueler.ausbilder_email = ausbilder_email
 
+            liste_fehler.extend(fehlende_ids)
+
+        # 3) Alles zusammen committen wenn es mindestens einen neuen Schüler gibt
+        if gefundene_azubis:
             db.session.commit()
+            # 4) E-Mail nur an neu angelegte Ausbilder senden
+            if neu_angelegt:
+                answer, category = __send_mail_to_ausbilder(ausbilder)
+                flash(answer, category)
 
+        # 5) Feedback
+        if schueler_ids:
             if not liste_fehler:
-                flash("Erfolgreich gespeichert.", "success")
+                flash("Alle Schüler wurden erfolgreich zugeordnet.", "success")
+            elif len(liste_fehler) < len(schueler_ids):
+                flash("Einige Schüler konnten nicht zugeordnet werden", "warning")
             else:
-                flash("Einige Schüler konnten nicht zugeordnet werden.", "warning")
+                flash("Keine der angegebenen Schüler-IDs konnte gefunden werden.", "warning")
+        else:
+            flash("Es wurden keine Schüler-IDs übermittelt.", "info")
 
-        except Exception as e:
-            db.session.rollback()
-            _log_message(f"Fehler im Modul route_bestaetigung: {e}", "error")
-            flash("Ein Datenbankfehler ist aufgetreten.", "error")
+        return render_template(
+            "bestaetigung.html",
+            form=form,
+            title=title,
+            liste_erfolgreich=gefundene_azubis,
+            liste_fehler=liste_fehler,
+            ausbilder=ausbilder,
+        )
 
-    elif request.method == "POST":
-        # Wenn POST, aber validate_on_submit() False war, gab es ein CSRF-Problem
-        # oder ein Pflichtfeld wurde im Browser manipuliert.
-        print("Formular-Fehler:", form.errors)
-        info = "Ungültige Eingaben (Email, Namen etc.) oder Sitzung abgelaufen.<br> Bitte Daten überprüfen und erneut versuchen."
-        flash(Markup(info), "error")
-        return redirect(url_for("index"))
-
-    return render_template(
-        "bestaetigung.html",
-        title=title,
-        liste_erfolgreich=liste_erfolgreich,
-        liste_fehler=liste_fehler,
-        kontakt_person=KONTAKTPERSON,
-        ausbilder=ausbilder,
-        form=form,  # Weitergabe an das Template (für den CSRF-Token)
-    )
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        current_app.logger.exception("DB-Fehler in bestaetigung")
+        _log_message(f"Fehler im Modul route_bestaetigung: {e}", "error")
+        flash("Ein Datenbankfehler ist aufgetreten.", "error")
+        return render_template("bestaetigung.html", form=form, title=title)
 
 
 @app.route("/azubismitausbilder.html", methods=["GET", "POST"])
@@ -244,44 +268,48 @@ def azubismitausbilder() -> str:
         str: Webseite
     """
     title = "Liste der zugeordneten Azubis in WebUntis"
-    azubi_liste = []
-    ausbilder = None
+    token: Optional[str] = request.args.get("token")
 
-    # Übertragene Formulardaten auslesen
-    token = request.args.get("token")
-
-    # 1. Validierung: Token vorhanden?
+    # 1) Validierung: Token vorhanden und formal gültig?
     if not token or not _token_is_valid(token):
         flash("Kein Token angegeben oder Token ist ungültig.", "error")
         return render_template("azubismitausbilder.html", title=title, ausbilder=None)
 
     try:
-        # 2. Suche Ausbilder mittels ORM (verhindert SQL-Injection automatisch)
-        ausbilder = Ausbilder.query.filter_by(token=token).first()
-        if ausbilder:
-            # 3. Bestätigungs-Logik via ORM
-            if not ausbilder.bestaetigt:
-                ausbilder.bestaetigt = True
-                db.session.commit()
+        # 2) Ausbilder per 2.0-Select laden
+        stmt = select(Ausbilder).where(Ausbilder.token == token)
+        ausbilder: Optional[Ausbilder] = db.session.execute(stmt).scalar_one_or_none()
 
-            # 4. Abfrage der Azubis via ORM-Beziehung
-            azubi_liste = ausbilder.accounts
-
-            flash(Markup(INFOTEXTE["azubismitausbilder"]), "success")
-        else:
+        if ausbilder is None:
             flash("Diesen Ausbilder gibt es nicht oder das Token ist ungültig.", "error")
+            return render_template("azubismitausbilder.html", title=title, ausbilder=None)
 
+        # 3) Bestätigen (idempotent) und Commit nur bei Änderung
+        if not ausbilder.bestaetigt:
+            ausbilder.bestaetigt = True
+            db.session.commit()
+
+        # 4) Zugeordnete Azubis laden
+        azubi_liste: List[Azubis] = list(ausbilder.accounts)
+
+        flash(Markup(INFOTEXTE["azubismitausbilder"]), "success")
+        return render_template(
+            "azubismitausbilder.html",
+            title=title,
+            azubi_liste=azubi_liste,
+            ausbilder=ausbilder,
+            kontakt_person=KONTAKTPERSON,
+        )
+
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        current_app.logger.exception("DB-Fehler in azubismitausbilder")
+        _log_message(f"Fehler im Modul azubismitausbilder (DB): {e}", "error")
+        return _get_error_page()
     except Exception as e:
+        current_app.logger.exception("Allg. Fehler in azubismitausbilder")
         _log_message(f"Fehler im Modul azubismitausbilder: {e}", "error")
         return _get_error_page()
-
-    return render_template(
-        "azubismitausbilder.html",
-        title=title,
-        azubi_liste=azubi_liste,
-        ausbilder=ausbilder,
-        kontakt_person=KONTAKTPERSON,
-    )
 
 
 @app.route("/api/zugeordete_schueler/<string:klasse_name>")
@@ -289,17 +317,18 @@ def zugeordete_schueler(klasse_name):
     """Diese Route wird von JavaScript aufgerufen, um alle Azubis einer Klasse anzuzeigen."""
     try:
         # Als JSON zurückgeben (das versteht JavaScript am besten)
-        return jsonify(_get_azubi_list(klasse_name))
+        data: List[Any] = _get_azubi_list(klasse_name)
+        return jsonify(data)
 
     except Exception as e:
         _log_message(f"Fehler im Modul zugeordete_schueler: {e}", "error")
-        return jsonify(list())
+        return jsonify([])
 
 
 # ------------------------------------------------------------------------------
 # +   ADMIN-BEREICH
 # ------------------------------------------------------------------------------
-@app.route("/admin.html", methods=["GET", "POST"])
+@app.route("/admin.html", methods=["GET"])
 @_requires_auth
 def admin() -> str:
     """zeigt alle administrativen Aufgaben auf einer Webseite"""
@@ -319,36 +348,52 @@ def config() -> str:
         str: Webseite
     """
     title = "Einstellungen - Ausbilderbetriebe WebUntis"
-    config = ConfigSetting.query.first()
+    # Konfiguration laden (ersten Datensatz)
+    cfg: Optional[ConfigSetting] = db.session.execute(select(ConfigSetting).limit(1)).scalar_one_or_none()
     try:
-        form = ConfigForm(obj=config)
+        form = ConfigForm(obj=cfg)
         if form.validate_on_submit():
-            if config is None:
-                config = ConfigSetting()
-                db.session.add(config)
+            # Neu anlegen, falls noch keine Config vorhanden
+            if cfg is None:
+                cfg = ConfigSetting()
+                db.session.add(cfg)
 
             # 1. Alle Felder außer Passwörter automatisch füllen
             # Dazu kopieren wir die Daten, aber lassen die PW-Felder aus
             for fieldname, value in form.data.items():
                 if fieldname not in ["admin_password", "mail_password", "csrf_token", "submit"]:
-                    setattr(config, fieldname, value)
+                    setattr(cfg, fieldname, value)
 
-            # 2. Passwörter nur überschreiben, wenn etwas eingegeben wurde
+            # 2) Passwörter nur setzen, wenn eingegeben
             if form.admin_password.data:
-                config.admin_password = form.admin_password.data
-
+                cfg.admin_password = form.admin_password.data  # TODO: ggf. hashen
             if form.mail_password.data:
-                config.mail_password = form.mail_password.data
-                print("admin", form.mail_password.data)
-            db.session.commit()
-            flash("Konfiguration erfolgreich gespeichert!")
+                cfg.mail_password = form.mail_password.data  # TODO: ggf. verschlüsseln
+
+            try:
+                # Daten in DB eintragen
+                db.session.commit()
+                flash("Konfiguration erfolgreich gespeichert.", "success")
+                # Konfigurationsdaten aktualisieren
+                _set_config(app, cfg)
+
+            except SQLAlchemyError:
+                db.session.rollback()
+                current_app.logger.exception("DB-Fehler beim Speichern der Config")
+                flash("Datenbankfehler beim Speichern der Konfiguration.", "error")
+                return render_template("config.html", title=title, form=form), 500
 
         elif request.method == "POST":
             print("Formular-Fehler im Modul azubianzeige:", form.errors)
-        return render_template("config.html", title=title, form=form)
+
+        return render_template(
+            "config.html",
+            title=title,
+            form=form,
+        )
 
     except Exception as e:
-        print(f"Fehler im Modul config: {e}")
+        current_app.logger.exception("Fehler im Modul config")
         _log_message(f"Fehler im Modul config: {e}", "error")
         return _get_error_page()
 
@@ -362,16 +407,17 @@ def ausbilderanzeige() -> str:
         str: Webseite
     """
     title = "Anzeige und Download der Ausbilderbetriebe"
+    form = AusbilderAktionForm()
+    ALLOWED_ACTIONS = ["add", "resend", "delete", "download", "show"]
 
     try:
-        form = AusbilderAktionForm()
-
-        if form.validate_on_submit() and form.action.data in ["add", "resend", "delete", "download", "show"]:
-            ausbilder_email = form.ausbilder_email.data
-            action = form.action.data
+        if form.validate_on_submit() and form.action.data in ALLOWED_ACTIONS:
+            ausbilder_email: Optional[str] = form.ausbilder_email.data
+            action: Optional[str] = form.action.data
 
             # gewählten Ausbilder aus der Datenbank holen
-            ausbilder = Ausbilder.query.filter_by(ausbilder_email=ausbilder_email).first()
+            stmt = select(Ausbilder).where(Ausbilder.ausbilder_email == ausbilder_email)
+            ausbilder: Optional[Ausbilder] = db.session.execute(stmt).scalar_one_or_none()
 
             match action:
                 case "show":
@@ -387,24 +433,36 @@ def ausbilderanzeige() -> str:
 
                 case "delete":
                     if ausbilder:
-                        db.session.delete(ausbilder)
-                        db.session.commit()
-                        flash(
-                            f"{ausbilder.ausbilder_email} und alle Verknüpfungen zu Azubis wurden gelöscht",
-                            "success",
-                        )
+                        try:
+                            db.session.delete(ausbilder)
+                            db.session.commit()
+                            flash(
+                                f"{ausbilder.ausbilder_email} und alle Verknüpfungen zu Azubis wurden gelöscht",
+                                "success",
+                            )
+                        except SQLAlchemyError:
+                            db.session.rollback()
+                            current_app.logger.exception("DB-Fehler beim Löschen in ausbilderanzeige")
+                            flash("Datenbankfehler beim Löschen.", "error")
 
                 case "download":
                     # CSV-Datei erstellen und Download
-                    path = _export_to_csv("ausbilder", RESULTFILE)
-                    return send_file(path, as_attachment=True)
+                    try:
+                        path = _export_to_csv("ausbilder", RESULTFILE)
+                        return send_file(path, as_attachment=True)
+                    except Exception:
+                        current_app.logger.exception("Fehler beim CSV-Export in ausbilderanzeige")
+                        flash("Fehler beim Erstellen der CSV-Datei.", "error")
+                        return redirect(url_for("ausbilderanzeige"))
+
                 case _:
                     pass
         else:
             # Beginn: Es wurde kein Button geklickt, sondern die Seite wurde normal aufgerufen
             flash("Für weitere Informationen mit der Maus über die Kopfzeile fahren", "success")
+        stmt = db.select(Ausbilder).order_by(Ausbilder.ausbilder_betrieb.asc())
+        ausbilder_liste = db.session.execute(stmt).scalars().all()
 
-        ausbilder_liste = Ausbilder.query.order_by(Ausbilder.ausbilder_betrieb).all()
         return render_template(
             "ausbilderanzeige.html",
             title=title,
@@ -498,17 +556,17 @@ def upload() -> str:
 @_requires_auth
 def upload_direkt() -> str:
     title = ""
-    prototyp = ""
     action = ""
+    ALLOWED_ACTIONS = ["ausbilder", "azubis", "info"]
 
     form = FilehandlingAktionForm()
-    if form.validate_on_submit() and form.action.data in [
-        "ausbilder",
-        "azubis",
-        "info",
-    ]:
+    if form.validate_on_submit() and form.action.data in ALLOWED_ACTIONS:
         file = form.upload_file.data
-        action = form.action.data
+        if not file:
+            flash("Keine Datei ausgewählt.", "warning")
+            return redirect(url_for("upload_direkt", action=action))
+
+        action: Optional[str] = form.action.data
 
         title = f"Upload {action.title()} - WebUntis"
         (answer, category) = ("", "")
@@ -550,7 +608,7 @@ def upload_direkt() -> str:
         "upload.html",
         title=title,
         action=action,
-        prototyp=prototyp,
+        prototyp="",
         form=form,
     )
 
@@ -558,75 +616,99 @@ def upload_direkt() -> str:
 @app.route("/download_prototyp", methods=["GET"])
 @_requires_auth
 def download_prototyp() -> str:
-    if request.method == "GET":
-        if "action" in request.args:
-            action = request.args.get("action")
-            if action not in ["ausbilder", "azubis", "info"]:
-                # Kein Aufruf von der Adminseite
-                return _get_error_page("Die Seite wurde nicht korrekt aufgerufen")
-            else:
-                match action:
-                    case "info":
-                        path = INFOFILE
-                    case "ausbilder":
-                        path = PROTOTYPAUSBILDER
-                    case "azubis":
-                        path = PROTOTYPAZUBI
-                return send_file(path, as_attachment=True)
+    ALLOWED_ACTIONS = {
+        "info": INFOFILE,
+        "ausbilder": PROTOTYPAUSBILDER,
+        "azubis": PROTOTYPAZUBI,
+    }
+    try:
+        action: Optional[str] = request.args.get("action")
+        if not action:
+            return _get_error_page("Die Seite wurde nicht korrekt aufgerufen")
+
+        path = ALLOWED_ACTIONS.get(action)
+        if not path:
+            return _get_error_page("Die Seite wurde nicht korrekt aufgerufen")
+
+        # Sicherstellen, dass Datei existiert
+        if not os.path.isfile(path):
+            # send_file würde NotFound werfen; wir geben eine klare Antwort
+            return "Datei nicht gefunden", 404
+
+        filename = os.path.basename(path)
+        return send_file(
+            path,
+            as_attachment=True,
+            download_name=filename,  # Flask ≥ 2.0
+            conditional=True,  # ETag/Range unterstützen
+        )
+    except FileNotFoundError:
+        return "Datei nicht gefunden", 404
+    except Exception as e:
+        _log_message(f"Fehler beim Download des Prototyps: {e}", "error")
+        return _get_error_page()
 
 
 @app.route("/filehandling.html", methods=["GET", "POST"])
 @_requires_auth
 def filehandling() -> str:
     title = "Dateimanager - Azubis WebUntis"
+    form = FilehandlingAktionForm()
+    ALLOWED_ACTIONS = [
+        "delete_single",
+        "delete_all",
+        "update_db",
+        "reset_db",
+        "upload_file",
+    ]
 
     def __update_db(reset=False):
+        """CSV-Dateien zusammenführen und DB aktualisieren (optional reset)."""
         # Alle Datien zu einer verbinden und als AZUBIFILE abspeichern
         if not _merge_csv_files(UPLOADFOLDER, AZUBIFILE):
             flash("Fehler beim zusammenfassen der einzelnen Dateien", "error")
-        else:
+            return
+        try:
             liste_neue_azubis = _import_azubis_from_csv(AZUBIFILE)
             # Neue Daten einlesen, und Tabelle vorher leeren, wenn reset=True
             answer, category = _update_azubis_safe(liste_neue_azubis, reset)
             flash(answer, category)
+        except Exception:
+            current_app.logger.exception("Allg. Fehler bei update_db")
+            flash("Fehler beim Aktualisieren der Daten.", "error")
 
-    def __delete_file(filename):
-        file_path = os.path.join(UPLOADFOLDER, filename)
+    def __delete_file_safe(filename):
+        """Sicheres Löschen einer einzelnen Datei mit Feedback."""
+
+        if not filename:
+            flash("Kein Dateiname angegeben.", "error")
+            return
+        safe_name = secure_filename(filename)
+        file_path = os.path.join(UPLOADFOLDER, safe_name)
         if os.path.exists(file_path):
-            os.remove(file_path)
-            flash(f'Datei "{filename}" wurde gelöscht.', "success")
+            try:
+                os.remove(file_path)
+                flash(f'Datei "{filename}" wurde gelöscht.', "success")
+            except OSError:
+                current_app.logger.exception("Fehler beim Löschen der Datei %s", file_path)
+                flash(f'Datei "{safe_name}" konnte nicht gelöscht werden.', "error")
         else:
             flash("Die Datei wurde nicht gefunden.", "error")
 
     try:
-        form = FilehandlingAktionForm()
-
-        if form.validate_on_submit() and form.action.data in [
-            "delete_single",
-            "delete_all",
-            "update_db",
-            "reset_db",
-            "upload_file",
-        ]:
-            filename = form.filename.data
-            action = form.action.data
-            print(action)
+        if form.validate_on_submit() and form.action.data in ALLOWED_ACTIONS:
+            action: Optional[str] = form.action.data
 
             match action:
                 case "delete_single":
-                    print("Einzelne Datei löschen")
-                    filename = secure_filename(filename)
-                    __delete_file(filename)
+                    __delete_file_safe(form.filename.data)
 
                 case "delete_all":
-                    print("Alle Dateien löschen")
                     if os.path.exists(UPLOADFOLDER):
-                        for filename in os.listdir(UPLOADFOLDER):
-                            filename = secure_filename(filename)
-                            __delete_file(filename)
+                        for name in os.listdir(UPLOADFOLDER):
+                            __delete_file_safe(name)
 
                 case "update_db":
-                    print("Datenbank aktualisieren")
                     __update_db(False)
 
                 case "reset_db":
@@ -634,12 +716,15 @@ def filehandling() -> str:
                     __update_db(True)
 
                 case "upload_file":
-                    print("Neue Datei zum hochladen")
-                    answer, category = _save_file(form.upload_file.data, UPLOADFOLDER, True)
-                    flash(answer, category)
+                    file = form.upload_file.data
+                    if not file:
+                        flash("Keine Datei ausgewählt.", "warning")
+                    else:
+                        answer, category = _save_file(file, UPLOADFOLDER, True)
+                        flash(answer, category)
 
                 case _:
-                    pass
+                    flash("Unbekannte Aktion.", "error")
 
         elif request.method == "POST":
             _log_message(f"Formular-Fehler im Modul filehandling: {form.errors}", "error")
@@ -666,10 +751,20 @@ def upload_file() -> str:
     form = FilehandlingAktionForm()
     if form.validate_on_submit():
         file = form.filename.data
-        answer, category = _save_file(file, UPLOADFOLDER, True)
-        flash(answer, category)
+        if not file:
+            flash("Keine Datei ausgewählt.", "warning")
+            return redirect(url_for("filehandling"))
+        try:
+            answer, category = _save_file(file, UPLOADFOLDER, True)
+            flash(answer, category)
 
-    elif request.method == "POST":
-        _log_message(f"Formular-Fehler im Modul upload_file: {form.errors}", "error")
+        except Exception as e:
+            current_app.logger.exception("Fehler beim Datei-Upload")
+            _log_message(f"Fehler im Modul upload_file: {e}", "error")
+            flash("Beim Upload ist ein Fehler aufgetreten.", "error")
+    else:
+        # Formular- oder CSRF-Fehler
+        if request.method == "POST":
+            _log_message(f"Formular-Fehler im Modul upload_file: {form.errors}", "error")
 
     return redirect(url_for("filehandling"))
