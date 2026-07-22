@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <title>WebUntis Registrierungsbestätigung</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .alert-notice {
+            background-color: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+
+        /* Button-Styles analog zur ersten Mail */
+        .btn-group {
+            margin: 20px 0;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 15px;
+            color: #ffffff !important;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            margin:5px;
+        }
+        /* Wichtige Aktion: Bestätigen */
+        .btn-alert {
+            background-color: #dc3545;
+        }
+
+        /* Folge-Aktion: Weitere Azubis */
+        .btn-primary {
+            background-color: #0056b3;
+        }
+
+        .data-box {
+            background-color: #f8f9fa;
+
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+            border: 1px solid #dee2e6;
+                        border-left: 5px solid #dee2e6;
+        }
+
+        .data-box p {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+
+        <p>Sehr geehrte Damen und Herren,</p>
+
+        <p>Sie haben einen oder mehrere Auszubildende für WebUntis mit Ihrer E-Mail-Adresse verknüpft. Um die
+            Registrierung abzuschließen, ist eine kurze Bestätigung erforderlich.</p>
+
+        <!-- Dringlicher Hinweis prominent platziert -->
+         
+        <div class="alert-notice">
+            <p>
+                <strong>Hinweis:</strong> 
+                Bitte bestätigen Sie Ihre E-Mail-Adresse <u>innerhalb von 2 Stunden</u>. 
+                Nach Ablauf dieser Frist werden die Daten und alle Verknüpfungen aus Sicherheitsgründen gelöscht.</p>
+            <p style="margin-bottom: 0; font-size: 0.9em; color: #666;">
+                *Diese Bestätigung ist nur bei der erstmaligen Registrierung notwendig.*
+            </p>
+        </div>
+
+        <h3>Ihre hinterlegten Daten</h3>
+        <div class="data-box">
+            <p><strong>Betrieb:</strong> {{ ausbilder.ausbilder_betrieb }}</p>
+            <p><strong>Ausbilder:</strong> {{ ausbilder.ausbilder_name }}, {{ ausbilder.ausbilder_vorname }}</p>
+            <p><strong>E-Mail:</strong> {{ ausbilder.ausbilder_email }}</p>
+        </div>
+
+        <h3>Aktionen und Verwaltung</h3>
+        <p>
+            Bitte nutzen Sie die folgenden Buttons, um Ihre Registrierung zu bestätigen oder weitere Auszubildende
+            hinzuzufügen:
+        </p>
+
+        <div class="btn-group">
+            <a href="{{ server_url }}azubismitausbilder.html?token={{ ausbilder.token }}" class="btn btn-alert">
+                1. E-Mail-Adresse JETZT bestätigen
+            </a>
+            <a href="{{ server_url }}?token={{ ausbilder.token }}" class="btn btn-primary">
+                Weitere Azubis eintragen / Liste einsehen
+            </a>
+        </div>
+
+        <p>
+            <strong>Ihr Vorteil:</strong> 
+            Über den blauen Link ("Weitere Azubis eintragen") können Sie alle verknüpften 
+            Auszubildenden einsehen und neue hinzufügen, ohne Ihre persönlichen Daten erneut eingeben zu müssen. <br>
+            Bewaren Sie daher diese Mail auf oder speichern diesen Link, um auch im nächsten Schuljahr neue Schüler 
+            bequem anmelden zu können.
+        </p>
+
+        <p>
+            Sollten Sie Fragen haben, wenden Sie sich bitte direkt an:<br> 
+            <a href="mailto:{{ kontaktperson.mail }}">{{ kontaktperson.komplett }}</a>.
+        </p>
+
+        <p>Mit freundlichen Grüßen<br>
+            <strong>Kay Koch</strong><br>
+            TSS Bitburg
+        </p>
+
+        <hr>
+        <address style="font-size:small;">
+            Kay Koch, OStR<br>
+            Dipl.-Ing. (FH) Luft- u. Raumfahrttechnik <br>
+            Theobald-Simon-Schule Berufsbildende Schule Bitburg<br>
+            Rittersdorfer Str. 2<br>
+            D-54634 Bitburg <br>
+            Tel. : &nbsp;&nbsp;+49 (6561) 6005-0<br>
+            Mobil: +49 (175) 8483324 <br>
+            Email: <a href="mailto:koch@tssbit.de">koch@tssbit.de</a><br>
+            URL: <a href="http://www.tssbit.de">http://www.tssbit.de</a>
+        </address>
+    </div>
+</body>
+
+</html>

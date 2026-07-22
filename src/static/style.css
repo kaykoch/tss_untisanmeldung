@@ -7,9 +7,22 @@ body {
   margin: 40px;
   background-color: #f4f4f9;
 }
-
+/* -------------------- Logo ------------------------------------------- */
+.title {
+  margin: 0;
+  font-size: 1.5rem;
+}
+.hdr {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  border-bottom: 2px solid #950d00;
+  color: #950d00;
+  padding:10px;
+  margin-bottom: 10px;
+}
 .container {
-  max-width: 850px;
+  max-width: 1000px;
   background: white;
   padding: 25px 25px 5px 25px;
   border-radius: 8px;
@@ -26,20 +39,28 @@ caption{
   font-size: 0.85rem;
 }
 .footer {
-  width: 850px;
+  width: 100%;
   display: flex;
   justify-content: center;
-  margin: auto;
+  margin-top: 10px;
   padding: 10px;
+  border-top: 1px solid #950d00;
+  border-bottom: 1px solid #950d00;
 }
 
-.footer span {
+.footer span,
+caption span,
+.under_footer {
   font-size: 0.7rem;
 }
 
 
-label {
-  display: block;
+label,
+.label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #3c4043;
+  margin-bottom: 5px;
 }
 
 h2.tss {
@@ -84,8 +105,12 @@ th {
   border: 1px solid #ccc;
   background-color: #0069d9;
   color: white;
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   padding: 8px;
+}
+
+th .tooltip{
+   width: 100%;
 }
 
 td {
@@ -141,76 +166,99 @@ tr.odd td {
   text-decoration: none;
   font-weight: bold;
 }
+/* -------------------- Tool Tips ------------------------------------------- */
 
-/* -------------------- Tool Tips -------------------- */
-
+/* Gemeinsame Basis-Stile für alle Tooltip-Container */
 .tooltip,
 .tooltip-danger,
 .tooltip-warning {
   position: relative;
   text-decoration: none;
-}
+  display: inline-block; /* Wichtig für korrekte Positionierung relativ zum Inhalt */
 
+}
+th .tooltip{  width: 100%;}
+/* Gemeinsame Basis-Stile für den Tooltip-Inhalt (das :after Pseudo-Element) */
 .tooltip:after,
 .tooltip-danger:after,
 .tooltip-warning:after {
-  content: attr(data-tooltip);
+  content: attr(data-tooltip); /* Inhalt aus data-tooltip Attribut */
   position: absolute;
-  bottom: 10%;
-  left: 30%;
-  padding: 5px 15px;
-  -webkit-border-radius: 10px;
-  -moz-border-radius: 10px;
+  left: 50%; /* Horizontal zentrieren */
+  transform: translateX(-50%); /* Eigene Breite berücksichtigen */
+  padding: 10px; /* Einheitlicher Abstand */
   border-radius: 10px;
-  white-space: nowrap;
+  white-space: nowrap; /* <<< WICHTIG für Zeilenumbrüche (siehe unten) */
   opacity: 0;
+  visibility: hidden; /* Vollständig verstecken, wenn nicht gehovert */
+  pointer-events: none; /* Klicks durch den Tooltip lassen, wenn versteckt */
+  transition: opacity 0.3s ease, visibility 0.3s ease, bottom 0.3s ease; /* Sanfter Übergang */
+  z-index: 10; /* Sicherstellen, dass der Tooltip über anderem Inhalt liegt */
+  min-width: 150px; /* Verhindert zu schmale Tooltips */
+  text-align: center; /* Text im Tooltip zentrieren */
+  bottom: calc(100% + 15px); /* Position über dem Element + Pfeilhöhe */
 }
-
-.tooltip:hover:after,
-.tooltip-danger:hover:after,
-.tooltip-warning:hover:after {
-  bottom: 140%;
-  opacity: 1;
-}
-
+/* Gemeinsame Basis-Stile für den Tooltip-Pfeil (das :before Pseudo-Element) */
 .tooltip:before,
 .tooltip-danger:before,
 .tooltip-warning:before {
   content: "";
   position: absolute;
-  width: 0;
-  height: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  border-style: solid;
+  border-width: 8px 8px 0 8px; /* Erzeugt einen nach unten zeigenden Pfeil */
   opacity: 0;
-  left: 30%;
-  bottom: 10%;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.3s ease, visibility 0.3s ease, bottom 0.3s ease;
+  z-index: 11; /* Pfeil über dem Tooltip-Inhalt */
+  bottom: calc(100% + 7px); /* Position direkt unter dem Tooltip-Inhalt */
 }
 
+/* Gemeinsamer Hover-Zustand für alle Tooltip-Typen (Inhalt und Pfeil) */
+.tooltip:hover:after,
+.tooltip-danger:hover:after,
+.tooltip-warning:hover:after,
 .tooltip:hover:before,
 .tooltip-danger:hover:before,
 .tooltip-warning:hover:before {
-  bottom: 10%;
+  opacity: 1;
+  visibility: visible;
+  /* Die bottom-Position wird durch die Basis-Stile und den Übergang gesteuert */
 }
 
-.tooltip-warning:after {
-  background: #ffc107;
-  color: black;
-  padding: 10px;
-  border: #ffc107 solid 1px;
-}
-
-.tooltip-danger:after {
-  background: #dc3545;
-  color: white;
-  padding: 10px;
-  border: #dc3545 solid 1px;
-}
-
+/* Spezifische Stile für jeden Tooltip-Typ (Farben und Ränder) */
+/* Normaler Tooltip */
 .tooltip:after {
   background: #c3defc;
   color: black;
-  padding: 10px;
   border: #c3defc solid 1px;
 }
+.tooltip:before {
+  border-color: #c3defc transparent transparent transparent;
+}
+
+/* Warning Tooltip */
+.tooltip-warning:after {
+  background: #ffc107;
+  color: black;
+  border: #ffc107 solid 1px;
+}
+.tooltip-warning:before {
+  border-color: #ffc107 transparent transparent transparent;
+}
+
+/* Danger Tooltip */
+.tooltip-danger:after {
+  background: #dc3545;
+  color: white;
+  border: #dc3545 solid 1px;
+}
+.tooltip-danger:before {
+  border-color: #dc3545 transparent transparent transparent;
+}
+
 
 ul {
   list-style-type: none;
@@ -228,15 +276,15 @@ li {
   border: 1px solid #ddd;
 }
 
+/* -------------------- Buttons --------------------------------------------- */
 .btn {
   width: 200px;
-  padding: 8px 12px;
+  padding: 4px 2px;
   border: none;
   cursor: pointer;
   border-radius: 8px;
   font-weight: bold;
-  font-size: 1rem;
-  margin: 5px;
+  font-size: 0.9rem;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -244,21 +292,14 @@ li {
   display: flex;
 }
 
-.btn-danger {
-  background-color: #dc3545;
-  color: white;
-  margin: 0px;
-}
-
-.btn-danger:hover {
-  background-color: #c82333;
+.btn:hover {
   transform: scale(1.03);
 }
 
 .btn-primary {
   background-color: #007bff;
   color: white;
-  margin: 0px;
+  margin: 5px 0;
 }
 
 .btn-primary:hover {
@@ -275,6 +316,18 @@ li {
   background-color: #e0a800;
   transform: scale(1.02);
 }
+
+.btn-danger {
+  background-color: #dc3545;
+  color: white;
+  /*text-transform: uppercase; */
+}
+
+.btn-danger:hover {
+  background-color: #c82333;
+  transform: scale(1.03);
+}
+
 
 .btn-td {
   background-color: #0069d9;
@@ -330,6 +383,7 @@ li {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 15px;
+
 }
 
 .field {
@@ -337,7 +391,15 @@ li {
   flex-direction: column;
   margin-bottom: 10px;
 }
-
+.field.password{
+  position: relative;
+}
+.field.password span{
+  position: absolute; 
+  right: 10px; 
+  top: 40px; 
+  cursor: pointer;
+}
 .big {
   width: 100%;
   margin-top: 5px;;
@@ -356,32 +418,13 @@ hr {
 
 }
 
-.berufsschule {
-  background-color: #008000;
-  color: white;
-}
 
-div.berufsschule:hover {
-  background-color: #016d01;
-  transform: scale(1.02);
-}
-
-h1.berufsschule {
-  color: #008000;
-  background-color: transparent;
-}
-
-.vollzeitschule {
-  background-color: #007bff;
-  color: white;
-}
-
-div.vollzeitschule:hover {
-  background-color: #0069d9;
-  transform: scale(1.02);
-}
-
-h1.vollzeitschule {
-  color: #007bff;
-  background-color: transparent;
+.warning {
+  background-color: #fff8e1;
+  border: 1px solid #f0c040;
+  padding: 10px 14px;
+  border-radius: 4px;
+  margin-bottom: 15px;
+  font-size: 0.8rem;
+  color: #7a5c00;
 }

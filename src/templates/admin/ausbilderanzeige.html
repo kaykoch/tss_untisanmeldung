@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+<form id="globalActionForm" action="{{ url_for('admin.route_ausbilderanzeige') }}" method="POST">
+  {{ form.csrf_token }}
+
+  {{ form.action }}
+  {{ form.ausbilder_email }}
+
+  <button type="button" class="btn btn-primary small" onclick="submitAction('koch@tssbit.de', 'download')">
+    Download
+  </button>
+
+  <table class="ausbilder">
+    <thead>
+      <tr>
+
+        <th>
+          <div class="tooltip" data-tooltip=" ✅: Bestätigt ❌: Nicht bestätigt">
+            <div>Mail</div>
+          </div>
+        </th>
+
+        <th>
+          <div class="tooltip"
+            data-tooltip="Der Betrieb mit Namen und Mailadresse des zugeordneten Ausbilders">
+            <div>Betrieb</div>
+          </div>
+        </th>
+
+        <th>
+          <div class="tooltip" data-tooltip="Alle dem Ausbilder zugeordneten Azubis anzeigen">
+            <div>Azubis</div>
+          </div>
+        </th>
+
+        <th>
+          <div class="tooltip" data-tooltip="Neue Azubis hinzufügen">
+            <div>Azubis</div>
+          </div>
+        </th>
+
+        <th>
+          <div class="tooltip" data-tooltip="Bestätigugsmail erneut an Ausbilder senden">
+            <div>Mail</div>
+          </div>
+        </th>
+
+        <th>
+          <div class="tooltip-danger" data-tooltip="Ausbilder und alle Zuordnungen löschen">
+            <div>Ausbilder</div>
+          </div>
+        </th>
+
+      </tr>
+    </thead>
+    <tbody>
+
+      {% for ausbilder in ausbilder_liste %}
+      <tr>
+        <td style="text-align: center;">{% if ausbilder.bestaetigt %} ✅{% else %} ❌ {% endif %} </td>
+
+        <td>
+          <b>{{ausbilder.ausbilder_betrieb}}</b><br>
+          {{ausbilder.ausbilder_email}} <br>
+          {{ausbilder.ausbilder_name}}, {{ausbilder.ausbilder_vorname}}
+        </td>
+
+        <td>
+          <button type="button" class="btn btn-primary small"
+            onclick="submitAction('{{ ausbilder.ausbilder_email }}', 'show')">
+            anzeigen
+          </button>
+        </td>
+
+        <td>
+          <button type="button" class="btn btn-primary  small"
+            onclick="submitAction('{{ ausbilder.ausbilder_email }}', 'add')">
+            hinzufügen
+          </button>
+        </td>
+
+        <td>
+          <button type="button" class="btn btn-primary  small"
+            onclick="submitAction('{{ ausbilder.ausbilder_email }}', 'resend', 'Möchten Sie die E-Mail wirklich erneut senden?')">
+            senden
+          </button>
+        </td>
+
+        <td>
+          <button type="button" class="btn btn-danger  small"
+            onclick="submitAction('{{ ausbilder.ausbilder_email }}', 'delete', 'Möchten Sie diesen Ausbilder wirklich löschen?')">
+            löschen
+          </button>
+        </td>
+        
+      </tr>
+      {% endfor %}
+
+    </tbody>
+  </table>
+</form>
+
+<script>
+  function submitAction(email, action, confirmationMessage = null) {
+    // Falls eine Bestätigung gefordert ist (z.B. beim Löschen)
+    if (confirmationMessage && !confirm(confirmationMessage)) {
+      return; // Abbrechen, wenn der Nutzer "Abbrechen" klickt
+    }
+
+    // Die versteckten Inputs des globalen Formulars heraussuchen
+    document.getElementById('form_email').value = email;
+    document.getElementById('form_action').value = action;
+
+    // Das Formular absenden
+    document.getElementById('globalActionForm').submit();
+  }
+</script>
+
+
+
+{% endblock %}

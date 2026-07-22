@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>{{ title }}</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='style.css') }}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+</head>
+
+<body>
+    <div class="container">
+        <header class="hdr">
+            <h1 class="title">Theobald-Simon-Schule Bitburg</h1>
+            <div class="logo"><img src="{{ url_for('static', filename='logo.png') }}" alt="Logo"></div>
+        </header>
+
+        <h4>{{ title }}</h4>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="flash {{ category }}">{{ message }} </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        <hr>
+
+      <!-- Inhalt-->
+      {% block content %}
+      {% endblock %}
+      
+      <div class="footer">
+        <span>Copyright &copy; 2026 Kay Koch This program comes with ABSOLUTELY NO WARRANTY. <br>
+          This is Free Software and you are welcome to redistribute it under certain conditions.
+      </span>
+
+      </div>
+      <div class="under_footer">
+        <a href="{{ url_for('main.route_impressum') }}">Impressum</a> |
+        <a href='/static/Dokumentation.pdf'>Dokumentation</a>
+      </div>
+    </div>
+
+  </body>
+
+</html>

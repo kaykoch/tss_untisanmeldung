@@ -1,0 +1,104 @@
+{% extends "base.html" %} {% block content %}
+
+<form method="POST">
+    {{ form.csrf_token }}
+
+
+
+    <h2>Zugänge</h2>
+    <div class="grid">
+        <div class="field">
+            {{ form.admin_login.label }} {{
+            form.admin_login(class="form-control") }}
+        </div>
+        
+        <div class="field password">
+            {{ form.admin_password.label }} 
+            {{ form.admin_password(id="password-field_1", class="form-control") }}
+            <!-- Aufruf der JS-Funktion direkt beim Klick -->
+            <span onclick="togglePasswordVisibility('password-field_1', this)"> 👁️ </span>
+        </div>
+
+        <div class="field password">
+            {{ form.tss_password.label }} 
+            {{ form.tss_password(id="password-field_2", class="form-control") }}
+            <span onclick="togglePasswordVisibility('password-field_2', this)" > 👁️ </span>
+        </div>
+
+        <div class="field"></div>
+    </div>
+    <hr>
+    <h2>Kontaktperson zur Schule</h2>
+    <div class="grid">
+        <div class="field">
+            {{ form.kontaktperson_vorname.label }} {{
+            form.kontaktperson_vorname(class="form-control") }}
+        </div>
+        <div class="field">
+            {{ form.kontaktperson_nachname.label }} {{
+            form.kontaktperson_nachname(class="form-control") }}
+        </div>
+        <div class="field">
+            {{ form.kontaktperson_mail.label }} {{
+            form.kontaktperson_mail(class="form-control") }}
+        </div>
+        <div class="field"></div>
+    </div>
+    <hr>
+    <h2>Sonstiges</h2>
+    <div class="grid">
+        <div class="field">
+            {{ form.timetowait.label }} {{
+            form.timetowait(class="form-control") }}
+        </div>
+        <div class="field"><label></label></div>
+    </div>
+    <hr>
+    <h2>Mailserver</h2>
+    <div class="grid">
+        <div class="field">
+            {{ form.mail_server.label }} {{ form.mail_server(class="form-control") }}
+        </div>
+        <div class="field">
+            {{ form.mail_port.label }} {{ form.mail_port(class="form-control") }}
+        </div>
+
+        <div class="field">
+            {{ form.mail_use_ssl.label }} {{ form.mail_use_ssl(class="form-control") }}
+        </div>
+        <div class="field">
+            {{ form.mail_use_tls.label }} {{ form.mail_use_tls(class="form-control") }}
+        </div>
+
+        <div class="field">
+            {{ form.mail_username.label }} {{ form.mail_username(class="form-control") }}
+        </div>
+        <div class="field password">
+            {{ form.mail_password.label }} 
+            {{ form.mail_password(id="password-field_3", class="form-control") }}
+            <span onclick="togglePasswordVisibility('password-field_3', this)" > 👁️ </span>
+        </div>
+        <div class="field">
+            {{ form.mail_default_sender.label }} {{
+            form.mail_default_sender(class="form-control") }}
+        </div>
+        <div class="field"><label></label></div>
+    </div>
+
+    <div class="field">{{ form.submit(class="btn btn-primary big") }}</div>
+</form>
+<script>
+    // Diese eine Funktion bedient jetzt beliebig viele Passwortfelder
+    function togglePasswordVisibility(fieldId, iconElement) {
+        const passwordField = document.getElementById(fieldId);
+        
+        if (passwordField) {
+            const isPassword = passwordField.getAttribute('type') === 'password';
+            const newType = isPassword ? 'text' : 'password';
+            
+            passwordField.setAttribute('type', newType);
+            iconElement.textContent = isPassword ? '🙈' : '👁️';
+        }
+    }
+</script>
+{% endblock %}

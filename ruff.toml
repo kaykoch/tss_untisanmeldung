@@ -1,0 +1,78 @@
+# ruff.toml
+# Dokumentation: https://docs.astral.sh/ruff/configuration/
+
+# Ziel-Python-Version
+target-version = "py311"
+
+# Maximale Zeilenlänge
+line-length = 120
+
+# Einrückung — Top-Level, nicht unter [format]
+indent-width = 4
+
+# Dateien/Ordner ausschließen
+exclude = [
+    ".venv",
+    "venv",
+    ".git",
+    "__pycache__",
+    "migrations",
+    "instance",
+    "*.egg-info",
+    "dist",
+    "build",
+]
+
+# -----------------------------------------------------------------------
+[lint]
+
+select = ["E", "W", "F", "I", "B", "UP", "C4", "SIM"]
+
+ignore = [
+    "B008",     # Flask: Funktionsaufrufe als Default-Argumente
+    "B006",     # mutable default arguments
+    "E711",     # SQLAlchemy: comparison to None
+    "E712",     # SQLAlchemy: comparison to True/False
+    "B009",     # WTForms: getattr mit konstantem Attribut
+    "SIM108",   # ternary operator (manchmal weniger lesbar)
+    "UP007",    # X | Y union types (Python < 3.10 Kompatibilität)
+]
+
+fixable   = ["ALL"]
+unfixable = []
+
+[lint.per-file-ignores]
+"migrations/*"        = ["ALL"]
+"src/config.py"       = ["S105", "S106"]
+"config.py"           = ["S105", "S106"]
+"src/models.py"       = ["N805"]
+"src/routes.py"       = ["F401"]
+"src/routes_admin.py" = ["F401"]
+
+# -----------------------------------------------------------------------
+[lint.isort]
+known-first-party          = ["src"]
+known-third-party          = [
+    "flask",
+    "flask_sqlalchemy",
+    "flask_mail",
+    "flask_wtf",
+    "wtforms",
+    "sqlalchemy",
+    "weasyprint",
+    "pandas",
+    "werkzeug",
+]
+force-sort-within-sections = true
+lines-after-imports        = 2
+
+# -----------------------------------------------------------------------
+[lint.pydocstyle]
+convention = "google"
+
+# -----------------------------------------------------------------------
+[format]
+quote-style               = "double"
+indent-style              = "space"
+skip-magic-trailing-comma = false
+line-ending               = "auto"

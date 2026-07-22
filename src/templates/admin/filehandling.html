@@ -1,0 +1,88 @@
+{% extends "base.html" %} {% block content %}
+<form id="globalActionForm" action="{{ url_for('admin.route_filehandling') }}" method="POST" enctype="multipart/form-data">
+    {{ form.csrf_token }}
+    <div class="upload-form">
+        {{ form.action(value="upload_file") }}
+        {{ form.filename(value="NIX") }}
+        {{form.upload_file }}
+        <button type="submit" class="tooltip btn btn-primary midi"
+            data-tooltip="Es können nur *.csv Dateien hochgeladen werden">
+            Datei hochladen
+        </button>
+    </div>
+
+    {% if files %}
+    {{ form.filename }}
+    {{ form.action }}
+    <table>
+        <thead>
+            <tr>
+                <th>Dateiname</th>
+                <th>Aktion</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for file in files %}
+            <tr>
+                <td>{{ file }}</td>
+                <td>
+                    <button type="button" class="btn btn-danger big"
+                        onclick="submitAction('{{ file }}', 'delete_single', 'Möchten Sie {{file}} wirklich löschen?')">
+                        löschen
+                    </button>
+                </td>
+            </tr>
+            {% endfor %}
+            <tr>
+                <td colspan="2" style="background-color: transparent; border: 0px">
+                    <button type="button" class="tooltip-warning btn btn-warning big"
+                        onclick="submitAction( 'test.txt', 'delete_all', 'Möchten Sie alle Dateien wirklich löschen?',)"
+                        data-tooltip="Nur die Dateien werden gelöscht. Nicht die Datenbank">
+                        Alle Dateien löschen
+                    </button>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" style="background-color: transparent; border: 0px">
+                    <button type="button" class="tooltip-warning btn btn-warning big"
+                        onclick="submitAction('test.txt', 'update_db','Möchtest du wirklich die Datenbank mit neuen Azubis ergänzen?', )"
+                        data-tooltip="Die Azubi-Datenbank wird erweitert, aber es werden KEINE Daten gelöscht !!">
+                        Neue Azubis hinzufügen
+                    </button>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" style="background-color: transparent; border: 0px">
+                    <button type="button" class="tooltip-danger btn btn-danger big"
+                        onclick="submitAction('test.txt','reset_db','!! Möchtest du wirklich ALLE Azubis löschen und mit neuen Azubis überschreiben? !!',)"
+                        data-tooltip="!! ACHTUNG - Die Azubi-Datenbank wird überschrieben - ACHTUNG:!!">
+                        Azubis löschen und neu erstellen
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    {% else %}
+    <p style="color: #666; font-style: italic">
+        Aktuell befinden sich keine Dateien im Ordner.
+    </p>
+    {% endif %}
+</form>
+
+<script>
+    function submitAction(filename, action, confirmationMessage = null) {
+        // Falls eine Bestätigung gefordert ist (z.B. beim Löschen)
+        if (confirmationMessage && !confirm(confirmationMessage)) {
+            return; // Abbrechen, wenn der Nutzer "Abbrechen" klickt
+        }
+
+        // Die versteckten Inputs des globalen Formulars heraussuchen
+        document.getElementById("filename").value = filename;
+        document.getElementById("action").value = action;
+
+        // Das Formular absenden
+        document.getElementById("globalActionForm").submit();
+    }
+</script>
+{% endblock %}

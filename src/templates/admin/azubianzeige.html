@@ -1,0 +1,123 @@
+{% extends "base.html" %} {% block content %}
+
+<form method="POST">
+  {{ form.csrf_token }} 
+
+  {{ form.klassen.label }} 
+  {{ form.klassen }} 
+  
+  
+
+
+  <div class="container-wrapper">   
+      <div class="tooltip"  data-tooltip="Download der angezeigten Schülern als CSV-Datei">
+        {{ form.submit_csv }}
+      </div>
+      <div class="tooltip"  data-tooltip="CSV-Datei an TSS-Verantwortlichen">
+        {{ form.submit_mail_tss }}
+      </div>
+      <div class="tooltip"  data-tooltip="Benachrichtigung an Ausbilder (Untis-Account ist angelegt)">
+        {{ form.submit_mail_untis }}
+      </div>
+    </div>
+</form>
+
+<div>
+  <table id="untisTabelle">
+    <tbody></tbody>
+  </table>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const klassenSelect = document.getElementById("klassen");
+    const table = document.getElementById("untisTabelle");
+    if (!klassenSelect || !table) return;
+
+    klassenSelect.addEventListener("change", async function () {
+      const klasseName = (this.value || "").trim();
+      if (!klasseName) return;
+
+      try {
+        const res = await fetch(`/api/zugeordete_schueler/${encodeURIComponent(klasseName)}`, {
+          headers: { Accept: "application/json" },
+          cache: "no-store",
+        });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const azubis = await res.json();
+
+        // Tabelle leeren: thead/tbody neu aufbauen
+        table.innerHTML = "";
+
+        // Caption
+        const caption = document.createElement("caption");
+        caption.textContent = klasseName === "all" ? "Klasse: Alle Klassen" : `Klasse: ${klasseName}`;
+        table.appendChild(caption);
+
+        // Kopf (thead)
+        const thead = document.createElement("thead");
+        const headRow = document.createElement("tr");
+        const addTh = (text, width) => {
+          const th = document.createElement("th");
+          th.textContent = text;
+          if (width) th.style.width = width;
+          return th;
+        };
+        headRow.appendChild(addTh("Profilname", "100px"));
+        headRow.appendChild(addTh("Nachname", "150px"));
+        headRow.appendChild(addTh("Vorname", "100px"));
+        if (klasseName === "all") headRow.appendChild(addTh("Klasse", "70px"));
+        headRow.appendChild(addTh("Ausbilder"));
+        thead.appendChild(headRow);
+        table.appendChild(thead);
+
+        // Body (tbody)
+        const tbody = document.createElement("tbody");
+        let letzteKlasse = "";
+        let cssClass = "odd"; // Startzustand, wird direkt getoggelt
+
+        const toggleCss = () => (cssClass = cssClass === "even" ? "odd" : "even");
+
+        azubis.forEach((azubi) => {
+          if (azubi.klasse !== letzteKlasse) {
+            toggleCss();
+            letzteKlasse = azubi.klasse;
+          }
+
+          const tr = document.createElement("tr");
+          tr.classList.add(cssClass);
+
+          const tdProfil = document.createElement("td");
+          tdProfil.textContent = azubi.schueler_untis_id || "";
+          tr.appendChild(tdProfil);
+
+          const tdNachname = document.createElement("td");
+          tdNachname.textContent = azubi.schueler_familienname || "";
+          tr.appendChild(tdNachname);
+
+          const tdVorname = document.createElement("td");
+          tdVorname.textContent = azubi.schueler_rufname || "";
+          tr.appendChild(tdVorname);
+
+          if (klasseName === "all") {
+            const tdKlasse = document.createElement("td");
+            tdKlasse.textContent = azubi.klasse || "";
+            tr.appendChild(tdKlasse);
+          }
+
+          const tdMail = document.createElement("td");
+          tdMail.textContent = azubi.ausbilder_email ?? "";
+          tr.appendChild(tdMail);
+
+          tbody.appendChild(tr);
+        });
+
+        table.appendChild(tbody);
+      } catch (err) {
+        console.error("Fehler beim Laden der Azubi-Daten:", err);
+      }
+    });
+  });
+</script>
+
+{% endblock %}

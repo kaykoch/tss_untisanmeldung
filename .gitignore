@@ -1,8 +1,13 @@
-__pycache__
-.venv/bin/
+.gitignore
 .venv/
-instance/webuntis.sqlite
-src/data/logfile.log
-src/upload/Student_*
 .vscode/
-untis.code-workspace
+.env
+ 
+ __pycache__
+sinstance/
+src/__pycache__/
+
+src/upload/*
+src/data/azubis.csv
+src/data/ausbilder.csv
+src/data/logfile.log

@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="upload-form">
+    <form action="{{ url_for('admin.route_upload_direkt') }}" method="post" enctype="multipart/form-data"
+        onsubmit="return confirm( '{{confirmmsg}}' );">
+        {{ form.csrf_token }}
+        {{ form.action(value=action, id="form_action") }}
+        {{form.filename(value="NIX") }}
+        {{ form.upload_file }}
+        <button type="submit" class="tooltip btn btn-primary midi"
+            data-tooltip="Es können nur *csv und *.pdf Dateien hochgeladen werden">
+            Datei hochladen
+        </button>
+    </form>
+</div>
+<hr />
+<a href="{{ url_for('admin.route_download_prototyp', action=action) }}" target="_self" class="tooltip btn btn-primary midi"
+    data-tooltip="Musterdatei. Die Uploaddatei MUSS dieses Format haben !">
+    <div class="">Download Prototyp</div>
+</a>
+
+{% endblock %}

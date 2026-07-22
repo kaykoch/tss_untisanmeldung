@@ -1,0 +1,61 @@
+{% extends "base.html" %} {% block content %}
+<h1>Auszubildende</h1>
+<div class="container-wrapper">
+    <a href="{{ url_for('admin.route_azubianzeige') }}" target="_self" class="tooltip" 
+        data-tooltip="Zeigt alle Azubis an (inkl. Download und Mailversand)">
+        <div class="btn btn-primary midi">Anzeige / Download</div>
+    </a>
+    <a href="{{ url_for('admin.route_upload', action='azubis') }}" target="_self" class="tooltip"
+        data-tooltip="Direkter Upload der Azubidatei">
+        <div class="btn btn-primary midi">Upload</div>
+    </a>
+</div>
+
+
+<h1>Ausbilder</h1>
+<div class="container-wrapper">
+    <a href="{{ url_for('admin.route_ausbilderanzeige') }}" target="_self" class="tooltip" 
+        data-tooltip="Zeigt alle Ausbilder an (inkl. Download)">
+        <div class="btn btn-primary midi">Anzeige / Download</div>
+    </a>
+    <a href="{{ url_for('admin.route_upload', action='ausbilder') }}" target="_self" class="tooltip"
+        data-tooltip="Direkter Upload der Ausbilderdatei">
+        <div class="btn btn-primary midi">Upload</div>
+    </a>
+</div>
+
+<h1>Infodatei</h1>
+<div class="container-wrapper">
+        <div class="btn midi"></div>
+
+    <a href="{{ url_for('admin.route_upload', action='info') }}" target="_self" class="tooltip"
+        data-tooltip="Direkter Upload der Infodatei">
+        <div class="btn btn-primary midi">Upload</div>
+    </a>
+</div>
+<hr>
+<div class="container-wrapper">
+    <!-- Container 1 -->
+    <a href="{{ url_for('admin.route_config') }}" target="_self" class="tooltip" 
+    data-tooltip="Konfigurationseite (Passwort, Mailserver etc.)">
+        <div class="btn btn-warning midi">Konfiguration</div>
+    </a>
+    <a href="{{ url_for('admin.route_filehandling') }}" target="_self" class="tooltip"
+        data-tooltip="Übersicht, Upload  von einzelnen Dateien aus Untis und Aktualisierung der Datenbank">
+        <div class="btn btn-warning midi">Datei-Manager</div>
+    </a>
+</div>
+
+
+
+
+
+<script>
+    document
+        .getElementById("clickable-box")
+        .addEventListener("click", function () {
+            // Formular per JavaScript absenden
+            document.getElementById("myForm").submit();
+        });
+</script>
+{% endblock %}

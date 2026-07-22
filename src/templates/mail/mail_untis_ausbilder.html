@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <title>WebUntis Zugangsinformationen</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .data-box {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+            border: 1px solid #dee2e6;
+                        border-left: 5px solid #dee2e6;
+        }
+        .alert-notice {
+            background-color: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+
+        ul {
+            padding-left: 20px;
+        }
+
+        li {
+            margin-bottom: 10px;
+        }
+
+        /* Button-Styles analog zur ersten Mail */
+        .btn-group {
+            margin: 20px 0;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 15px;
+            color: #ffffff !important;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            margin:5px;
+        }
+        .btn-primary {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <p>Hallo {{ ausbilder.ausbilder_vorname }} {{ ausbilder.ausbilder_name }},</p>
+
+        <p>wir freuen uns, Ihnen mitteilen zu können, dass Ihr WebUntis-Account erfolgreich angelegt wurde, bzw. die neuen Azubis
+        verknüpft wurden. Sie haben damit ab sofort die Möglichkeit, die Fehlzeiten folgender Auszubildenden direkt einzusehen.</p>
+         <div class="data-box">
+			 <strong>{{ ausbilder.ausbilder_betrieb }}:</strong>
+		
+            <ul>
+            {% for azubi in ausbilder.accounts %}
+                <li>{{azubi.schueler_familienname}}, {{azubi.schueler_rufname}} ({{azubi.klasse}})</li>
+            {% endfor %}
+            </ul>
+        </div>
+        
+        
+        <h3>Erste Schritte und Anleitung</h3>
+        <p>Bitte laden Sie sich das Dokument <strong>Webuntis_Ausbilder.pdf</strong> herunter. Darin beschreibt die
+            Schulleitung der TSS Bitburg das weitere Vorgehen sowie die wichtigsten Funktionen übersichtlich für Sie.
+
+            <a href="https://tssbbs5bitburg.jimdoweb.com/app/download/8818742615/Webuntis_Ausbilder.pdf?t=1741685421"
+                    class="btn btn-primary">Hier klicken zum Download: Webuntis_Ausbilder.pdf</a>
+        </p>     
+        
+        <h3>Verknüpfung neuer Auszubildender im neuen Schuljahr:</h3>
+		<p>
+			Nutzen Sie hierfür bitte den individuellen Link, den Sie bereits mit der Bestätigungsmail Ihrer
+			Registrierung erhalten haben.
+			<a href="{{ server_url }}?token={{ ausbilder.token }}"	class="btn btn-primary"> Weitere Azubis eintragen / Liste einsehen </a>
+		</p>
+
+        <p>Sollten Sie darüber hinaus Fragen zur Nutzung haben, stehe ich Ihnen jederzeit gerne zur Verfügung.</p>
+
+        <p>Mit freundlichen Grüßen<br>
+            <strong>Kay Koch</strong><br>
+            TSS Bitburg
+        </p>
+        <hr>
+        <address style="font-size:small;">
+            Kay Koch, OStR<br>
+            Dipl.-Ing. (FH) Luft- u. Raumfahrttechnik <br>
+            Theobald-Simon-Schule Berufsbildende Schule Bitburg<br>
+            Rittersdorfer Str. 2<br>
+            D-54634 Bitburg <br>
+            Tel. : &nbsp;&nbsp;+49 (6561) 6005-0<br>
+            Mobil: +49 (175) 8483324 <br>
+            Email: <a href="mailto:koch@tssbit.de">koch@tssbit.de</a><br>
+            URL: <a href="http://www.tssbit.de">http://www.tssbit.de</a>
+        </address>
+    </div>
+</body>
+
+</html>

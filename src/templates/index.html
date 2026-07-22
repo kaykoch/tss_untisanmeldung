@@ -1,34 +1,48 @@
-{% extends "basis.html" %}
+{% extends "base.html" %}
 
 {% block content %}
-<h3>Anmeldung - Ausbilderbetriebe WebUntis</h3>
-<form method="POST" action="{{ url_for('bestaetigung') }}">
+<form method="POST" action="{{ url_for('main.route_bestaetigung') }}">
     {{ form.csrf_token }}
+    <div class="grid">
+        <!-- ##########################################-->
+        <div class="field">
+            {{ form.ausbilder_betrieb.label }}
+            {{ form.ausbilder_betrieb }}
+        </div>
+        <div class="field">
+        {{ form.anzahl_schueler.label }}
+        {{ form.anzahl_schueler }}
+        </div>
+    </div>
+    <div class="grid">
+        <!-- ##########################################-->
+        <div class="field">
 
-    {{ form.ausbilder_betrieb.label }}
-    {{ form.ausbilder_betrieb }}
-
-    {{ form.ausbilder_name.label }}
-    {{ form.ausbilder_name }}
-
-    {{ form.ausbilder_vorname.label }}
-    {{ form.ausbilder_vorname }}
-
-    {{ form.ausbilder_email.label }}
-    {{ form.ausbilder_email }}
-
-    {{ form.anzahl_schueler.label }}
-    {{ form.anzahl_schueler }}
+            {{ form.ausbilder_vorname.label }}
+            {{ form.ausbilder_vorname }}
+        </div>
+        <div class="field">
+            {{ form.ausbilder_name.label }}
+            {{ form.ausbilder_name }}
+        </div>
+                <div class="field">
+            {{ form.ausbilder_email.label }}
+            {{ form.ausbilder_email }}
+        </div>
+    </div>
 
 
-    <label id="labelSchuelerEingabe" style="display: none; margin-top:15px;">Schüler:</label>
-    <table id="schuelerEingabe">
-        <tbody>
 
-        </tbody>
-    </table>
 
-    {{ form.submit }}
+
+        <label id="labelSchuelerEingabe" style="display: none; margin-top:15px;">Schüler:</label>
+        <table id="schuelerEingabe">
+            <tbody>
+
+            </tbody>
+        </table>
+
+        {{ form.submit }}
 </form>
 
 
