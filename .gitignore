@@ -3,9 +3,8 @@
 .vscode/
 .env
  
- __pycache__
-sinstance/
-src/__pycache__/
+**/__pycache__/
+instance/
 
 src/upload/*
 src/data/azubis.csv
