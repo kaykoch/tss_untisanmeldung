@@ -7,6 +7,7 @@ from typing import Any
 
 from flask import (
     Blueprint,
+    abort,
     flash,
     jsonify,
     redirect,
@@ -15,21 +16,22 @@ from flask import (
     url_for,
 )
 from flask.typing import ResponseReturnValue
-from flask_limiter import Limiter
-from flask_limiter.util import get_remote_address
 from markupsafe import Markup
 from sqlalchemy.exc import SQLAlchemyError
 
 from src.extensions import state
 from src.forms import AnmeldungForm
-from src.helpies import _get_error_page, _requires_auth, _send_mail_to_ausbilder, _token_is_valid
-from src.models import (
-    Ausbilder,
-    Azubis,
-    _delete_unconfirmed_ausbilder,
-    _get_ausbilder_by_token,
-    _get_azubi_list,
+from src.models import Ausbilder, Azubis
+from src.services.ausbilder_service import (
+    create_ausbilder,
+    delete_unconfirmed_ausbilder,
+    get_ausbilder_by_email,
+    get_ausbilder_by_token,
 )
+from src.services.azubi_service import assign_schueler, get_azubi_list, get_schueler_by_ids
+from src.services.mail_service import send_mail_to_ausbilder
+from src.utils.auth import requires_auth
+from src.utils.helpers import get_fehlende_ids, token_is_valid
 
 
 # ------------------------------------------------------------------------------
@@ -51,14 +53,7 @@ _ALLOWED_ROLES_TSS = ["admin", "tss"]
 # ------------------------------------------------------------------------------
 
 logger = logging.getLogger(__name__)
-bp = Blueprint("main", __name__)
-
-limiter = Limiter(
-    get_remote_address,
-    app=state.app,
-    default_limits=["10 per minute"],
-    storage_uri="memory://",
-)
+main_bp = Blueprint("main", __name__)
 
 # ------------------------------------------------------------------------------
 # Hilfsfunktionen
@@ -70,46 +65,9 @@ def _render_bestaetigung(form: AnmeldungForm, **kwargs) -> str:
     return render_template(_TEMPLATEBESTAETIGUNG, form=form, title=_TITLE_BESTAETIGUNG, **kwargs)
 
 
-def _get_ausbilder_by_email(email: str) -> Ausbilder | None:
-    """Lädt einen Ausbilder anhand seiner E-Mail aus der DB."""
-    stmt = state.db.select(Ausbilder).where(Ausbilder.ausbilder_email == email)
-    return state.db.session.execute(stmt).scalar_one_or_none()
-
-
-def _create_ausbilder(form: AnmeldungForm) -> Ausbilder:
-    """Erstellt einen neuen Ausbilder aus den Formulardaten und fügt ihn der Session hinzu."""
-    ausbilder = Ausbilder(
-        ausbilder_email=form.ausbilder_email.data,
-        ausbilder_name=form.ausbilder_name.data,
-        ausbilder_vorname=form.ausbilder_vorname.data,
-        ausbilder_betrieb=form.ausbilder_betrieb.data,
-        bestaetigt=False,
-    )
-    state.db.session.add(ausbilder)
-    return ausbilder
-
-
 def _parse_schueler_ids() -> list[str]:
     """Liest und bereinigt die Schüler-IDs aus dem Request-Formular."""
     return [s.strip() for s in request.form.getlist("schueler_untis_id[]") if s and s.strip()]
-
-
-def _load_schueler(ids: list[str]) -> list[Azubis]:
-    """Lädt alle Azubis, deren untis_id in der übergebenen Liste enthalten ist."""
-    stmt = state.db.select(Azubis).where(Azubis.schueler_untis_id.in_(ids))
-    return list(state.db.session.execute(stmt).scalars())
-
-
-def _assign_schueler(schueler_liste: list[Azubis], ausbilder_email: str) -> None:
-    """Weist alle Schüler dem Ausbilder zu."""
-    for schueler in schueler_liste:
-        schueler.ausbilder_email = ausbilder_email
-
-
-def _get_fehlende_ids(angefragt: list[str], gefunden: list[Azubis]) -> list[str]:
-    """Gibt die IDs zurück, die nicht in der DB gefunden wurden."""
-    gefundene_ids = {a.schueler_untis_id for a in gefunden}
-    return [sid for sid in angefragt if sid not in gefundene_ids]
 
 
 def _flash_zuordnung_feedback(neue_schueler_ids: list[str], liste_fehler: list[str]) -> None:
@@ -129,18 +87,19 @@ def _flash_zuordnung_feedback(neue_schueler_ids: list[str], liste_fehler: list[s
 # ------------------------------------------------------------------------------
 
 
-@bp.route("/", methods=["GET", "POST"])
-@_requires_auth(_ALLOWED_ROLES_TSS, allow_token_bypass=True)
+@main_bp.route("/", methods=["GET", "POST"])
+@requires_auth(_ALLOWED_ROLES_TSS, allow_token_bypass=True)
 def index() -> ResponseReturnValue:
     """Startseite:
     - Cleanup unbestätigter Ausbilder
     - Optionales Prefill des Formulars via Token
     - Anzeige von Infotexten und Anmeldeformular
     """
-    _delete_unconfirmed_ausbilder(state.app.config["TIMETOWAIT"])
+
+    delete_unconfirmed_ausbilder(state.app.config["TIMETOWAIT"])
 
     token: str | None = request.args.get("token")
-    ausbilder: Ausbilder | None = _get_ausbilder_by_token(token) if token else None
+    ausbilder: Ausbilder | None = get_ausbilder_by_token(token) if token else None
     form = AnmeldungForm(obj=ausbilder) if ausbilder else AnmeldungForm()
 
     if form.validate_on_submit():
@@ -161,8 +120,8 @@ def index() -> ResponseReturnValue:
     return render_template(_TEMPLATEINDEX, form=form, title=_TITLE_INDEX)
 
 
-@bp.route("/bestaetigung.html", methods=["GET", "POST"])
-@limiter.limit("3 per minute")
+@main_bp.route("/bestaetigung.html", methods=["GET", "POST"])
+@state.limiter.limit("3 per minute")
 def route_bestaetigung() -> ResponseReturnValue:
     """Bestätigungsseite: Verarbeitet Ausbilder-Anmeldung und Schüler-Zuordnung."""
     form = AnmeldungForm()
@@ -178,24 +137,24 @@ def route_bestaetigung() -> ResponseReturnValue:
     neue_schueler_ids = _parse_schueler_ids()
 
     try:
-        ausbilder = _get_ausbilder_by_email(ausbilder_email)
+        ausbilder = get_ausbilder_by_email(ausbilder_email)
         neu_angelegt = ausbilder is None
 
         if neu_angelegt:
-            ausbilder = _create_ausbilder(form)
+            ausbilder = create_ausbilder(form)
 
         neue_schueler: list[Azubis] = []
         liste_fehler: list[str] = []
 
         if neue_schueler_ids:
-            neue_schueler = _load_schueler(neue_schueler_ids)
-            liste_fehler = _get_fehlende_ids(neue_schueler_ids, neue_schueler)
-            _assign_schueler(neue_schueler, ausbilder_email)
+            neue_schueler = get_schueler_by_ids(neue_schueler_ids)
+            liste_fehler = get_fehlende_ids(neue_schueler_ids, neue_schueler)
+            assign_schueler(neue_schueler, ausbilder_email)
 
         if neue_schueler:
             state.db.session.commit()
             if neu_angelegt:
-                answer, category = _send_mail_to_ausbilder(ausbilder)
+                answer, category = send_mail_to_ausbilder(ausbilder)
                 flash(answer, category)
 
         _flash_zuordnung_feedback(neue_schueler_ids, liste_fehler)
@@ -214,19 +173,19 @@ def route_bestaetigung() -> ResponseReturnValue:
         return _render_bestaetigung(form)
 
 
-@bp.route("/azubismitausbilder.html", methods=["GET", "POST"])
+@main_bp.route("/azubismitausbilder.html", methods=["GET", "POST"])
 def route_azubismitausbilder() -> ResponseReturnValue:
     """Zeigt alle Azubis eines Ausbilders an.
     Der Ausbilder wird über ein Token identifiziert.
     """
     token: str | None = request.args.get("token")
 
-    if not token or not _token_is_valid(token):
+    if not token or not token_is_valid(token):
         flash("Kein Token angegeben oder Token ist ungültig.", "error")
         return render_template(_TEMPLATEAZUBIS, title=_TITLE_AZUBIS, ausbilder=None)
 
     try:
-        ausbilder = _get_ausbilder_by_token(token)
+        ausbilder = get_ausbilder_by_token(token)
 
         if ausbilder is None:
             flash("Diesen Ausbilder gibt es nicht oder das Token ist ungültig.", "error")
@@ -250,23 +209,23 @@ def route_azubismitausbilder() -> ResponseReturnValue:
     except SQLAlchemyError as e:
         state.db.session.rollback()
         logger.error("DB-Fehler in route_azubismitausbilder: %s", e)
-        return _get_error_page()
+        abort(500)
     except Exception as e:
         logger.error("Fehler in route_azubismitausbilder: %s", e)
-        return _get_error_page()
+        abort(500)
 
 
-@bp.route("/api/zugeordete_schueler/<string:klasse_name>")
+@main_bp.route("/api/zugeordete_schueler/<string:klasse_name>")
 def zugeordete_schueler(klasse_name: str) -> ResponseReturnValue:
     """API-Endpunkt: Gibt alle Azubis einer Klasse als JSON zurück."""
     try:
-        data: list[Any] = _get_azubi_list(klasse_name)
+        data: list[Any] = get_azubi_list(klasse_name)
         return jsonify(data)
     except Exception as e:
         logger.error("Fehler in zugeordete_schueler: %s", e)
         return jsonify([])
 
 
-@bp.route("/impressum.html", methods=["GET"])
+@main_bp.route("/impressum.html", methods=["GET"])
 def route_impressum() -> ResponseReturnValue:
     return render_template("impressum.html")

@@ -17,8 +17,7 @@
 *
 """
 
-import logging
-from pathlib import Path
+from src.app import app
 
 
 __author__ = "Kay Koch"
@@ -30,20 +29,8 @@ __maintainer__ = "Kay Koch"
 __email__ = "koch@tssbit.de"
 __status__ = "Production"
 
-logger = logging.getLogger(__name__)
-
-# Logging definieren
-logging.basicConfig(
-    filename=Path(__file__).resolve().parent / "src/data/logfile.log",
-    format="%(asctime)s %(levelname)s %(name)s: %(message)s",
-    encoding="utf-8",
-    level=logging.INFO,
-    datefmt="%Y-%m-%d %H:%M:%S",
-)
 
 # ------------------------------------------------------------------------------
-
-from src.app import app  # noqa: E402
 
 
 if __name__ == "__main__":

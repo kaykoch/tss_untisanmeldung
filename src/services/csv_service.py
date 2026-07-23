@@ -13,7 +13,9 @@ import os
 from typing import Any
 
 from src.extensions import state
-from src.models import Ausbilder, Azubis, _get_ausbilder_list, _get_azubi_list
+from src.models import Ausbilder, Azubis
+from src.services.ausbilder_service import get_ausbilder_list
+from src.services.azubi_service import get_azubi_list
 
 
 logger = logging.getLogger(__name__)
@@ -24,7 +26,7 @@ logger = logging.getLogger(__name__)
 # ------------------------------------------------------------------------------
 
 
-def __get_codec(testfile: str) -> str:
+def _get_codec(testfile: str) -> str:
     """Ermittelt den Zeichensatz (Codec) einer CSV-Datei durch Probieren.
 
     Gibt den ersten funktionierenden Codec aus `state.codecs` zurück,
@@ -47,7 +49,7 @@ def __get_codec(testfile: str) -> str:
         except UnicodeDecodeError:
             continue  # Falsches Encoding – nächsten versuchen
         except Exception as e:
-            logger.debug("__get_codec: Fehler mit Codec %s für %s: %s", codec, testfile, e)
+            logger.debug("_get_codec: Fehler mit Codec %s für %s: %s", codec, testfile, e)
             continue
     return ""
 
@@ -58,7 +60,7 @@ def _read_csv_file(filepath: str) -> tuple[list[str], list[dict]]:
     Returns:
         Tuple aus Spaltennamen und Liste von Zeilen-Dicts.
 
-    Verwendet von: _merge_csv_to_bytesio
+    Verwendet von: merge_csv_to_bytesio
     """
     with open(filepath, newline="", encoding="utf-8") as f:
         reader = csv.DictReader(f, delimiter=";")
@@ -72,7 +74,7 @@ def _write_dicts_to_bytesio(fieldnames: list[str], rows: list[dict]) -> BytesIO:
 
     Fehlende Werte werden als leerer String geschrieben.
 
-    Verwendet von: _merge_csv_to_bytesio, _export_to_csv
+    Verwendet von: merge_csv_to_bytesio, export_to_csv
     """
     str_io = StringIO()
     writer = csv.DictWriter(
@@ -91,19 +93,19 @@ def _write_dicts_to_bytesio(fieldnames: list[str], rows: list[dict]) -> BytesIO:
     return bytes_io
 
 
-def __read_bytesio_as_csv(bytes_io: BytesIO) -> csv_DictReader:
+def _read_bytesio_as_csv(bytes_io: BytesIO) -> csv_DictReader:
     """Setzt den BytesIO-Zeiger zurück und gibt einen DictReader zurück.
 
     Hinweis: Der Aufrufer ist verantwortlich für das Schließen des TextIOWrapper.
 
-    Verwendet von: __generic_bytesio_import
+    Verwendet von: _generic_bytesio_import
     """
     bytes_io.seek(0)
     wrapper = TextIOWrapper(bytes_io, encoding="utf-8", errors="replace", newline="")
     return csv_DictReader(wrapper, delimiter=";"), wrapper
 
 
-def __generic_bytesio_import(
+def _generic_bytesio_import(
     bytes_io: BytesIO, row_mapper: Callable[[dict], Any | None], context: str = ""
 ) -> list[Any]:
     """Liest ein BytesIO-Objekt zeilenweise als CSV und wendet eine Mapping-Funktion an.
@@ -116,7 +118,7 @@ def __generic_bytesio_import(
                     oder None zurückgibt (Zeile überspringen).
         context:    Optionaler Name für Logging-Ausgaben.
 
-    Verwendet von: _import_azubis_from_bytesio, _import_ausbilder_from_bytesio
+    Verwendet von: import_azubis_from_bytesio, import_ausbilder_from_bytesio
     """
     bytes_io.seek(0)
     ergebnis: list[Any] = []
@@ -136,7 +138,7 @@ def __generic_bytesio_import(
 def __generic_csv_import(csv_file: str, row_mapper: Callable[[dict], Any | None]) -> list[Any]:
     """Liest eine CSV-Datei zeilenweise ein und wendet eine Mapping-Funktion an.
 
-    Ermittelt den Codec automatisch via `__get_codec`. Gibt eine leere Liste
+    Ermittelt den Codec automatisch via `_get_codec`. Gibt eine leere Liste
     zurück, wenn die Datei nicht gefunden wird oder ein Fehler auftritt.
 
     Args:
@@ -144,9 +146,9 @@ def __generic_csv_import(csv_file: str, row_mapper: Callable[[dict], Any | None]
         row_mapper: Funktion, die eine CSV-Zeile in ein Objekt umwandelt
                     oder None zurückgibt (Zeile überspringen).
 
-    Verwendet von: _import_azubis_from_csv, _import_ausbilder_from_csv
+    Verwendet von: import_azubis_from_csv, import_ausbilder_from_csv
     """
-    codec = __get_codec(csv_file)
+    codec = _get_codec(csv_file)
     ergebnis: list[Any] = []
 
     try:
@@ -175,7 +177,7 @@ def __map_azubi_from_untis(row: dict) -> Azubis | None:
     Returns:
         Azubis-Objekt oder None (Zeile überspringen).
 
-    Verwendet von: _import_azubis_from_csv
+    Verwendet von: import_azubis_from_csv
     """
     if not row.get("klasse.name", "").startswith(("BS", "bs")):
         return None
@@ -201,7 +203,7 @@ def __map_azubi_from_db(row: dict) -> Azubis | None:
     Returns:
         Azubis-Objekt oder None (Zeile überspringen).
 
-    Verwendet von: _import_azubis_from_bytesio
+    Verwendet von: import_azubis_from_bytesio
     """
     if not row.get("klasse", "").startswith(("BS", "bs")):
         return None
@@ -229,7 +231,7 @@ def __map_ausbilder(row: dict) -> Ausbilder:
         KeyError:   Falls ein benötigtes Feld fehlt.
         ValueError: Falls created_at nicht im Format %Y-%m-%d %H:%M:%S.%f vorliegt.
 
-    Verwendet von: _import_ausbilder_from_csv, _import_ausbilder_from_bytesio
+    Verwendet von: import_ausbilder_from_csv, import_ausbilder_from_bytesio
     """
     return Ausbilder(
         ausbilder_email=row["ausbilder_email"],
@@ -247,7 +249,7 @@ def __map_ausbilder(row: dict) -> Ausbilder:
 # ------------------------------------------------------------------------------
 
 
-def _merge_csv_to_bytesio(upload_folder: str) -> BytesIO:
+def merge_csv_to_bytesio(upload_folder: str) -> BytesIO:
     """Liest alle CSV-Dateien im Upload-Ordner und fügt sie zu einem BytesIO zusammen.
 
     Alle Dateien müssen dieselben Spalten haben (Semikolon-getrennt, UTF-8).
@@ -273,7 +275,7 @@ def _merge_csv_to_bytesio(upload_folder: str) -> BytesIO:
     return _write_dicts_to_bytesio(fieldnames, all_rows)
 
 
-def _export_to_csv(klasse: str) -> BytesIO | None:
+def export_to_csv(klasse: str) -> BytesIO | None:
     """Exportiert Ausbilder- oder Azubidaten als Semikolon-CSV in ein BytesIO-Objekt.
 
     Args:
@@ -282,7 +284,7 @@ def _export_to_csv(klasse: str) -> BytesIO | None:
     Returns:
         BytesIO mit CSV-Inhalt, oder None bei Fehler.
     """
-    list_to_csv = _get_ausbilder_list() if klasse == "ausbilder" else _get_azubi_list(klasse)
+    list_to_csv = get_ausbilder_list() if klasse == "ausbilder" else get_azubi_list(klasse)
 
     try:
         if list_to_csv is None:
@@ -297,14 +299,33 @@ def _export_to_csv(klasse: str) -> BytesIO | None:
         return _write_dicts_to_bytesio(fieldnames, list_to_csv)
 
     except ValueError as e:
-        logger.exception("_export_to_csv -> %s", e)
+        logger.exception("export_to_csv -> %s", e)
         return None
     except OSError as e:
-        logger.exception("_export_to_csv -> %s", e)
+        logger.exception("export_to_csv -> %s", e)
         return None
 
 
-def _import_azubis_from_csv(csv_file: str) -> list[Azubis]:
+def import_azubis_from_bytesio(bytes_io: BytesIO) -> list[Azubis]:
+    """Importiert Azubis aus einem BytesIO-Objekt (DB-Export-Format).
+
+    Nur Zeilen mit Klassen, die mit "BS" oder "bs" beginnen, werden importiert.
+    """
+    return _generic_bytesio_import(bytes_io, __map_azubi_from_db, context="azubis")
+
+
+def import_ausbilder_from_bytesio(bytes_io: BytesIO) -> list[Ausbilder]:
+    """Importiert Ausbilder aus einem BytesIO-Objekt.
+
+    Alle Felder müssen in der CSV vorhanden sein.
+    """
+    return _generic_bytesio_import(bytes_io, __map_ausbilder, context="ausbilder")
+
+
+# ------------------------------------------------------------------------------
+# nicht genutzt
+# ------------------------------------------------------------------------------
+def import_azubis_from_csv(csv_file: str) -> list[Azubis]:
     """Importiert Azubis aus einer Untis-CSV-Datei (Dateipfad).
 
     Nur Zeilen mit Klassen, die mit "BS" oder "bs" beginnen, werden importiert.
@@ -312,25 +333,9 @@ def _import_azubis_from_csv(csv_file: str) -> list[Azubis]:
     return __generic_csv_import(csv_file, __map_azubi_from_untis)
 
 
-def _import_ausbilder_from_csv(csv_file: str) -> list[Ausbilder]:
+def import_ausbilder_from_csv(csv_file: str) -> list[Ausbilder]:
     """Importiert Ausbilder aus einer CSV-Datei (Dateipfad).
 
     Alle Felder müssen in der CSV vorhanden sein.
     """
     return __generic_csv_import(csv_file, __map_ausbilder)
-
-
-def _import_azubis_from_bytesio(bytes_io: BytesIO) -> list[Azubis]:
-    """Importiert Azubis aus einem BytesIO-Objekt (DB-Export-Format).
-
-    Nur Zeilen mit Klassen, die mit "BS" oder "bs" beginnen, werden importiert.
-    """
-    return __generic_bytesio_import(bytes_io, __map_azubi_from_db, context="azubis")
-
-
-def _import_ausbilder_from_bytesio(bytes_io: BytesIO) -> list[Ausbilder]:
-    """Importiert Ausbilder aus einem BytesIO-Objekt.
-
-    Alle Felder müssen in der CSV vorhanden sein.
-    """
-    return __generic_bytesio_import(bytes_io, __map_ausbilder, context="ausbilder")

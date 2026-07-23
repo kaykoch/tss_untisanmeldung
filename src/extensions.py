@@ -4,6 +4,8 @@ import os
 from pathlib import Path
 
 from flask import Flask
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 from flask_mail import Mail
 from flask_sqlalchemy import SQLAlchemy
 
@@ -11,6 +13,11 @@ from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy()  # noch ohne App
 mail = Mail()
 
+limiter = Limiter(
+    get_remote_address,
+    default_limits=["10 per minute"],
+    storage_uri="memory://",
+)
 
 logger = logging.getLogger(__name__)
 
@@ -30,16 +37,28 @@ class Kontaktpersondata:
 class AppState:
     """verkörpert Zustände, die während der Laufzeit gespeichert werden müssen"""
 
+    _LOG_DIR = Path(__file__).resolve().parent.parent / "logs"
+    _LOG_FILE = "untis.log"
+    _STATIC_DIR = Path(__file__).resolve().parent / "static"
+    _DATA_DIR = Path(__file__).resolve().parent / "data"
+    _UPLOAD_DIR = Path(__file__).resolve().parent / "upload"
+
     def __init__(self):
         # Die Wichtigsten
         self.db: SQLAlchemy = db
         self.mail = mail
         self.app: Flask = None
-
+        self.limiter: Limiter | None = Limiter(
+            get_remote_address,
+            default_limits=["10 per minute"],
+            storage_uri="memory://",
+        )
         self.kontaktperson: dataclass | None = None
 
         # Pfade zu den verschiedenen Dateien
-        self.datafolder: Path | None = None
+        self.staticfolder: Path = self._STATIC_DIR
+        self.datafolder: Path = self._DATA_DIR
+        self.uploadfolder: Path = self._UPLOAD_DIR
 
         self.infofile: Path | None = None
         self.prototypeazubi: Path | None = None
@@ -52,6 +71,7 @@ class AppState:
             "index_2": os.getenv("TEXT_INDEX_2"),
             "azubismitausbilder": os.getenv("TEXT_AZUBIMITAUSBILDER"),
         }
+        self.logfile: Path = self.__ensure_file_exists(self._LOG_DIR, self._LOG_FILE)
 
     def set_kontaktperson(self, vorname: str, nachname: str, mail: str):
         self.kontaktperson = Kontaktpersondata(
@@ -74,8 +94,6 @@ class AppState:
                 prototypefile (str): Name der CSV-Datei im korrekten Format für den Upload
         """
         self.app: Flask = app
-        self.datafolder = Path(app.root_path) / "data"
-        self.uploadfolder = Path(app.root_path) / "upload"
 
         for attr_name, filename in kwargs.items():
             # Alle übergebenden Werte
@@ -108,5 +126,8 @@ class AppState:
             return Path()
 
 
-# 2) App-weiter Zustand (State) vorbereiten
+# ------------------------------------------------------------------------------
+# Modul-Singleton
+# ------------------------------------------------------------------------------
+
 state = AppState()

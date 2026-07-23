@@ -1,10 +1,18 @@
+# ------------------------------------------------------------------------------
+#  APP-FACTORY
+# ------------------------------------------------------------------------------
+
+import locale
 import logging
+from pathlib import Path
 
 from flask import Flask
+from sqlalchemy.exc import SQLAlchemyError
 
 from src.config import BaseConfig
 from src.extensions import state
-from src.helpies import _init_db, _update_app
+from src.routes import register_routes
+from src.services.config_service import load_defaults
 
 
 logger = logging.getLogger(__name__)
@@ -13,63 +21,38 @@ logger = logging.getLogger(__name__)
 # Konstanten
 # ------------------------------------------------------------------------------
 
-SEPARATOR = "-" * 50
+_SEPARATOR = "-" * 50
 
 INFOFILE = "info.pdf"
 PROTOTYPE_AZUBI = "prototyp_azubis.csv"
 PROTOTYPE_AUSBILDER = "prototyp_ausbilder.csv"
 
-URL_PREFIX_MAIN = ""
-URL_PREFIX_ADMIN = "/admin"
-
 
 # ------------------------------------------------------------------------------
-# Hilfsfunktionen
+# Logging
 # ------------------------------------------------------------------------------
+logging.basicConfig(
+    filename=state.logfile,
+    format="%(asctime)s %(levelname)s %(name)s: %(message)s",
+    encoding="utf-8",
+    level=logging.INFO,
+    datefmt="%Y-%m-%d %H:%M:%S",
+)
 
-
-def _register_blueprints(app: Flask) -> None:
-    """Registriert alle Blueprints an der Flask-App.
-
-    Blueprints werden erst hier importiert, um zirkuläre Imports zu vermeiden.
-    """
-    from src.routes import bp as main_bp
-    from src.routes_admin import bp as admin_bp
-
-    app.register_blueprint(main_bp, url_prefix=URL_PREFIX_MAIN)
-    app.register_blueprint(admin_bp, url_prefix=URL_PREFIX_ADMIN)
-
-
-def _init_state(app: Flask) -> None:
-    """Setzt alle applikationsweiten Zustände und initialisiert Datenbank und Mail.
-
-    Reihenfolge ist wichtig:
-    1. state.set_data  – Pfade und App-Referenz setzen
-    2. _init_db        – DB erstellen/prüfen, Config-Defaults schreiben
-    3. _update_app     – Config aus DB laden (Mail-Zugangsdaten etc.)
-    4. mail.init_app   – Mail erst nach _update_app binden, da Zugangsdaten benötigt
-    """
-    state.set_data(
-        app,
-        infofile=INFOFILE,
-        prototypeazubi=PROTOTYPE_AZUBI,
-        prototypeausbilder=PROTOTYPE_AUSBILDER,
-    )
-    _init_db(state)
-    _update_app()
-    state.mail.init_app(app)
-
-
-# ------------------------------------------------------------------------------
-# App-Factory
-# ------------------------------------------------------------------------------
+logger = logging.getLogger(__name__)
 
 
 def create_app(config_object=BaseConfig) -> Flask:
-    """Erstellt und konfiguriert die Flask-App (App-Factory-Pattern).
+    """Erstellt und konfiguriert die Flask-Applikation (App-Factory-Pattern).
+
+    Ablauf:
+        1. Flask-App erstellen und Basiskonfiguration laden.
+        2. Datenbank-Extension initialisieren.
+        3. Im App-Context: DB anlegen, Konfiguration aus DB laden, Mail binden.
+        4. Blueprints registrieren.
 
     Args:
-        config_object: Konfigurationsklasse, Standard ist BaseConfig.
+        config_object: Konfigurationsklasse (Standard: BaseConfig).
 
     Returns:
         Fertig konfigurierte Flask-App.
@@ -79,19 +62,79 @@ def create_app(config_object=BaseConfig) -> Flask:
     state.db.init_app(app)
 
     with app.app_context():
-        logger.info(SEPARATOR)
-        try:
-            _init_state(app)
-        except Exception:
-            logger.exception("Fehler bei der App-Initialisierung")
-            raise  # Fehler nach oben weitergeben – App nicht halbfertig starten
+        _bootstrap(app)
 
-    _register_blueprints(app)
+    # _register_blueprints(app)
+    register_routes(app)
 
-    logger.info("App: Azubizuordnung wurde erfolgreich gestartet")
-    logger.info(SEPARATOR)
+    logger.info("%s", _SEPARATOR)
+    logger.info("  --> !! App: Untisanmeldung wurde erfolgreich gestartet !!")
+    logger.info("%s", _SEPARATOR)
 
     return app
+
+
+def _bootstrap(app: Flask) -> None:
+    """Führt alle Initialisierungsschritte innerhalb des App-Contexts aus.
+
+    Args:
+        app: Die laufende Flask-App.
+    """
+    try:
+        logger.info("%s", _SEPARATOR)
+        state.set_data(
+            app,
+            infofile=INFOFILE,
+            prototypeazubi=PROTOTYPE_AZUBI,
+            prototypeausbilder=PROTOTYPE_AUSBILDER,
+        )
+        _init_db()
+        load_defaults()
+        state.mail.init_app(app)
+    except Exception as e:
+        logger.exception("Fehler bei der App-Initialisierung: %s", e)
+
+
+def _init_db() -> None:
+    """Initialisiert die SQLite-Datenbank beim App-Start.
+
+    Erstellt alle Tabellen, legt einen Standard-ConfigSetting-Eintrag an
+    und befüllt die Berater-Tabelle mit Beispieldaten, falls sie leer ist.
+
+    Args:
+        state: Appstate-Objekt mit db, app und weiteren Laufzeit-Variablen.
+    """
+    try:
+        Path(state.app.instance_path).mkdir(parents=True, exist_ok=True)
+
+        # Import hier, damit Modelle registriert sind, bevor create_all() aufgerufen wird
+        import src.models  # noqa: F401
+
+        # Locale für Datumsformatierung setzen (Fallback auf C.UTF-8)
+        locale.setlocale(locale.LC_TIME, "C.UTF-8")
+
+        state.db.create_all()
+
+        _seed_defaults(src.models)
+        state.db.session.commit()
+
+        logger.info("Datenbanktabellen erstellt/überprüft.")
+
+    except SQLAlchemyError as e:
+        logger.exception("Fehler beim Erstellen der Datenbanktabellen: %s", e)
+        raise
+    except Exception as e:
+        logger.exception("_init_db -> Fehler bei der Datenbankinitialisierung: %s", e)
+
+
+def _seed_defaults(models) -> None:
+    """Legt Standard-Datenbankeinträge an, falls die Tabellen noch leer sind.
+
+    Args:
+        models: Das src.models-Modul (nach dem Import in _init_db).
+    """
+    if not models.ConfigSetting.query.first():
+        state.db.session.add(models.ConfigSetting())
 
 
 app = create_app(BaseConfig)

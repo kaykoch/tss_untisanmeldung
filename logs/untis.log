@@ -1,0 +1,10 @@
+fdhf2026-07-23 17:12:27 INFO src.app: --------------------------------------------------
+2026-07-23 17:12:27 INFO src.extensions: Datei: infofile vorhanden
+2026-07-23 17:12:27 INFO src.extensions: Datei: prototypeazubi vorhanden
+2026-07-23 17:12:27 INFO src.extensions: Datei: prototypeausbilder vorhanden
+2026-07-23 17:12:27 INFO src.app: Datenbanktabellen erstellt/überprüft.
+2026-07-23 17:12:27 INFO src.app: --------------------------------------------------
+2026-07-23 17:12:27 INFO src.app:   --> !! App: Untisanmeldung wurde erfolgreich gestartet !!
+2026-07-23 17:12:27 INFO src.app: --------------------------------------------------
+2026-07-23 17:12:27 WARNING werkzeug:  * Debugger is active!
+2026-07-23 17:12:27 INFO werkzeug:  * Debugger PIN: 898-742-796
