@@ -5,7 +5,6 @@
 import logging
 import os
 
-from cryptography.fernet import Fernet
 from flask import (
     Blueprint,
     abort,
@@ -19,23 +18,21 @@ from flask import (
 from flask.typing import ResponseReturnValue
 from markupsafe import Markup
 from sqlalchemy.exc import SQLAlchemyError
-from werkzeug.security import generate_password_hash
 
 from src.extensions import state
 from src.forms import AusbilderAktionForm, AzubiAuswahlForm, ConfigForm, FilehandlingAktionForm
 from src.models import (
-    Ausbilder,
-    Azubis,
     ConfigSetting,
 )
 from src.services.ausbilder_service import (
     delete_ausbilder,
     get_ausbilder_by_email,
-    get_ausbilder_by_klasse,
+    get_ausbilder_list,
+    get_ausbilder_list_by_klasse,
     update_ausbilder_safe,
 )
-from src.services.azubi_service import build_klassen_choices, update_azubis_safe
-from src.services.config_service import load_defaults
+from src.services.azubi_service import get_klassen_choices, update_azubis_safe
+from src.services.config_service import apply_config_form, load_config, load_defaults
 from src.services.csv_service import (
     export_to_csv,
     import_ausbilder_from_bytesio,
@@ -65,13 +62,11 @@ TEMPLATE_AZUBIANZEIGE = "admin/azubianzeige.html"
 TEMPLATE_UPLOAD = "admin/upload.html"
 TEMPLATE_FILEHANDLING = "admin/filehandling.html"
 
-ALLOWED_UPLOAD_ACTIONS = ["ausbilder", "azubis", "info"]
-ALLOWED_AUSBILDER_ACTIONS = ["add", "resend", "delete", "download", "show"]
-ALLOWED_FILE_ACTIONS = ["delete_single", "delete_all", "update_db", "reset_db", "upload_file"]
-
-_HASH_PASSWORD_FIELDS: frozenset[str] = frozenset({"admin_password", "tss_password"})
-_SYSTEM_FIELDS: frozenset[str] = frozenset({"csrf_token", "submit"})
-_EXCLUDED_FIELDS: frozenset[str] = _HASH_PASSWORD_FIELDS | _SYSTEM_FIELDS
+ALLOWED_UPLOAD_ACTIONS: frozenset[str] = frozenset({"ausbilder", "azubis", "info"})
+ALLOWED_AUSBILDER_ACTIONS: frozenset[str] = frozenset({"add", "resend", "delete", "download", "show"})
+ALLOWED_FILE_ACTIONS: frozenset[str] = frozenset(
+    {"delete_single", "delete_all", "update_db", "reset_db", "upload_file"}
+)
 
 # ------------------------------------------------------------------------------
 # Setup
@@ -91,51 +86,22 @@ def _send_csv_file(file_io, download_name: str) -> ResponseReturnValue:
 
     Verwendet von: route_ausbilderanzeige, route_azubianzeige
     """
+    # Prüfen, ob file-like Objekt geschlossen ist
+    if hasattr(file_io, "closed") and file_io.closed:
+        logger.error("Attempt to send closed file-like object")
+        abort(500)
+
+    # Sicherstellen, dass wir am Anfang lesen
+    if hasattr(file_io, "seek"):
+        file_io.seek(0)
+
     return send_file(
         file_io,
-        mimetype="text/csv; charset='utf-8'",
+        mimetype="text/csv; charset=utf-8",
         as_attachment=True,
         download_name=download_name,
         conditional=False,
     )
-
-
-# ------------------------------------------------------------------------------
-# Hilfsfunktionen – route_config
-# ------------------------------------------------------------------------------
-
-
-def _apply_non_password_fields(form: ConfigForm, cfg: ConfigSetting) -> None:
-    """Schreibt alle Nicht-Passwort- und Nicht-Systemfelder in das Config-Objekt."""
-    for fieldname, value in form.data.items():
-        if fieldname not in _EXCLUDED_FIELDS:
-            setattr(cfg, fieldname, value)
-
-
-def _apply_password_fields(form: ConfigForm, cfg: ConfigSetting) -> None:
-    """Verarbeitet Passwörter: Admin/TSS werden gehasht, Mail wird verschlüsselt."""
-    print(1111)
-
-    # 1. Admin & TSS Passwörter HASHTEN (One-Way)
-    for field in _HASH_PASSWORD_FIELDS:
-        if form[field].data:
-            hashed_password = generate_password_hash(form[field].data)
-            setattr(cfg, field, hashed_password)
-
-    # 2. Mail-Passwort VERSCHLÜSSELN (Two-Way)
-    if form.mail_password.data:
-        # Hole den Master-Key aus den Umgebungsvariablen der app (config.py)
-        secret_key = state.app.config["ENCRYPTION_KEY"]
-
-        if secret_key:
-            fernet = Fernet(secret_key.encode())
-            # Passwort in Bytes umwandeln, verschlüsseln und als String in DB speichern
-            encrypted_password = fernet.encrypt(form.mail_password.data.encode()).decode()
-            cfg.mail_password = encrypted_password
-        else:
-            # Sicherheits-Fallback, falls du den Key vergessen hast einzurichten
-            logger.error("E-Mail-Passwort konnte nicht verschlüsselt werden: ENCRYPTION_KEY fehlt!")
-            flash("Fehler: Verschlüsselungs-Key nicht konfiguriert.", "error")
 
 
 # ------------------------------------------------------------------------------
@@ -146,7 +112,8 @@ def _apply_password_fields(form: ConfigForm, cfg: ConfigSetting) -> None:
 def _update_db_from_upload(reset: bool = False) -> None:
     """Fasst alle CSV-Dateien im Upload-Ordner zusammen und aktualisiert die Azubi-Datenbank.
 
-    Mit reset=True werden alle bestehenden Einträge vorher gelöscht.
+    Args:
+        reset (bool, optional): Löscht alle alten Einträge bei True. Defaults to False.
 
     Verwendet von: route_filehandling (Aktionen: update_db, reset_db)
     """
@@ -179,10 +146,9 @@ def route_admin() -> str:
 @requires_auth("admin")
 def route_config() -> ResponseReturnValue:
     """Zeigt die Konfigurationsseite an und speichert Änderungen."""
-    stmt = state.db.select(ConfigSetting).limit(1)
-    cfg: ConfigSetting | None = state.db.session.execute(stmt).scalar_one_or_none()
 
     try:
+        cfg = load_config()
         form = ConfigForm(obj=cfg)
 
         if form.validate_on_submit():
@@ -190,8 +156,7 @@ def route_config() -> ResponseReturnValue:
                 cfg = ConfigSetting()
                 state.db.session.add(cfg)
 
-            _apply_non_password_fields(form, cfg)
-            _apply_password_fields(form, cfg)
+            apply_config_form(form, cfg)
 
             try:
                 state.db.session.commit()
@@ -239,7 +204,9 @@ def route_ausbilderanzeige() -> ResponseReturnValue:
                         flash(answer, category)
                 case "delete":
                     if ausbilder:
+                        ausbilder_email = ausbilder.ausbilder_email
                         delete_ausbilder(ausbilder)
+                        flash(f"{ausbilder_email} und alle Verknüpfungen zu Azubis wurden gelöscht.", "success")
                 case "download":
                     try:
                         return _send_csv_file(export_to_csv("ausbilder"), "ausbilder.csv")
@@ -251,8 +218,7 @@ def route_ausbilderanzeige() -> ResponseReturnValue:
             if request.method == "GET":
                 flash("Für weitere Informationen mit der Maus über die Kopfzeile fahren.", "success")
 
-        stmt = state.db.select(Ausbilder).order_by(Ausbilder.ausbilder_betrieb.asc())
-        ausbilder_liste = state.db.session.execute(stmt).scalars().all()
+        ausbilder_liste = get_ausbilder_list()
 
         return render_template(
             TEMPLATE_AUSBILDER,
@@ -271,7 +237,7 @@ def route_ausbilderanzeige() -> ResponseReturnValue:
 def route_azubianzeige() -> ResponseReturnValue:
     """Anzeige und Download der Azubis einer Klasse oder aller Klassen."""
     form = AzubiAuswahlForm()
-    build_klassen_choices(form)
+    form.klassen.choices = get_klassen_choices()
 
     try:
         if form.validate_on_submit():
@@ -284,7 +250,7 @@ def route_azubianzeige() -> ResponseReturnValue:
                 send_mail_to_kontaktperson(export_to_csv(klasse), klasse)
 
             elif getattr(form, "submit_mail_untis", None) and form.submit_mail_untis.data:
-                send_untisinfo_to_ausbilder(get_ausbilder_by_klasse(klasse))
+                send_untisinfo_to_ausbilder(get_ausbilder_list_by_klasse(klasse))
 
             else:
                 return "Aktion nicht gefunden", 404
@@ -296,16 +262,15 @@ def route_azubianzeige() -> ResponseReturnValue:
             "Nach der Auswahl einer Klasse werden alle Azubis mit der verknüpften Mailadresse angezeigt.<br>"
             "Auf Wunsch kann:<br>"
             "- die Liste anschließend heruntergeladen werden<br>"
-            f" - die Liste direkt per Mail an die Kontaktperson versendet werden → {state.kontaktperson.komplett}<br>"
+            " - die Liste direkt per Mail an die Kontaktperson versendet werden "
+            f"→ {state.get_text('kontaktperson', 'komplett')}<br>"
             " - alle Ausbilder per Mail über den angelegten Untis-Account informiert werden"
         )
         flash(info, "success")
 
-        klassen_liste = state.db.session.query(Azubis.klasse).distinct().order_by(Azubis.klasse.asc()).all()
         return render_template(
             TEMPLATE_AZUBIANZEIGE,
             title=TITLE_AZUBIS,
-            azubi_liste=klassen_liste,
             form=form,
         )
 
@@ -323,7 +288,7 @@ def route_upload() -> ResponseReturnValue:
     try:
         action = request.args.get("action")
         if action not in ALLOWED_UPLOAD_ACTIONS:
-            abort(500)
+            abort(400)
 
         title = f"Upload {action.title()} - WebUntis"
         flash(
@@ -405,11 +370,11 @@ def route_download_prototyp() -> ResponseReturnValue:
     try:
         action = request.args.get("action")
         if not action:
-            abort(500)
+            abort(400)
 
         prototype_path = PROTOTYPE_FILES.get(action)
         if not prototype_path:
-            abort(500)
+            abort(400)
 
         if not prototype_path.is_file():
             return "Datei nicht gefunden", 404

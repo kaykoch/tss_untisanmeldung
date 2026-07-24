@@ -23,12 +23,13 @@ from src.extensions import state
 from src.forms import AnmeldungForm
 from src.models import Ausbilder, Azubis
 from src.services.ausbilder_service import (
+    confirm_ausbilder,
     create_ausbilder,
     delete_unconfirmed_ausbilder,
     get_ausbilder_by_email,
     get_ausbilder_by_token,
 )
-from src.services.azubi_service import assign_schueler, get_azubi_list, get_schueler_by_ids
+from src.services.azubi_service import assign_schueler, get_azubi_list_for_csv, get_schueler_by_ids
 from src.services.mail_service import send_mail_to_ausbilder
 from src.utils.auth import requires_auth
 from src.utils.helpers import get_fehlende_ids, token_is_valid
@@ -46,7 +47,7 @@ _TEMPLATEINDEX = "index.html"
 _TEMPLATEBESTAETIGUNG = "bestaetigung.html"
 _TEMPLATEAZUBIS = "azubismitausbilder.html"
 
-_ALLOWED_ROLES_TSS = ["admin", "tss"]
+_ALLOWED_ROLES_TSS: frozenset[str] = frozenset({"admin", "tss"})
 
 # ------------------------------------------------------------------------------
 # Setup
@@ -105,7 +106,7 @@ def index() -> ResponseReturnValue:
     if form.validate_on_submit():
         return redirect(url_for("main.route_bestaetigung"))
 
-    info = Markup(f"{state.infotexte['index_1']}{state.infotexte['index_2']}")
+    info = Markup(state.get_text("infos", "index"))
 
     flash(info, "success")
     if token is not None:
@@ -192,12 +193,12 @@ def route_azubismitausbilder() -> ResponseReturnValue:
             return render_template(_TEMPLATEAZUBIS, title=_TITLE_AZUBIS, ausbilder=None)
 
         if not ausbilder.bestaetigt:
-            ausbilder.bestaetigt = True
-            state.db.session.commit()
+            confirm_ausbilder(ausbilder)
             flash("Ihre Anmeldung wurde bestätigt", "warning")
 
         azubi_liste: list[Azubis] = list(ausbilder.accounts)
-        flash(Markup(state.infotexte["azubismitausbilder"]), "success")
+        infos = state.get_text("infos", "azubimitausbilder")
+        flash(Markup(infos), "success")
 
         return render_template(
             _TEMPLATEAZUBIS,
@@ -206,11 +207,8 @@ def route_azubismitausbilder() -> ResponseReturnValue:
             ausbilder=ausbilder,
         )
 
-    except SQLAlchemyError as e:
-        state.db.session.rollback()
-        logger.error("DB-Fehler in route_azubismitausbilder: %s", e)
-        abort(500)
     except Exception as e:
+        state.db.session.rollback()
         logger.error("Fehler in route_azubismitausbilder: %s", e)
         abort(500)
 
@@ -219,7 +217,7 @@ def route_azubismitausbilder() -> ResponseReturnValue:
 def zugeordete_schueler(klasse_name: str) -> ResponseReturnValue:
     """API-Endpunkt: Gibt alle Azubis einer Klasse als JSON zurück."""
     try:
-        data: list[Any] = get_azubi_list(klasse_name)
+        data: list[Any] = get_azubi_list_for_csv(klasse_name)
         return jsonify(data)
     except Exception as e:
         logger.error("Fehler in zugeordete_schueler: %s", e)

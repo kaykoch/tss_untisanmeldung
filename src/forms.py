@@ -157,27 +157,6 @@ class ConfigForm(FlaskForm):
     # Ausbilder
     tss_password = PasswordField("Ausbilder Passwort", validators=[Optional(), PASSWORD_LENGTH])
 
-    # Kontakt
-    kontaktperson_vorname = StringField(
-        "Vorname",
-        filters=[normalize_whitespace],
-        validators=[Optional(), NAME_LENGTH],
-    )
-    kontaktperson_nachname = StringField(
-        "Nachname",
-        filters=[normalize_whitespace],
-        validators=[Optional(), NAME_LENGTH],
-    )
-    kontaktperson_mail = StringField(
-        "E-Mail",
-        filters=[normalize_whitespace],
-        validators=[
-            Optional(),
-            Email(message="Bitte geben Sie eine gültige E-Mail-Adresse ein."),
-            EMAIL_LENGTH,
-        ],
-    )
-
     # Mail-Server
     mail_server = StringField("Mail Server", validators=[Optional(), NAME_LENGTH])
     mail_port = IntegerField("Mail Port", validators=[Optional(), NumberRange(min=1, max=65535)])

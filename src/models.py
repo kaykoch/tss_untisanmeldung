@@ -108,11 +108,6 @@ class ConfigSetting(db.Model):
         db.String(255), nullable=False, default=lambda: generate_password_hash(DEFAULT_TSSPASSWORD)
     )
 
-    # Kontaktperson
-    kontaktperson_vorname = db.Column(db.String(255), default=DEFAULT_VORNAME)
-    kontaktperson_nachname = db.Column(db.String(255), default=DEFAULT_NACHNAME)
-    kontaktperson_mail = db.Column(db.String(255), default=DEFAULT_MAIL)
-
     # Mail-Server-Einstellungen
     mail_server = db.Column(db.String(255), default=DEFAULT_MAIL_SERVER)
     mail_port = db.Column(db.Integer, default=DEFAULT_MAIL_PORT)

@@ -28,23 +28,7 @@
         <div class="field"></div>
     </div>
     <hr>
-    <h2>Kontaktperson zur Schule</h2>
-    <div class="grid">
-        <div class="field">
-            {{ form.kontaktperson_vorname.label }} {{
-            form.kontaktperson_vorname(class="form-control") }}
-        </div>
-        <div class="field">
-            {{ form.kontaktperson_nachname.label }} {{
-            form.kontaktperson_nachname(class="form-control") }}
-        </div>
-        <div class="field">
-            {{ form.kontaktperson_mail.label }} {{
-            form.kontaktperson_mail(class="form-control") }}
-        </div>
-        <div class="field"></div>
-    </div>
-    <hr>
+
     <h2>Sonstiges</h2>
     <div class="grid">
         <div class="field">
@@ -52,37 +36,45 @@
             form.timetowait(class="form-control") }}
         </div>
         <div class="field"><label></label></div>
+        <div class="field"><label></label></div>
     </div>
     <hr>
     <h2>Mailserver</h2>
     <div class="grid">
         <div class="field">
-            {{ form.mail_server.label }} {{ form.mail_server(class="form-control") }}
+            {{ form.mail_server.label }} 
+            {{ form.mail_server(class="form-control") }}
         </div>
         <div class="field">
-            {{ form.mail_port.label }} {{ form.mail_port(class="form-control") }}
-        </div>
-
-        <div class="field">
-            {{ form.mail_use_ssl.label }} {{ form.mail_use_ssl(class="form-control") }}
-        </div>
-        <div class="field">
-            {{ form.mail_use_tls.label }} {{ form.mail_use_tls(class="form-control") }}
+            {{ form.mail_port.label }} 
+            {{ form.mail_port(class="form-control") }}
         </div>
 
         <div class="field">
-            {{ form.mail_username.label }} {{ form.mail_username(class="form-control") }}
+            {{ form.mail_use_ssl.label }} 
+            {{ form.mail_use_ssl(class="form-control") }}
+        </div>
+        <div class="field">
+            {{ form.mail_use_tls.label }} 
+            {{ form.mail_use_tls(class="form-control") }}
+        </div>
+
+        <div class="field">
+            {{ form.mail_username.label }} 
+            {{ form.mail_username(class="form-control") }}
         </div>
         <div class="field password">
             {{ form.mail_password.label }} 
             {{ form.mail_password(id="password-field_3", class="form-control") }}
             <span onclick="togglePasswordVisibility('password-field_3', this)" > 👁️ </span>
         </div>
+
         <div class="field">
             {{ form.mail_default_sender.label }} {{
             form.mail_default_sender(class="form-control") }}
         </div>
         <div class="field"><label></label></div>
+
     </div>
 
     <div class="field">{{ form.submit(class="btn btn-primary big") }}</div>

@@ -22,10 +22,11 @@
         {% for category, message in messages %}
         <div class="flash {{ category }}">{{ message }} </div>
         {% endfor %}
+        <hr>
         {% endif %}
         {% endwith %}
 
-        <hr>
+       
 
       <!-- Inhalt-->
       {% block content %}

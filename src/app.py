@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------
-#  APP-FACTORY
+# Überprüft durch Claude 4
 # ------------------------------------------------------------------------------
 
 import locale
@@ -9,13 +9,11 @@ from pathlib import Path
 from flask import Flask
 from sqlalchemy.exc import SQLAlchemyError
 
-from src.config import BaseConfig
+from src.config import ProductionConfig
 from src.extensions import state
 from src.routes import register_routes
 from src.services.config_service import load_defaults
 
-
-logger = logging.getLogger(__name__)
 
 # ------------------------------------------------------------------------------
 # Konstanten
@@ -26,23 +24,13 @@ _SEPARATOR = "-" * 50
 INFOFILE = "info.pdf"
 PROTOTYPE_AZUBI = "prototyp_azubis.csv"
 PROTOTYPE_AUSBILDER = "prototyp_ausbilder.csv"
+TOMLFILE = "texts.toml"
 
-
-# ------------------------------------------------------------------------------
-# Logging
-# ------------------------------------------------------------------------------
-logging.basicConfig(
-    filename=state.logfile,
-    format="%(asctime)s %(levelname)s %(name)s: %(message)s",
-    encoding="utf-8",
-    level=logging.INFO,
-    datefmt="%Y-%m-%d %H:%M:%S",
-)
 
 logger = logging.getLogger(__name__)
 
 
-def create_app(config_object=BaseConfig) -> Flask:
+def create_app(config_object=ProductionConfig) -> Flask:
     """Erstellt und konfiguriert die Flask-Applikation (App-Factory-Pattern).
 
     Ablauf:
@@ -57,6 +45,7 @@ def create_app(config_object=BaseConfig) -> Flask:
     Returns:
         Fertig konfigurierte Flask-App.
     """
+    _setup_logging()
     app = Flask(__name__)
     app.config.from_object(config_object)
     state.db.init_app(app)
@@ -64,7 +53,6 @@ def create_app(config_object=BaseConfig) -> Flask:
     with app.app_context():
         _bootstrap(app)
 
-    # _register_blueprints(app)
     register_routes(app)
 
     logger.info("%s", _SEPARATOR)
@@ -85,6 +73,7 @@ def _bootstrap(app: Flask) -> None:
         state.set_data(
             app,
             infofile=INFOFILE,
+            tomlfile=TOMLFILE,
             prototypeazubi=PROTOTYPE_AZUBI,
             prototypeausbilder=PROTOTYPE_AUSBILDER,
         )
@@ -93,6 +82,7 @@ def _bootstrap(app: Flask) -> None:
         state.mail.init_app(app)
     except Exception as e:
         logger.exception("Fehler bei der App-Initialisierung: %s", e)
+        raise
 
 
 def _init_db() -> None:
@@ -100,9 +90,6 @@ def _init_db() -> None:
 
     Erstellt alle Tabellen, legt einen Standard-ConfigSetting-Eintrag an
     und befüllt die Berater-Tabelle mit Beispieldaten, falls sie leer ist.
-
-    Args:
-        state: Appstate-Objekt mit db, app und weiteren Laufzeit-Variablen.
     """
     try:
         Path(state.app.instance_path).mkdir(parents=True, exist_ok=True)
@@ -120,11 +107,12 @@ def _init_db() -> None:
 
         logger.info("Datenbanktabellen erstellt/überprüft.")
 
-    except SQLAlchemyError as e:
-        logger.exception("Fehler beim Erstellen der Datenbanktabellen: %s", e)
+    except SQLAlchemyError:
+        logger.exception("Fehler beim Erstellen der Datenbanktabellen")
         raise
-    except Exception as e:
-        logger.exception("_init_db -> Fehler bei der Datenbankinitialisierung: %s", e)
+    except Exception:
+        logger.exception("Fehler beim Erstellen der Datenbanktabellen")
+        raise
 
 
 def _seed_defaults(models) -> None:
@@ -133,8 +121,16 @@ def _seed_defaults(models) -> None:
     Args:
         models: Das src.models-Modul (nach dem Import in _init_db).
     """
-    if not models.ConfigSetting.query.first():
+    stmt = state.db.select(models.ConfigSetting).limit(1)
+    if not state.db.session.execute(stmt).scalar_one_or_none():
         state.db.session.add(models.ConfigSetting())
 
 
-app = create_app(BaseConfig)
+def _setup_logging() -> None:
+    logging.basicConfig(
+        filename=state.logfile,
+        format="%(asctime)s %(levelname)s %(name)s: %(message)s",
+        encoding="utf-8",
+        level=logging.INFO,
+        datefmt="%Y-%m-%d %H:%M:%S",
+    )

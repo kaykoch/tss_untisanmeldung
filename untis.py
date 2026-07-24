@@ -17,7 +17,12 @@
 *
 """
 
-from src.app import app
+# ------------------------------------------------------------------------------
+# Überprüft durch Claude 4
+# ------------------------------------------------------------------------------
+
+from src.app import create_app
+from src.config import BaseConfig
 
 
 __author__ = "Kay Koch"
@@ -30,8 +35,7 @@ __email__ = "koch@tssbit.de"
 __status__ = "Production"
 
 
-# ------------------------------------------------------------------------------
-
+app = create_app(BaseConfig)
 
 if __name__ == "__main__":
     app.run(debug=True)

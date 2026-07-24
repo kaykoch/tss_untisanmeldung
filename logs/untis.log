@@ -1,10 +1,511 @@
-fdhf2026-07-23 17:12:27 INFO src.app: --------------------------------------------------
-2026-07-23 17:12:27 INFO src.extensions: Datei: infofile vorhanden
-2026-07-23 17:12:27 INFO src.extensions: Datei: prototypeazubi vorhanden
-2026-07-23 17:12:27 INFO src.extensions: Datei: prototypeausbilder vorhanden
-2026-07-23 17:12:27 INFO src.app: Datenbanktabellen erstellt/überprüft.
-2026-07-23 17:12:27 INFO src.app: --------------------------------------------------
-2026-07-23 17:12:27 INFO src.app:   --> !! App: Untisanmeldung wurde erfolgreich gestartet !!
-2026-07-23 17:12:27 INFO src.app: --------------------------------------------------
-2026-07-23 17:12:27 WARNING werkzeug:  * Debugger is active!
-2026-07-23 17:12:27 INFO werkzeug:  * Debugger PIN: 898-742-796
+2026-07-24 22:30:51 INFO werkzeug:  * Detected change in '/home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/routes/routes_admin.py', reloading
+2026-07-24 22:30:51 INFO werkzeug:  * Restarting with stat
+2026-07-24 22:30:52 INFO src.app: --------------------------------------------------
+2026-07-24 22:30:52 INFO src.extensions: Datei: infofile vorhanden
+2026-07-24 22:30:52 INFO src.extensions: Datei: textfile vorhanden
+2026-07-24 22:30:52 INFO src.extensions: Datei: prototypeazubi vorhanden
+2026-07-24 22:30:52 INFO src.extensions: Datei: prototypeausbilder vorhanden
+2026-07-24 22:30:52 INFO src.extensions: Texte geladen aus: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-24 22:30:52 INFO src.app: Datenbanktabellen erstellt/überprüft.
+2026-07-24 22:30:52 ERROR src.services.config_service: Konnte App-Konfiguration nicht aus DB laden: 'AppState' object has no attribute 'set_kontaktperson'
+Traceback (most recent call last):
+  File "/home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/services/config_service.py", line 52, in load_defaults
+    state.set_kontaktperson(
+    ^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'AppState' object has no attribute 'set_kontaktperson'
+2026-07-24 22:30:52 INFO src.app: --------------------------------------------------
+2026-07-24 22:30:52 INFO src.app:   --> !! App: Untisanmeldung wurde erfolgreich gestartet !!
+2026-07-24 22:30:52 INFO src.app: --------------------------------------------------
+2026-07-24 22:30:52 WARNING werkzeug:  * Debugger is active!
+2026-07-24 22:30:52 INFO werkzeug:  * Debugger PIN: 110-324-653
+2026-07-24 22:34:58 INFO werkzeug:  * Detected change in '/home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/services/mail_service.py', reloading
+2026-07-24 22:34:58 INFO werkzeug:  * Restarting with stat
+2026-07-24 22:34:59 INFO src.app: --------------------------------------------------
+2026-07-24 22:34:59 INFO src.extensions: Datei: infofile vorhanden
+2026-07-24 22:34:59 INFO src.extensions: Datei: textfile vorhanden
+2026-07-24 22:34:59 INFO src.extensions: Datei: prototypeazubi vorhanden
+2026-07-24 22:34:59 INFO src.extensions: Datei: prototypeausbilder vorhanden
+2026-07-24 22:34:59 INFO src.extensions: Texte geladen aus: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-24 22:34:59 INFO src.app: Datenbanktabellen erstellt/überprüft.
+2026-07-24 22:34:59 ERROR src.services.config_service: Konnte App-Konfiguration nicht aus DB laden: 'AppState' object has no attribute 'set_kontaktperson'
+Traceback (most recent call last):
+  File "/home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/services/config_service.py", line 52, in load_defaults
+    state.set_kontaktperson(
+    ^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'AppState' object has no attribute 'set_kontaktperson'
+2026-07-24 22:34:59 INFO src.app: --------------------------------------------------
+2026-07-24 22:34:59 INFO src.app:   --> !! App: Untisanmeldung wurde erfolgreich gestartet !!
+2026-07-24 22:34:59 INFO src.app: --------------------------------------------------
+2026-07-24 22:34:59 WARNING werkzeug:  * Debugger is active!
+2026-07-24 22:34:59 INFO werkzeug:  * Debugger PIN: 110-324-653
+2026-07-24 22:36:15 INFO werkzeug:  * Detected change in '/home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/routes/routes_admin.py', reloading
+2026-07-24 22:36:15 INFO werkzeug:  * Restarting with stat
+2026-07-24 22:36:16 INFO src.app: --------------------------------------------------
+2026-07-24 22:36:16 INFO src.extensions: Datei: infofile vorhanden
+2026-07-24 22:36:16 INFO src.extensions: Datei: textfile vorhanden
+2026-07-24 22:36:16 INFO src.extensions: Datei: prototypeazubi vorhanden
+2026-07-24 22:36:16 INFO src.extensions: Datei: prototypeausbilder vorhanden
+2026-07-24 22:36:16 INFO src.extensions: Texte geladen aus: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-24 22:36:16 INFO src.app: Datenbanktabellen erstellt/überprüft.
+2026-07-24 22:36:16 ERROR src.services.config_service: Konnte App-Konfiguration nicht aus DB laden: 'AppState' object has no attribute 'set_kontaktperson'
+Traceback (most recent call last):
+  File "/home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/services/config_service.py", line 52, in load_defaults
+    state.set_kontaktperson(
+    ^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'AppState' object has no attribute 'set_kontaktperson'
+2026-07-24 22:36:16 INFO src.app: --------------------------------------------------
+2026-07-24 22:36:16 INFO src.app:   --> !! App: Untisanmeldung wurde erfolgreich gestartet !!
+2026-07-24 22:36:16 INFO src.app: --------------------------------------------------
+2026-07-24 22:36:16 WARNING werkzeug:  * Debugger is active!
+2026-07-24 22:36:16 INFO werkzeug:  * Debugger PIN: 110-324-653
+2026-07-24 22:36:21 INFO werkzeug: 127.0.0.1 - - [24/Jul/2026 22:36:21] "GET /admin/ausbilderanzeige.html HTTP/1.1" 200 -
+2026-07-24 22:36:26 INFO werkzeug: 127.0.0.1 - - [24/Jul/2026 22:36:26] "GET /admin/ HTTP/1.1" 200 -
+2026-07-24 22:36:40 INFO werkzeug: 127.0.0.1 - - [24/Jul/2026 22:36:40] "GET /admin/azubianzeige.html HTTP/1.1" 200 -
+2026-07-24 22:36:40 INFO werkzeug: 127.0.0.1 - - [24/Jul/2026 22:36:40] "[36mGET /static/logo.png HTTP/1.1[0m" 304 -
+2026-07-24 22:36:40 INFO werkzeug: 127.0.0.1 - - [24/Jul/2026 22:36:40] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2026-07-24 22:37:22 INFO werkzeug:  * Detected change in '/home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/routes/routes_admin.py', reloading
+2026-07-24 22:37:22 INFO werkzeug:  * Restarting with stat
+2026-07-24 22:37:23 INFO src.app: --------------------------------------------------
+2026-07-24 22:37:23 INFO src.extensions: Datei: infofile vorhanden
+2026-07-24 22:37:23 INFO src.extensions: Datei: textfile vorhanden
+2026-07-24 22:37:23 INFO src.extensions: Datei: prototypeazubi vorhanden
+2026-07-24 22:37:23 INFO src.extensions: Datei: prototypeausbilder vorhanden
+2026-07-24 22:37:23 INFO src.extensions: Texte geladen aus: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-24 22:37:23 INFO src.app: Datenbanktabellen erstellt/überprüft.
+2026-07-24 22:37:23 ERROR src.services.config_service: Konnte App-Konfiguration nicht aus DB laden: 'AppState' object has no attribute 'set_kontaktperson'
+Traceback (most recent call last):
+  File "/home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/services/config_service.py", line 52, in load_defaults
+    state.set_kontaktperson(
+    ^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'AppState' object has no attribute 'set_kontaktperson'
+2026-07-24 22:37:23 INFO src.app: --------------------------------------------------
+2026-07-24 22:37:23 INFO src.app:   --> !! App: Untisanmeldung wurde erfolgreich gestartet !!
+2026-07-24 22:37:23 INFO src.app: --------------------------------------------------
+2026-07-24 22:37:23 WARNING werkzeug:  * Debugger is active!
+2026-07-24 22:37:23 INFO werkzeug:  * Debugger PIN: 110-324-653
+2026-07-24 22:37:25 INFO werkzeug: 127.0.0.1 - - [24/Jul/2026 22:37:25] "GET /admin/azubianzeige.html HTTP/1.1" 200 -
+2026-07-24 22:37:25 INFO werkzeug: 127.0.0.1 - - [24/Jul/2026 22:37:25] "[36mGET /static/logo.png HTTP/1.1[0m" 304 -
+2026-07-24 22:37:25 INFO werkzeug: 127.0.0.1 - - [24/Jul/2026 22:37:25] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2026-07-24 22:37:25 INFO werkzeug: 127.0.0.1 - - [24/Jul/2026 22:37:25] "[36mGET /static/favicon.ico HTTP/1.1[0m" 304 -
+2026-07-24 22:37:26 INFO werkzeug: 127.0.0.1 - - [24/Jul/2026 22:37:26] "GET /admin/azubianzeige.html HTTP/1.1" 200 -
+2026-07-24 22:37:26 INFO werkzeug: 127.0.0.1 - - [24/Jul/2026 22:37:26] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2026-07-24 22:37:26 INFO werkzeug: 127.0.0.1 - - [24/Jul/2026 22:37:26] "[36mGET /static/logo.png HTTP/1.1[0m" 304 -
+2026-07-24 22:37:26 INFO werkzeug: 127.0.0.1 - - [24/Jul/2026 22:37:26] "[36mGET /static/favicon.ico HTTP/1.1[0m" 304 -
+2026-07-24 22:38:00 INFO werkzeug:  * Detected change in '/home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/routes/routes_admin.py', reloading
+2026-07-24 22:38:00 INFO werkzeug:  * Restarting with stat
+2026-07-24 22:38:01 INFO src.app: --------------------------------------------------
+2026-07-24 22:38:01 INFO src.extensions: Datei: infofile vorhanden
+2026-07-24 22:38:01 INFO src.extensions: Datei: textfile vorhanden
+2026-07-24 22:38:01 INFO src.extensions: Datei: prototypeazubi vorhanden
+2026-07-24 22:38:01 INFO src.extensions: Datei: prototypeausbilder vorhanden
+2026-07-24 22:38:01 INFO src.extensions: Texte geladen aus: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-24 22:38:01 INFO src.app: Datenbanktabellen erstellt/überprüft.
+2026-07-24 22:38:01 ERROR src.services.config_service: Konnte App-Konfiguration nicht aus DB laden: 'AppState' object has no attribute 'set_kontaktperson'
+Traceback (most recent call last):
+  File "/home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/services/config_service.py", line 52, in load_defaults
+    state.set_kontaktperson(
+    ^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'AppState' object has no attribute 'set_kontaktperson'
+2026-07-24 22:38:01 INFO src.app: --------------------------------------------------
+2026-07-24 22:38:01 INFO src.app:   --> !! App: Untisanmeldung wurde erfolgreich gestartet !!
+2026-07-24 22:38:01 INFO src.app: --------------------------------------------------
+2026-07-24 22:38:01 WARNING werkzeug:  * Debugger is active!
+2026-07-24 22:38:01 INFO werkzeug:  * Debugger PIN: 110-324-653
+2026-07-24 22:38:02 INFO werkzeug: 127.0.0.1 - - [24/Jul/2026 22:38:02] "GET /admin/azubianzeige.html HTTP/1.1" 200 -
+2026-07-24 22:38:02 INFO werkzeug: 127.0.0.1 - - [24/Jul/2026 22:38:02] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2026-07-24 22:38:02 INFO werkzeug: 127.0.0.1 - - [24/Jul/2026 22:38:02] "[36mGET /static/logo.png HTTP/1.1[0m" 304 -
+2026-07-24 22:38:03 INFO werkzeug: 127.0.0.1 - - [24/Jul/2026 22:38:03] "[36mGET /static/favicon.ico HTTP/1.1[0m" 304 -
+2026-07-24 22:40:02 INFO werkzeug:  * Detected change in '/home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/services/mail_service.py', reloading
+2026-07-24 22:40:03 INFO werkzeug:  * Restarting with stat
+2026-07-24 22:40:03 INFO src.app: --------------------------------------------------
+2026-07-24 22:40:03 INFO src.extensions: Datei: infofile vorhanden
+2026-07-24 22:40:03 INFO src.extensions: Datei: textfile vorhanden
+2026-07-24 22:40:03 INFO src.extensions: Datei: prototypeazubi vorhanden
+2026-07-24 22:40:03 INFO src.extensions: Datei: prototypeausbilder vorhanden
+2026-07-24 22:40:03 INFO src.extensions: Texte geladen aus: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-24 22:40:03 INFO src.app: Datenbanktabellen erstellt/überprüft.
+2026-07-24 22:40:03 ERROR src.services.config_service: Konnte App-Konfiguration nicht aus DB laden: 'AppState' object has no attribute 'set_kontaktperson'
+Traceback (most recent call last):
+  File "/home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/services/config_service.py", line 52, in load_defaults
+    state.set_kontaktperson(
+    ^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'AppState' object has no attribute 'set_kontaktperson'
+2026-07-24 22:40:03 INFO src.app: --------------------------------------------------
+2026-07-24 22:40:03 INFO src.app:   --> !! App: Untisanmeldung wurde erfolgreich gestartet !!
+2026-07-24 22:40:03 INFO src.app: --------------------------------------------------
+2026-07-24 22:40:03 WARNING werkzeug:  * Debugger is active!
+2026-07-24 22:40:03 INFO werkzeug:  * Debugger PIN: 110-324-653
+2026-07-24 22:41:47 INFO werkzeug:  * Detected change in '/home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/routes/routes_main.py', reloading
+2026-07-24 22:41:48 INFO werkzeug:  * Restarting with stat
+2026-07-24 22:41:48 INFO src.app: --------------------------------------------------
+2026-07-24 22:41:48 INFO src.extensions: Datei: infofile vorhanden
+2026-07-24 22:41:48 INFO src.extensions: Datei: textfile vorhanden
+2026-07-24 22:41:48 INFO src.extensions: Datei: prototypeazubi vorhanden
+2026-07-24 22:41:48 INFO src.extensions: Datei: prototypeausbilder vorhanden
+2026-07-24 22:41:48 INFO src.extensions: Texte geladen aus: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-24 22:41:48 INFO src.app: Datenbanktabellen erstellt/überprüft.
+2026-07-24 22:41:48 ERROR src.services.config_service: Konnte App-Konfiguration nicht aus DB laden: 'AppState' object has no attribute 'set_kontaktperson'
+Traceback (most recent call last):
+  File "/home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/services/config_service.py", line 52, in load_defaults
+    state.set_kontaktperson(
+    ^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'AppState' object has no attribute 'set_kontaktperson'
+2026-07-24 22:41:48 INFO src.app: --------------------------------------------------
+2026-07-24 22:41:48 INFO src.app:   --> !! App: Untisanmeldung wurde erfolgreich gestartet !!
+2026-07-24 22:41:48 INFO src.app: --------------------------------------------------
+2026-07-24 22:41:48 WARNING werkzeug:  * Debugger is active!
+2026-07-24 22:41:48 INFO werkzeug:  * Debugger PIN: 110-324-653
+2026-07-24 22:42:07 INFO werkzeug:  * Detected change in '/home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/services/mail_service.py', reloading
+2026-07-24 22:42:08 INFO werkzeug:  * Restarting with stat
+2026-07-24 22:42:08 INFO src.app: --------------------------------------------------
+2026-07-24 22:42:08 INFO src.extensions: Datei: infofile vorhanden
+2026-07-24 22:42:08 INFO src.extensions: Datei: textfile vorhanden
+2026-07-24 22:42:08 INFO src.extensions: Datei: prototypeazubi vorhanden
+2026-07-24 22:42:08 INFO src.extensions: Datei: prototypeausbilder vorhanden
+2026-07-24 22:42:08 INFO src.extensions: Texte geladen aus: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-24 22:42:08 INFO src.app: Datenbanktabellen erstellt/überprüft.
+2026-07-24 22:42:08 ERROR src.services.config_service: Konnte App-Konfiguration nicht aus DB laden: 'AppState' object has no attribute 'set_kontaktperson'
+Traceback (most recent call last):
+  File "/home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/services/config_service.py", line 52, in load_defaults
+    state.set_kontaktperson(
+    ^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'AppState' object has no attribute 'set_kontaktperson'
+2026-07-24 22:42:08 INFO src.app: --------------------------------------------------
+2026-07-24 22:42:08 INFO src.app:   --> !! App: Untisanmeldung wurde erfolgreich gestartet !!
+2026-07-24 22:42:08 INFO src.app: --------------------------------------------------
+2026-07-24 22:42:08 WARNING werkzeug:  * Debugger is active!
+2026-07-24 22:42:08 INFO werkzeug:  * Debugger PIN: 110-324-653
+2026-07-24 22:42:54 INFO werkzeug:  * Detected change in '/home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/models.py', reloading
+2026-07-24 22:42:54 INFO werkzeug:  * Restarting with stat
+2026-07-24 22:42:55 INFO src.app: --------------------------------------------------
+2026-07-24 22:42:55 INFO src.extensions: Datei: infofile vorhanden
+2026-07-24 22:42:55 INFO src.extensions: Datei: textfile vorhanden
+2026-07-24 22:42:55 INFO src.extensions: Datei: prototypeazubi vorhanden
+2026-07-24 22:42:55 INFO src.extensions: Datei: prototypeausbilder vorhanden
+2026-07-24 22:42:55 INFO src.extensions: Texte geladen aus: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-24 22:42:55 INFO src.app: Datenbanktabellen erstellt/überprüft.
+2026-07-24 22:42:55 ERROR src.services.config_service: Konnte App-Konfiguration nicht aus DB laden: 'AppState' object has no attribute 'set_kontaktperson'
+Traceback (most recent call last):
+  File "/home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/services/config_service.py", line 52, in load_defaults
+    state.set_kontaktperson(
+    ^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'AppState' object has no attribute 'set_kontaktperson'
+2026-07-24 22:42:55 INFO src.app: --------------------------------------------------
+2026-07-24 22:42:55 INFO src.app:   --> !! App: Untisanmeldung wurde erfolgreich gestartet !!
+2026-07-24 22:42:55 INFO src.app: --------------------------------------------------
+2026-07-24 22:42:55 WARNING werkzeug:  * Debugger is active!
+2026-07-24 22:42:55 INFO werkzeug:  * Debugger PIN: 110-324-653
+2026-07-24 22:43:18 INFO werkzeug:  * Detected change in '/home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/forms.py', reloading
+2026-07-24 22:43:18 INFO werkzeug:  * Restarting with stat
+2026-07-24 22:43:19 INFO src.app: --------------------------------------------------
+2026-07-24 22:43:19 INFO src.extensions: Datei: infofile vorhanden
+2026-07-24 22:43:19 INFO src.extensions: Datei: textfile vorhanden
+2026-07-24 22:43:19 INFO src.extensions: Datei: prototypeazubi vorhanden
+2026-07-24 22:43:19 INFO src.extensions: Datei: prototypeausbilder vorhanden
+2026-07-24 22:43:19 INFO src.extensions: Texte geladen aus: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-24 22:43:19 INFO src.app: Datenbanktabellen erstellt/überprüft.
+2026-07-24 22:43:19 ERROR src.services.config_service: Konnte App-Konfiguration nicht aus DB laden: 'AppState' object has no attribute 'set_kontaktperson'
+Traceback (most recent call last):
+  File "/home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/services/config_service.py", line 52, in load_defaults
+    state.set_kontaktperson(
+    ^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'AppState' object has no attribute 'set_kontaktperson'
+2026-07-24 22:43:19 INFO src.app: --------------------------------------------------
+2026-07-24 22:43:19 INFO src.app:   --> !! App: Untisanmeldung wurde erfolgreich gestartet !!
+2026-07-24 22:43:19 INFO src.app: --------------------------------------------------
+2026-07-24 22:43:19 WARNING werkzeug:  * Debugger is active!
+2026-07-24 22:43:19 INFO werkzeug:  * Debugger PIN: 110-324-653
+2026-07-24 22:43:51 INFO werkzeug: 127.0.0.1 - - [24/Jul/2026 22:43:51] "GET /admin/ HTTP/1.1" 200 -
+2026-07-24 22:43:53 INFO werkzeug: 127.0.0.1 - - [24/Jul/2026 22:43:53] "GET /admin/config.html HTTP/1.1" 200 -
+2026-07-24 22:43:53 INFO werkzeug: 127.0.0.1 - - [24/Jul/2026 22:43:53] "[36mGET /static/logo.png HTTP/1.1[0m" 304 -
+2026-07-24 22:43:53 INFO werkzeug: 127.0.0.1 - - [24/Jul/2026 22:43:53] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2026-07-24 22:44:31 ERROR src.routes.routes_admin: Fehler in route_config: 'src.forms.ConfigForm object' has no attribute 'kontaktperson_vorname'
+2026-07-24 22:44:31 INFO werkzeug: 127.0.0.1 - - [24/Jul/2026 22:44:31] "[35m[1mGET /admin/config.html HTTP/1.1[0m" 500 -
+2026-07-24 22:45:29 INFO werkzeug: 127.0.0.1 - - [24/Jul/2026 22:45:29] "GET /admin/config.html HTTP/1.1" 200 -
+2026-07-24 22:45:29 INFO werkzeug: 127.0.0.1 - - [24/Jul/2026 22:45:29] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2026-07-24 22:45:29 INFO werkzeug: 127.0.0.1 - - [24/Jul/2026 22:45:29] "[36mGET /static/logo.png HTTP/1.1[0m" 304 -
+2026-07-24 22:45:29 INFO werkzeug: 127.0.0.1 - - [24/Jul/2026 22:45:29] "[36mGET /static/favicon.ico HTTP/1.1[0m" 304 -
+2026-07-24 22:46:59 INFO werkzeug: 127.0.0.1 - - [24/Jul/2026 22:46:59] "[36mGET /static/favicon.ico HTTP/1.1[0m" 304 -
+2026-07-24 22:47:02 INFO werkzeug: 127.0.0.1 - - [24/Jul/2026 22:47:02] "GET /admin/config.html HTTP/1.1" 200 -
+2026-07-24 22:47:02 INFO werkzeug: 127.0.0.1 - - [24/Jul/2026 22:47:02] "[36mGET /static/logo.png HTTP/1.1[0m" 304 -
+2026-07-24 22:47:02 INFO werkzeug: 127.0.0.1 - - [24/Jul/2026 22:47:02] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2026-07-24 22:47:02 INFO werkzeug: 127.0.0.1 - - [24/Jul/2026 22:47:02] "[36mGET /static/favicon.ico HTTP/1.1[0m" 304 -
+2026-07-24 22:47:24 INFO werkzeug: 127.0.0.1 - - [24/Jul/2026 22:47:24] "GET /admin/config.html HTTP/1.1" 200 -
+2026-07-24 22:47:24 INFO werkzeug: 127.0.0.1 - - [24/Jul/2026 22:47:24] "[36mGET /static/logo.png HTTP/1.1[0m" 304 -
+2026-07-24 22:47:24 INFO werkzeug: 127.0.0.1 - - [24/Jul/2026 22:47:24] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2026-07-24 22:47:24 INFO werkzeug: 127.0.0.1 - - [24/Jul/2026 22:47:24] "[36mGET /static/favicon.ico HTTP/1.1[0m" 304 -
+2026-07-24 22:49:48 INFO werkzeug: 127.0.0.1 - - [24/Jul/2026 22:49:48] "GET /admin/config.html HTTP/1.1" 200 -
+2026-07-24 22:49:48 INFO werkzeug: 127.0.0.1 - - [24/Jul/2026 22:49:48] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2026-07-24 22:49:48 INFO werkzeug: 127.0.0.1 - - [24/Jul/2026 22:49:48] "[36mGET /static/logo.png HTTP/1.1[0m" 304 -
+2026-07-24 22:49:48 INFO werkzeug: 127.0.0.1 - - [24/Jul/2026 22:49:48] "[36mGET /static/favicon.ico HTTP/1.1[0m" 304 -
+2026-07-24 22:54:00 INFO src.app: --------------------------------------------------
+2026-07-24 22:54:00 INFO src.extensions: Datei: infofile vorhanden
+2026-07-24 22:54:00 INFO src.extensions: Datei: textfile vorhanden
+2026-07-24 22:54:00 INFO src.extensions: Datei: prototypeazubi vorhanden
+2026-07-24 22:54:00 INFO src.extensions: Datei: prototypeausbilder vorhanden
+2026-07-24 22:54:00 INFO src.extensions: Texte geladen aus: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-24 22:54:00 INFO src.app: Datenbanktabellen erstellt/überprüft.
+2026-07-24 22:54:00 ERROR src.services.config_service: Konnte App-Konfiguration nicht aus DB laden: 'AppState' object has no attribute 'set_kontaktperson'
+Traceback (most recent call last):
+  File "/home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/services/config_service.py", line 52, in load_defaults
+    state.set_kontaktperson(
+    ^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'AppState' object has no attribute 'set_kontaktperson'
+2026-07-24 22:54:00 INFO src.app: --------------------------------------------------
+2026-07-24 22:54:00 INFO src.app:   --> !! App: Untisanmeldung wurde erfolgreich gestartet !!
+2026-07-24 22:54:00 INFO src.app: --------------------------------------------------
+2026-07-24 22:54:00 INFO werkzeug: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2026-07-24 22:54:00 INFO werkzeug: [33mPress CTRL+C to quit[0m
+2026-07-24 22:54:00 INFO werkzeug:  * Restarting with stat
+2026-07-24 22:54:00 INFO src.app: --------------------------------------------------
+2026-07-24 22:54:00 INFO src.extensions: Datei: infofile vorhanden
+2026-07-24 22:54:00 INFO src.extensions: Datei: textfile vorhanden
+2026-07-24 22:54:00 INFO src.extensions: Datei: prototypeazubi vorhanden
+2026-07-24 22:54:00 INFO src.extensions: Datei: prototypeausbilder vorhanden
+2026-07-24 22:54:00 INFO src.extensions: Texte geladen aus: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-24 22:54:00 INFO src.app: Datenbanktabellen erstellt/überprüft.
+2026-07-24 22:54:00 ERROR src.services.config_service: Konnte App-Konfiguration nicht aus DB laden: 'AppState' object has no attribute 'set_kontaktperson'
+Traceback (most recent call last):
+  File "/home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/services/config_service.py", line 52, in load_defaults
+    state.set_kontaktperson(
+    ^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'AppState' object has no attribute 'set_kontaktperson'
+2026-07-24 22:54:00 INFO src.app: --------------------------------------------------
+2026-07-24 22:54:00 INFO src.app:   --> !! App: Untisanmeldung wurde erfolgreich gestartet !!
+2026-07-24 22:54:00 INFO src.app: --------------------------------------------------
+2026-07-24 22:54:00 WARNING werkzeug:  * Debugger is active!
+2026-07-24 22:54:00 INFO werkzeug:  * Debugger PIN: 110-324-653
+2026-07-24 22:54:07 INFO werkzeug: 127.0.0.1 - - [24/Jul/2026 22:54:07] "GET /admin/config.html HTTP/1.1" 200 -
+2026-07-24 22:54:07 INFO werkzeug: 127.0.0.1 - - [24/Jul/2026 22:54:07] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2026-07-24 22:54:07 INFO werkzeug: 127.0.0.1 - - [24/Jul/2026 22:54:07] "[36mGET /static/logo.png HTTP/1.1[0m" 304 -
+2026-07-24 22:54:07 INFO werkzeug: 127.0.0.1 - - [24/Jul/2026 22:54:07] "[36mGET /static/favicon.ico HTTP/1.1[0m" 304 -
+2026-07-24 22:54:11 INFO werkzeug: 127.0.0.1 - - [24/Jul/2026 22:54:11] "GET / HTTP/1.1" 200 -
+2026-07-24 22:54:11 INFO werkzeug: 127.0.0.1 - - [24/Jul/2026 22:54:11] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2026-07-24 22:54:11 INFO werkzeug: 127.0.0.1 - - [24/Jul/2026 22:54:11] "[36mGET /static/logo.png HTTP/1.1[0m" 304 -
+2026-07-24 22:54:12 INFO werkzeug: 127.0.0.1 - - [24/Jul/2026 22:54:12] "[36mGET /static/favicon.ico HTTP/1.1[0m" 304 -
+2026-07-24 22:54:19 INFO werkzeug: 127.0.0.1 - - [24/Jul/2026 22:54:19] "GET /admin/ HTTP/1.1" 200 -
+2026-07-24 22:54:21 INFO werkzeug: 127.0.0.1 - - [24/Jul/2026 22:54:21] "GET /admin/azubianzeige.html HTTP/1.1" 200 -
+2026-07-24 22:54:21 INFO werkzeug: 127.0.0.1 - - [24/Jul/2026 22:54:21] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2026-07-24 22:54:21 INFO werkzeug: 127.0.0.1 - - [24/Jul/2026 22:54:21] "[36mGET /static/logo.png HTTP/1.1[0m" 304 -
+2026-07-24 22:54:23 INFO werkzeug: 127.0.0.1 - - [24/Jul/2026 22:54:23] "GET /api/zugeordete_schueler/BSIT24 HTTP/1.1" 200 -
+2026-07-24 22:56:21 INFO werkzeug: 127.0.0.1 - - [24/Jul/2026 22:56:21] "[36mGET /static/favicon.ico HTTP/1.1[0m" 304 -
+2026-07-24 22:56:23 INFO werkzeug: 127.0.0.1 - - [24/Jul/2026 22:56:23] "GET /admin/azubianzeige.html HTTP/1.1" 200 -
+2026-07-24 22:56:23 INFO werkzeug: 127.0.0.1 - - [24/Jul/2026 22:56:23] "GET /static/style.css HTTP/1.1" 200 -
+2026-07-24 22:56:23 INFO werkzeug: 127.0.0.1 - - [24/Jul/2026 22:56:23] "[36mGET /static/logo.png HTTP/1.1[0m" 304 -
+2026-07-24 22:56:23 INFO werkzeug: 127.0.0.1 - - [24/Jul/2026 22:56:23] "[36mGET /static/favicon.ico HTTP/1.1[0m" 304 -
+2026-07-24 22:56:33 INFO werkzeug: 127.0.0.1 - - [24/Jul/2026 22:56:33] "GET / HTTP/1.1" 200 -
+2026-07-24 22:56:33 INFO werkzeug: 127.0.0.1 - - [24/Jul/2026 22:56:33] "[36mGET /static/logo.png HTTP/1.1[0m" 304 -
+2026-07-24 22:56:33 INFO werkzeug: 127.0.0.1 - - [24/Jul/2026 22:56:33] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2026-07-24 22:56:33 INFO werkzeug: 127.0.0.1 - - [24/Jul/2026 22:56:33] "[36mGET /static/favicon.ico HTTP/1.1[0m" 304 -
+2026-07-24 22:56:51 INFO werkzeug: 127.0.0.1 - - [24/Jul/2026 22:56:51] "GET /admin/ HTTP/1.1" 200 -
+2026-07-24 22:56:52 INFO werkzeug: 127.0.0.1 - - [24/Jul/2026 22:56:52] "GET /admin/config.html HTTP/1.1" 200 -
+2026-07-24 22:56:53 INFO werkzeug: 127.0.0.1 - - [24/Jul/2026 22:56:53] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2026-07-24 22:56:53 INFO werkzeug: 127.0.0.1 - - [24/Jul/2026 22:56:53] "[36mGET /static/logo.png HTTP/1.1[0m" 304 -
+2026-07-24 22:57:40 INFO werkzeug: 127.0.0.1 - - [24/Jul/2026 22:57:40] "GET /admin/config.html HTTP/1.1" 200 -
+2026-07-24 22:57:40 INFO werkzeug: 127.0.0.1 - - [24/Jul/2026 22:57:40] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2026-07-24 22:57:40 INFO werkzeug: 127.0.0.1 - - [24/Jul/2026 22:57:40] "[36mGET /static/logo.png HTTP/1.1[0m" 304 -
+2026-07-24 22:57:40 INFO werkzeug: 127.0.0.1 - - [24/Jul/2026 22:57:40] "[36mGET /static/favicon.ico HTTP/1.1[0m" 304 -
+2026-07-24 22:57:52 INFO werkzeug: 127.0.0.1 - - [24/Jul/2026 22:57:52] "GET /admin/azubianzeige.html HTTP/1.1" 200 -
+2026-07-24 22:57:52 INFO werkzeug: 127.0.0.1 - - [24/Jul/2026 22:57:52] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2026-07-24 22:57:52 INFO werkzeug: 127.0.0.1 - - [24/Jul/2026 22:57:52] "[36mGET /static/logo.png HTTP/1.1[0m" 304 -
+2026-07-24 22:57:54 INFO werkzeug: 127.0.0.1 - - [24/Jul/2026 22:57:54] "GET /api/zugeordete_schueler/BSIT24 HTTP/1.1" 200 -
+2026-07-24 22:57:57 INFO werkzeug: 127.0.0.1 - - [24/Jul/2026 22:57:57] "GET /admin/ HTTP/1.1" 200 -
+2026-07-24 22:57:59 INFO werkzeug: 127.0.0.1 - - [24/Jul/2026 22:57:59] "GET /admin/ausbilderanzeige.html HTTP/1.1" 200 -
+2026-07-24 22:57:59 INFO werkzeug: 127.0.0.1 - - [24/Jul/2026 22:57:59] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2026-07-24 22:57:59 INFO werkzeug: 127.0.0.1 - - [24/Jul/2026 22:57:59] "[36mGET /static/logo.png HTTP/1.1[0m" 304 -
+2026-07-24 22:58:21 INFO werkzeug: 127.0.0.1 - - [24/Jul/2026 22:58:21] "POST /admin/ausbilderanzeige.html HTTP/1.1" 200 -
+2026-07-24 22:59:03 INFO werkzeug:  * Detected change in '/home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/app.py', reloading
+2026-07-24 22:59:04 INFO werkzeug:  * Restarting with stat
+2026-07-24 22:59:04 INFO src.app: --------------------------------------------------
+2026-07-24 22:59:04 INFO src.extensions: Datei: infofile vorhanden
+2026-07-24 22:59:04 INFO src.extensions: Datei: textfile vorhanden
+2026-07-24 22:59:04 INFO src.extensions: Datei: prototypeazubi vorhanden
+2026-07-24 22:59:04 INFO src.extensions: Datei: prototypeausbilder vorhanden
+2026-07-24 22:59:04 INFO src.extensions: Texte geladen aus: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-24 22:59:05 INFO src.app: Datenbanktabellen erstellt/überprüft.
+2026-07-24 22:59:05 ERROR src.services.config_service: Konnte App-Konfiguration nicht aus DB laden: 'AppState' object has no attribute 'set_kontaktperson'
+Traceback (most recent call last):
+  File "/home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/services/config_service.py", line 52, in load_defaults
+    state.set_kontaktperson(
+    ^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'AppState' object has no attribute 'set_kontaktperson'
+2026-07-24 22:59:05 INFO src.app: --------------------------------------------------
+2026-07-24 22:59:05 INFO src.app:   --> !! App: Untisanmeldung wurde erfolgreich gestartet !!
+2026-07-24 22:59:05 INFO src.app: --------------------------------------------------
+2026-07-24 22:59:05 WARNING werkzeug:  * Debugger is active!
+2026-07-24 22:59:05 INFO werkzeug:  * Debugger PIN: 110-324-653
+2026-07-24 23:00:09 INFO werkzeug:  * Detected change in '/home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/extensions.py', reloading
+2026-07-24 23:00:10 INFO werkzeug:  * Restarting with stat
+2026-07-24 23:00:10 INFO src.app: --------------------------------------------------
+2026-07-24 23:00:10 INFO src.extensions: Datei: infofile vorhanden
+2026-07-24 23:00:10 INFO src.extensions: Datei: textfile vorhanden
+2026-07-24 23:00:10 INFO src.extensions: Datei: prototypeazubi vorhanden
+2026-07-24 23:00:10 INFO src.extensions: Datei: prototypeausbilder vorhanden
+2026-07-24 23:00:10 INFO src.extensions: Texte geladen aus: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-24 23:00:10 INFO src.app: Datenbanktabellen erstellt/überprüft.
+2026-07-24 23:00:10 ERROR src.services.config_service: Konnte App-Konfiguration nicht aus DB laden: 'AppState' object has no attribute 'set_kontaktperson'
+Traceback (most recent call last):
+  File "/home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/services/config_service.py", line 52, in load_defaults
+    state.set_kontaktperson(
+    ^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'AppState' object has no attribute 'set_kontaktperson'
+2026-07-24 23:00:10 INFO src.app: --------------------------------------------------
+2026-07-24 23:00:10 INFO src.app:   --> !! App: Untisanmeldung wurde erfolgreich gestartet !!
+2026-07-24 23:00:10 INFO src.app: --------------------------------------------------
+2026-07-24 23:00:10 WARNING werkzeug:  * Debugger is active!
+2026-07-24 23:00:10 INFO werkzeug:  * Debugger PIN: 110-324-653
+2026-07-24 23:06:21 INFO werkzeug:  * Detected change in '/home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/extensions.py', reloading
+2026-07-24 23:06:22 INFO werkzeug:  * Restarting with stat
+2026-07-24 23:06:22 INFO src.app: --------------------------------------------------
+2026-07-24 23:06:22 INFO src.extensions: Datei: infofile vorhanden
+2026-07-24 23:06:22 INFO src.extensions: Datei: textfile vorhanden
+2026-07-24 23:06:22 INFO src.extensions: Datei: prototypeazubi vorhanden
+2026-07-24 23:06:22 INFO src.extensions: Datei: prototypeausbilder vorhanden
+2026-07-24 23:06:22 INFO src.extensions: Texte geladen aus: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-24 23:06:22 INFO src.app: Datenbanktabellen erstellt/überprüft.
+2026-07-24 23:06:22 ERROR src.services.config_service: Konnte App-Konfiguration nicht aus DB laden: 'AppState' object has no attribute 'set_kontaktperson'
+Traceback (most recent call last):
+  File "/home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/services/config_service.py", line 52, in load_defaults
+    state.set_kontaktperson(
+    ^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'AppState' object has no attribute 'set_kontaktperson'
+2026-07-24 23:06:22 INFO src.app: --------------------------------------------------
+2026-07-24 23:06:22 INFO src.app:   --> !! App: Untisanmeldung wurde erfolgreich gestartet !!
+2026-07-24 23:06:22 INFO src.app: --------------------------------------------------
+2026-07-24 23:06:22 WARNING werkzeug:  * Debugger is active!
+2026-07-24 23:06:22 INFO werkzeug:  * Debugger PIN: 110-324-653
+2026-07-24 23:07:08 INFO werkzeug:  * Detected change in '/home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/extensions.py', reloading
+2026-07-24 23:07:08 INFO werkzeug:  * Restarting with stat
+2026-07-24 23:07:08 INFO src.app: --------------------------------------------------
+2026-07-24 23:07:08 INFO src.extensions: Datei: infofile vorhanden
+2026-07-24 23:07:08 INFO src.extensions: Datei: textfile vorhanden
+2026-07-24 23:07:08 INFO src.extensions: Datei: prototypeazubi vorhanden
+2026-07-24 23:07:08 INFO src.extensions: Datei: prototypeausbilder vorhanden
+2026-07-24 23:07:08 INFO src.extensions: Texte geladen aus: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-24 23:07:08 INFO src.app: Datenbanktabellen erstellt/überprüft.
+2026-07-24 23:07:08 ERROR src.services.config_service: Konnte App-Konfiguration nicht aus DB laden: 'AppState' object has no attribute 'set_kontaktperson'
+Traceback (most recent call last):
+  File "/home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/services/config_service.py", line 52, in load_defaults
+    state.set_kontaktperson(
+    ^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'AppState' object has no attribute 'set_kontaktperson'
+2026-07-24 23:07:08 INFO src.app: --------------------------------------------------
+2026-07-24 23:07:08 INFO src.app:   --> !! App: Untisanmeldung wurde erfolgreich gestartet !!
+2026-07-24 23:07:08 INFO src.app: --------------------------------------------------
+2026-07-24 23:07:08 WARNING werkzeug:  * Debugger is active!
+2026-07-24 23:07:08 INFO werkzeug:  * Debugger PIN: 110-324-653
+2026-07-24 23:08:24 INFO werkzeug:  * Detected change in '/home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/extensions.py', reloading
+2026-07-24 23:08:24 INFO werkzeug:  * Restarting with stat
+2026-07-24 23:08:25 INFO src.app: --------------------------------------------------
+2026-07-24 23:08:25 INFO src.extensions: Datei: infofile vorhanden
+2026-07-24 23:08:25 INFO src.extensions: Datei: prototypeazubi vorhanden
+2026-07-24 23:08:25 INFO src.extensions: Datei: prototypeausbilder vorhanden
+2026-07-24 23:08:25 ERROR src.app: Fehler bei der App-Initialisierung: expected str, bytes or os.PathLike object, not NoneType
+Traceback (most recent call last):
+  File "/home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/app.py", line 73, in _bootstrap
+    state.set_data(
+  File "/home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/extensions.py", line 90, in set_data
+    self.load_texts()
+  File "/home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/extensions.py", line 95, in load_texts
+    with open(self.tomlfile, "rb") as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: expected str, bytes or os.PathLike object, not NoneType
+2026-07-24 23:08:48 INFO src.app: --------------------------------------------------
+2026-07-24 23:08:48 INFO src.extensions: Datei: infofile vorhanden
+2026-07-24 23:08:48 INFO src.extensions: Datei: tomlfile vorhanden
+2026-07-24 23:08:48 INFO src.extensions: Datei: prototypeazubi vorhanden
+2026-07-24 23:08:48 INFO src.extensions: Datei: prototypeausbilder vorhanden
+2026-07-24 23:08:48 INFO src.extensions: Texte geladen aus: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-24 23:08:48 INFO src.app: Datenbanktabellen erstellt/überprüft.
+2026-07-24 23:08:48 ERROR src.services.config_service: Konnte App-Konfiguration nicht aus DB laden: 'AppState' object has no attribute 'set_kontaktperson'
+Traceback (most recent call last):
+  File "/home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/services/config_service.py", line 52, in load_defaults
+    state.set_kontaktperson(
+    ^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'AppState' object has no attribute 'set_kontaktperson'
+2026-07-24 23:08:48 INFO src.app: --------------------------------------------------
+2026-07-24 23:08:48 INFO src.app:   --> !! App: Untisanmeldung wurde erfolgreich gestartet !!
+2026-07-24 23:08:48 INFO src.app: --------------------------------------------------
+2026-07-24 23:08:48 INFO werkzeug: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2026-07-24 23:08:48 INFO werkzeug: [33mPress CTRL+C to quit[0m
+2026-07-24 23:08:48 INFO werkzeug:  * Restarting with stat
+2026-07-24 23:08:48 INFO src.app: --------------------------------------------------
+2026-07-24 23:08:48 INFO src.extensions: Datei: infofile vorhanden
+2026-07-24 23:08:48 INFO src.extensions: Datei: tomlfile vorhanden
+2026-07-24 23:08:48 INFO src.extensions: Datei: prototypeazubi vorhanden
+2026-07-24 23:08:48 INFO src.extensions: Datei: prototypeausbilder vorhanden
+2026-07-24 23:08:48 INFO src.extensions: Texte geladen aus: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-24 23:08:48 INFO src.app: Datenbanktabellen erstellt/überprüft.
+2026-07-24 23:08:48 ERROR src.services.config_service: Konnte App-Konfiguration nicht aus DB laden: 'AppState' object has no attribute 'set_kontaktperson'
+Traceback (most recent call last):
+  File "/home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/services/config_service.py", line 52, in load_defaults
+    state.set_kontaktperson(
+    ^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'AppState' object has no attribute 'set_kontaktperson'
+2026-07-24 23:08:48 INFO src.app: --------------------------------------------------
+2026-07-24 23:08:48 INFO src.app:   --> !! App: Untisanmeldung wurde erfolgreich gestartet !!
+2026-07-24 23:08:48 INFO src.app: --------------------------------------------------
+2026-07-24 23:08:48 WARNING werkzeug:  * Debugger is active!
+2026-07-24 23:08:48 INFO werkzeug:  * Debugger PIN: 110-324-653
+2026-07-24 23:13:13 INFO werkzeug:  * Detected change in '/home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/extensions.py', reloading
+2026-07-24 23:13:13 INFO werkzeug:  * Restarting with stat
+2026-07-24 23:13:14 INFO src.app: --------------------------------------------------
+2026-07-24 23:13:14 INFO src.extensions: Datei: infofile vorhanden
+2026-07-24 23:13:14 INFO src.extensions: Datei: tomlfile vorhanden
+2026-07-24 23:13:14 INFO src.extensions: Datei: prototypeazubi vorhanden
+2026-07-24 23:13:14 INFO src.extensions: Datei: prototypeausbilder vorhanden
+2026-07-24 23:13:14 INFO src.extensions: Texte geladen aus: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-24 23:13:14 INFO src.app: Datenbanktabellen erstellt/überprüft.
+2026-07-24 23:13:14 ERROR src.services.config_service: Konnte App-Konfiguration nicht aus DB laden: 'AppState' object has no attribute 'set_kontaktperson'
+Traceback (most recent call last):
+  File "/home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/services/config_service.py", line 52, in load_defaults
+    state.set_kontaktperson(
+    ^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'AppState' object has no attribute 'set_kontaktperson'
+2026-07-24 23:13:14 INFO src.app: --------------------------------------------------
+2026-07-24 23:13:14 INFO src.app:   --> !! App: Untisanmeldung wurde erfolgreich gestartet !!
+2026-07-24 23:13:14 INFO src.app: --------------------------------------------------
+2026-07-24 23:13:14 WARNING werkzeug:  * Debugger is active!
+2026-07-24 23:13:14 INFO werkzeug:  * Debugger PIN: 110-324-653
+2026-07-24 23:14:11 INFO werkzeug:  * Detected change in '/home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/extensions.py', reloading
+2026-07-24 23:14:11 INFO werkzeug:  * Restarting with stat
+2026-07-24 23:14:11 INFO src.app: --------------------------------------------------
+2026-07-24 23:14:11 INFO src.extensions: Datei: infofile vorhanden
+2026-07-24 23:14:11 INFO src.extensions: Datei: tomlfile vorhanden
+2026-07-24 23:14:11 INFO src.extensions: Datei: prototypeazubi vorhanden
+2026-07-24 23:14:11 INFO src.extensions: Datei: prototypeausbilder vorhanden
+2026-07-24 23:14:11 INFO src.extensions: Texte geladen aus: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-24 23:14:11 INFO src.app: Datenbanktabellen erstellt/überprüft.
+2026-07-24 23:14:11 ERROR src.services.config_service: Konnte App-Konfiguration nicht aus DB laden: 'AppState' object has no attribute 'set_kontaktperson'
+Traceback (most recent call last):
+  File "/home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/services/config_service.py", line 52, in load_defaults
+    state.set_kontaktperson(
+    ^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'AppState' object has no attribute 'set_kontaktperson'
+2026-07-24 23:14:11 INFO src.app: --------------------------------------------------
+2026-07-24 23:14:11 INFO src.app:   --> !! App: Untisanmeldung wurde erfolgreich gestartet !!
+2026-07-24 23:14:11 INFO src.app: --------------------------------------------------
+2026-07-24 23:14:11 WARNING werkzeug:  * Debugger is active!
+2026-07-24 23:14:11 INFO werkzeug:  * Debugger PIN: 110-324-653
+2026-07-24 23:14:36 INFO werkzeug:  * Detected change in '/home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/extensions.py', reloading
+2026-07-24 23:14:36 INFO werkzeug:  * Restarting with stat
+2026-07-24 23:14:36 INFO src.app: --------------------------------------------------
+2026-07-24 23:14:36 INFO src.extensions: Datei: infofile vorhanden
+2026-07-24 23:14:36 INFO src.extensions: Datei: tomlfile vorhanden
+2026-07-24 23:14:36 INFO src.extensions: Datei: prototypeazubi vorhanden
+2026-07-24 23:14:36 INFO src.extensions: Datei: prototypeausbilder vorhanden
+2026-07-24 23:14:36 INFO src.extensions: Texte geladen aus: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-24 23:14:36 INFO src.app: Datenbanktabellen erstellt/überprüft.
+2026-07-24 23:14:36 ERROR src.services.config_service: Konnte App-Konfiguration nicht aus DB laden: 'AppState' object has no attribute 'set_kontaktperson'
+Traceback (most recent call last):
+  File "/home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/services/config_service.py", line 52, in load_defaults
+    state.set_kontaktperson(
+    ^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'AppState' object has no attribute 'set_kontaktperson'
+2026-07-24 23:14:36 INFO src.app: --------------------------------------------------
+2026-07-24 23:14:36 INFO src.app:   --> !! App: Untisanmeldung wurde erfolgreich gestartet !!
+2026-07-24 23:14:36 INFO src.app: --------------------------------------------------
+2026-07-24 23:14:37 WARNING werkzeug:  * Debugger is active!
+2026-07-24 23:14:37 INFO werkzeug:  * Debugger PIN: 110-324-653

@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 _AUSBILDER_USER = "tssbit"
 
 
-def requires_auth(allowed_login_types: str | list | tuple, allow_token_bypass: bool = False):
+def requires_auth(allowed_login_types: str | list | tuple | frozenset, allow_token_bypass: bool = False):
     """Dekorator-Fabrik: Schützt eine Route auf bestimmte Login-Typen.
 
     Args:
@@ -22,7 +22,7 @@ def requires_auth(allowed_login_types: str | list | tuple, allow_token_bypass: b
         allow_token_bypass:  Wenn True, wird ein gültiges URL-Token als
                              Authentifizierung akzeptiert (kein Passwort nötig).
     """
-    if not isinstance(allowed_login_types, (list, tuple)):
+    if not isinstance(allowed_login_types, (list, tuple, frozenset)):
         allowed_login_types = [allowed_login_types]
 
     def decorator(f):

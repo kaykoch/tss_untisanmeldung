@@ -1,10 +1,8 @@
 # ------------------------------------------------------------------------------
 #  CSV-Hilfsfunktionen
 # ------------------------------------------------------------------------------
-
-from collections.abc import Callable
+from collections.abc import Callable, Iterable
 import csv
-from csv import DictReader as csv_DictReader
 from datetime import datetime
 import glob
 from io import BytesIO, StringIO, TextIOWrapper
@@ -14,8 +12,8 @@ from typing import Any
 
 from src.extensions import state
 from src.models import Ausbilder, Azubis
-from src.services.ausbilder_service import get_ausbilder_list
-from src.services.azubi_service import get_azubi_list
+from src.services.ausbilder_service import get_ausbilder_list_for_csv
+from src.services.azubi_service import get_azubi_list_for_csv
 
 
 logger = logging.getLogger(__name__)
@@ -41,7 +39,7 @@ def _get_codec(testfile: str) -> str:
     for codec in state.codecs:
         try:
             with open(testfile, encoding=codec) as f:
-                reader = csv_DictReader(f)
+                reader = csv.DictReader(f)
                 next(reader)  # StopIteration bei leerer Datei ist trotzdem gültig
             return codec
         except StopIteration:
@@ -69,31 +67,33 @@ def _read_csv_file(filepath: str) -> tuple[list[str], list[dict]]:
     return fieldnames, rows
 
 
-def _write_dicts_to_bytesio(fieldnames: list[str], rows: list[dict]) -> BytesIO:
-    """Schreibt eine Liste von Dicts als Semikolon-CSV in ein BytesIO-Objekt.
-
-    Fehlende Werte werden als leerer String geschrieben.
-
-    Verwendet von: merge_csv_to_bytesio, export_to_csv
+def write_dicts_to_bytesio(fieldnames: list[str], rows: Iterable[dict[str, Any]]) -> BytesIO:
+    """
+    Semikolon-CSV, UTF-8-BOM (utf-8-sig) und CRLF (Windows/Excel-freundlich).
+    - fieldnames: Liste der Spaltenüberschriften / Reihenfolge
+    - rows: Iterable von Dicts (keys werden nach fieldnames gemappt)
     """
     str_io = StringIO()
     writer = csv.DictWriter(
         str_io,
         fieldnames=fieldnames,
         delimiter=";",
-        lineterminator="\n",
+        lineterminator="\r\n",  # CRLF für Excel
         extrasaction="ignore",
         restval="",
     )
     writer.writeheader()
-    writer.writerows(rows)
+    # writer.writerows akzeptiert Iterable[list|tuple], sicherheitshalber in Liste umwandeln,
+    # falls rows ein Generator ist
+    writer.writerows(list(rows))
 
-    bytes_io = BytesIO(str_io.getvalue().encode("utf-8"))
+    # UTF-8 with BOM für Excel:
+    bytes_io = BytesIO(str_io.getvalue().encode("utf-8-sig"))
     bytes_io.seek(0)
     return bytes_io
 
 
-def _read_bytesio_as_csv(bytes_io: BytesIO) -> csv_DictReader:
+def _read_bytesio_as_csv(bytes_io: BytesIO) -> csv.DictReader:
     """Setzt den BytesIO-Zeiger zurück und gibt einen DictReader zurück.
 
     Hinweis: Der Aufrufer ist verantwortlich für das Schließen des TextIOWrapper.
@@ -102,7 +102,7 @@ def _read_bytesio_as_csv(bytes_io: BytesIO) -> csv_DictReader:
     """
     bytes_io.seek(0)
     wrapper = TextIOWrapper(bytes_io, encoding="utf-8", errors="replace", newline="")
-    return csv_DictReader(wrapper, delimiter=";"), wrapper
+    return csv.DictReader(wrapper, delimiter=";"), wrapper
 
 
 def _generic_bytesio_import(
@@ -125,7 +125,7 @@ def _generic_bytesio_import(
 
     try:
         with TextIOWrapper(bytes_io, encoding="utf-8", errors="replace", newline="") as f:
-            for row in csv_DictReader(f, delimiter=";"):
+            for row in csv.DictReader(f, delimiter=";"):
                 item = row_mapper(row)
                 if item is not None:
                     ergebnis.append(item)
@@ -135,7 +135,7 @@ def _generic_bytesio_import(
         return []
 
 
-def __generic_csv_import(csv_file: str, row_mapper: Callable[[dict], Any | None]) -> list[Any]:
+def _generic_csv_import(csv_file: str, row_mapper: Callable[[dict], Any | None]) -> list[Any]:
     """Liest eine CSV-Datei zeilenweise ein und wendet eine Mapping-Funktion an.
 
     Ermittelt den Codec automatisch via `_get_codec`. Gibt eine leere Liste
@@ -153,7 +153,7 @@ def __generic_csv_import(csv_file: str, row_mapper: Callable[[dict], Any | None]
 
     try:
         with open(csv_file, encoding=codec, errors="replace") as f:
-            for row in csv_DictReader(f, delimiter=";"):
+            for row in csv.DictReader(f, delimiter=";"):
                 item = row_mapper(row)
                 if item is not None:
                     ergebnis.append(item)
@@ -166,7 +166,7 @@ def __generic_csv_import(csv_file: str, row_mapper: Callable[[dict], Any | None]
         return []
 
 
-def __map_azubi_from_untis(row: dict) -> Azubis | None:
+def _map_azubi_from_untis(row: dict) -> Azubis | None:
     """Wandelt eine Untis-CSV-Zeile in ein Azubis-Objekt um.
 
     Filtert Zeilen, deren Klassenname nicht mit "BS" oder "bs" beginnt.
@@ -192,7 +192,7 @@ def __map_azubi_from_untis(row: dict) -> Azubis | None:
     )
 
 
-def __map_azubi_from_db(row: dict) -> Azubis | None:
+def _map_azubi_from_db(row: dict) -> Azubis | None:
     """Wandelt eine DB-Export-CSV-Zeile in ein Azubis-Objekt um.
 
     Filtert Zeilen, deren Klasse nicht mit "BS" oder "bs" beginnt.
@@ -218,7 +218,7 @@ def __map_azubi_from_db(row: dict) -> Azubis | None:
     )
 
 
-def __map_ausbilder(row: dict) -> Ausbilder:
+def _map_ausbilder(row: dict) -> Ausbilder:
     """Wandelt eine CSV-Zeile in ein Ausbilder-Objekt um.
 
     Args:
@@ -272,7 +272,7 @@ def merge_csv_to_bytesio(upload_folder: str) -> BytesIO:
             fieldnames = headers  # Spalten der ersten Datei als Referenz
         all_rows.extend(rows)
 
-    return _write_dicts_to_bytesio(fieldnames, all_rows)
+    return write_dicts_to_bytesio(fieldnames, all_rows)
 
 
 def export_to_csv(klasse: str) -> BytesIO | None:
@@ -284,7 +284,7 @@ def export_to_csv(klasse: str) -> BytesIO | None:
     Returns:
         BytesIO mit CSV-Inhalt, oder None bei Fehler.
     """
-    list_to_csv = get_ausbilder_list() if klasse == "ausbilder" else get_azubi_list(klasse)
+    list_to_csv = get_ausbilder_list_for_csv() if klasse == "ausbilder" else get_azubi_list_for_csv(klasse)
 
     try:
         if list_to_csv is None:
@@ -296,7 +296,7 @@ def export_to_csv(klasse: str) -> BytesIO | None:
             return empty
 
         fieldnames = list(list_to_csv[0].keys())
-        return _write_dicts_to_bytesio(fieldnames, list_to_csv)
+        return write_dicts_to_bytesio(fieldnames, list_to_csv)
 
     except ValueError as e:
         logger.exception("export_to_csv -> %s", e)
@@ -311,7 +311,7 @@ def import_azubis_from_bytesio(bytes_io: BytesIO) -> list[Azubis]:
 
     Nur Zeilen mit Klassen, die mit "BS" oder "bs" beginnen, werden importiert.
     """
-    return _generic_bytesio_import(bytes_io, __map_azubi_from_db, context="azubis")
+    return _generic_bytesio_import(bytes_io, _map_azubi_from_db, context="azubis")
 
 
 def import_ausbilder_from_bytesio(bytes_io: BytesIO) -> list[Ausbilder]:
@@ -319,7 +319,7 @@ def import_ausbilder_from_bytesio(bytes_io: BytesIO) -> list[Ausbilder]:
 
     Alle Felder müssen in der CSV vorhanden sein.
     """
-    return _generic_bytesio_import(bytes_io, __map_ausbilder, context="ausbilder")
+    return _generic_bytesio_import(bytes_io, _map_ausbilder, context="ausbilder")
 
 
 # ------------------------------------------------------------------------------
@@ -330,7 +330,7 @@ def import_azubis_from_csv(csv_file: str) -> list[Azubis]:
 
     Nur Zeilen mit Klassen, die mit "BS" oder "bs" beginnen, werden importiert.
     """
-    return __generic_csv_import(csv_file, __map_azubi_from_untis)
+    return _generic_csv_import(csv_file, _map_azubi_from_untis)
 
 
 def import_ausbilder_from_csv(csv_file: str) -> list[Ausbilder]:
@@ -338,4 +338,4 @@ def import_ausbilder_from_csv(csv_file: str) -> list[Ausbilder]:
 
     Alle Felder müssen in der CSV vorhanden sein.
     """
-    return __generic_csv_import(csv_file, __map_ausbilder)
+    return _generic_csv_import(csv_file, _map_ausbilder)

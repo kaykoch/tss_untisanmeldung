@@ -21,6 +21,10 @@ _MAIL_DELAY = 1  # Sekunden Pause zwischen Mails
 _SUBJECT_UNTIS = "Ihr WebUntis-Zugang – Zugriff auf Fehlzeiten Ihrer Auszubildenden"
 _SUBJECT_CONFIRM = "Bestätigung der Azubianmeldung für WebUntis an der TSS Bitburg"
 
+# ------------------------------------------------------------------------------
+# Hilfsfunktionen – intern
+# ------------------------------------------------------------------------------
+
 
 def __send_mail(msg: Message) -> bool:
     """Sendet eine Flask-Mail-Message.
@@ -51,6 +55,45 @@ def __build_flash_result(success: bool, ok_msg: str, err_msg: str) -> tuple[str,
     Verwendet von: send_untisinfo_to_ausbilder, send_mail_to_ausbilder
     """
     return (ok_msg, "success") if success else (err_msg, "error")
+
+
+def _is_not_valid_mail(email: str) -> bool:
+    """Gibt True zurück, wenn die E-Mail-Adresse NICHT valide ist."""
+    return re_match(_EMAIL_REGEX, email) is None
+
+
+# ------------------------------------------------------------------------------
+# Öffentliche Funktionen
+# ------------------------------------------------------------------------------
+
+
+def send_mail_to_kontaktperson(file_io: BytesIO, klasse: str) -> None:
+    """Erstellt eine CSV-Datei für die Klasse und versendet sie per Mail an die Kontaktperson.
+
+    Verwendet von: route_azubianzeige
+    """
+    recipients = [state.get_text("kontaktperson", "mail")]
+    subject = "Bestätigung der Azubianmeldung für WebUntis an der TSS Bitburg"
+    html = (
+        f"Hallo {state.get_text('kontaktperson', 'vorname')} {state.get_text('kontaktperson', 'nachname')},<br>"
+        f"im Anhang befindet sich die Datei mit Ausbildern für die Klasse: {klasse}."
+    )
+    msg = Message(subject=subject, recipients=recipients, html=html)
+    msg.attach(
+        filename=f"untis_ausbilder_{klasse}.csv",
+        content_type="text/csv",
+        data=file_io.getvalue(),
+    )
+
+    if __send_mail(msg):
+        info = f"Die CSV-Datei der Klasse {klasse} wurde an {state.get_text('kontaktperson', 'mail')} versandt."
+        logger.info("Mail mit Azubis (%s) verschickt an: %s", klasse, state.get_text("kontaktperson", "mail"))
+        flash(Markup(info), "success")
+    else:
+        flash(
+            Markup(f"Die Mail an {state.get_section('kontaktperson')} konnte nicht versandt werden."),
+            "error",
+        )
 
 
 def send_untisinfo_to_ausbilder(ausbilder_liste: list) -> None:
@@ -114,37 +157,3 @@ def send_mail_to_ausbilder(ausbilder) -> tuple[Markup, str]:
         ),
         err_msg=f"Die Mail an {ausbilder.ausbilder_email} konnte nicht versandt werden.",
     )
-
-
-def send_mail_to_kontaktperson(file_io: BytesIO, klasse: str) -> None:
-    """Erstellt eine CSV-Datei für die Klasse und versendet sie per Mail an die Kontaktperson.
-
-    Verwendet von: route_azubianzeige
-    """
-    recipients = [state.kontaktperson.mail]
-    subject = "Bestätigung der Azubianmeldung für WebUntis an der TSS Bitburg"
-    html = (
-        f"Hallo {state.kontaktperson.name},<br>"
-        f"im Anhang befindet sich die Datei mit Ausbildern für die Klasse: {klasse}."
-    )
-    msg = Message(subject=subject, recipients=recipients, html=html)
-    msg.attach(
-        filename=f"untis_ausbilder_{klasse}.csv",
-        content_type="text/csv",
-        data=file_io.getvalue(),
-    )
-
-    if __send_mail(msg):
-        info = f"Die CSV-Datei der Klasse {klasse} wurde an {state.kontaktperson.komplett} versandt."
-        logger.info("Mail mit Azubis (%s) verschickt an: %s", klasse, state.kontaktperson.komplett)
-        flash(Markup(info), "success")
-    else:
-        flash(
-            Markup(f"Die Mail an {state.kontaktperson.komplett} konnte nicht versandt werden."),
-            "error",
-        )
-
-
-def _is_not_valid_mail(email: str) -> bool:
-    """Gibt True zurück, wenn die E-Mail-Adresse NICHT valide ist."""
-    return re_match(_EMAIL_REGEX, email) is None
