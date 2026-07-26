@@ -67,7 +67,7 @@ def get_ausbilder_by_email(email: str) -> Ausbilder | None:
     return state.db.session.execute(stmt).scalar_one_or_none()
 
 
-def delete_ausbilder(ausbilder: Ausbilder) -> None:
+def delete_ausbilder(ausbilder: Ausbilder) -> tuple:
     """Löscht einen Ausbilder samt aller Verknüpfungen aus der Datenbank.
 
     Args:
@@ -77,12 +77,15 @@ def delete_ausbilder(ausbilder: Ausbilder) -> None:
     """
 
     try:
+        mail = ausbilder.ausbilder_email
         state.db.session.delete(ausbilder)
         state.db.session.commit()
+        return (f"{mail} und alle Verknüpfungen zu Azubis wurden gelöscht.", "success")
 
     except SQLAlchemyError:
         state.db.session.rollback()
-        logger.error("DB-Fehler beim Löschen von Ausbilder %s", ausbilder.ausbilder_email)
+        logger.error("DB-Fehler beim Löschen von Ausbilder %s", mail)
+        return (f" DB-Fehler beim Löschen von Ausbilder:({mail})", "error")
 
 
 def delete_unconfirmed_ausbilder(timetowait: int = DEFAULT_TIMETOWAIT) -> None:
@@ -120,7 +123,7 @@ def update_ausbilder_safe(liste: list, delete_existing: bool = False) -> tuple[s
             delete_all(Ausbilder)
 
         # vorhandene Werte des primarykeys "ausbilder_email" als Set lesen
-        existing = get_existing_keys(Ausbilder, Ausbilder.ausbilder_email)
+        existing = get_existing_keys(Ausbilder, "ausbilder_email")
 
         # Fügt neue Werte anhand des Primarykeys in "Ausbilder" ein ohne vorhandene zu überschreiben
         answer, category = add_new_entries(liste, "ausbilder_email", existing, "Ausbilder")

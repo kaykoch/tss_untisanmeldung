@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------
-#     USER-BEREICH
+# Überprüft durch Claude 4
 # ------------------------------------------------------------------------------
 
 import logging
@@ -10,13 +10,12 @@ from flask import (
     abort,
     flash,
     jsonify,
-    redirect,
     render_template,
     request,
     url_for,
 )
 from flask.typing import ResponseReturnValue
-from markupsafe import Markup
+from markupsafe import Markup, escape
 from sqlalchemy.exc import SQLAlchemyError
 
 from src.extensions import state
@@ -86,6 +85,23 @@ def _flash_zuordnung_feedback(neue_schueler_ids: list[str], liste_fehler: list[s
 # ------------------------------------------------------------------------------
 # Routen
 # ------------------------------------------------------------------------------
+@main_bp.route("/old")
+def willkommen():
+    """Temporäre Seite., weil sich die Domain geändert hatte und eine Weiterleitung auf /old gibt"""
+    token = request.args.get("token")
+    if token:
+        target = url_for("main.index", token=token, _external=True)
+    else:
+        target = url_for("main.index", _external=True)
+
+    link_html = f'<a href="{escape(target)}" rel="noopener noreferrer">{escape(target)}</a>'
+    info = Markup(
+        "<p>Wir sind umgezogen.</p>"
+        f"<p>Unsere neue Seite lautet: {link_html}</p>"
+        "<p>Bitte rufen Sie in Zukunft direkt diesen Link auf, um neue Auszubildende zu registrieren.</p>"
+    )
+    flash(info, "warning")
+    return render_template("oldside.html")
 
 
 @main_bp.route("/", methods=["GET", "POST"])
@@ -96,35 +112,23 @@ def index() -> ResponseReturnValue:
     - Optionales Prefill des Formulars via Token
     - Anzeige von Infotexten und Anmeldeformular
     """
-
     delete_unconfirmed_ausbilder(state.app.config["TIMETOWAIT"])
 
     token: str | None = request.args.get("token")
     ausbilder: Ausbilder | None = get_ausbilder_by_token(token) if token else None
     form = AnmeldungForm(obj=ausbilder) if ausbilder else AnmeldungForm()
 
-    if form.validate_on_submit():
-        return redirect(url_for("main.route_bestaetigung"))
-
-    info = Markup(state.get_text("infos", "index"))
-
+    info = Markup(state.infos.content.index)
     flash(info, "success")
-    if token is not None:
-        info = Markup(
-            "Sie sind auf unsere neue Website [https://untis.tss-bitburg.de] umgeleitet worden. "
-            f"Bitte rufen Sie in Zukunft direkt diesen <a href='https://untis.tss-bitburg.de/?token={token}'>Link</a> "
-            "auf, um neue Auszubildende zu registrieren."
-            "<p>Diese Information wird vorläufig auch angezeigt, wenn Sie bereits die neue Adresse aufgerufen haben</p>"
-        )
-        flash(info, "warning")
 
     return render_template(_TEMPLATEINDEX, form=form, title=_TITLE_INDEX)
 
 
 @main_bp.route("/bestaetigung.html", methods=["GET", "POST"])
 @state.limiter.limit("3 per minute")
+@requires_auth(_ALLOWED_ROLES_TSS, allow_token_bypass=True)
 def route_bestaetigung() -> ResponseReturnValue:
-    """Bestätigungsseite: Verarbeitet Ausbilder-Anmeldung und Schüler-Zuordnung."""
+    """Bestätigungsseite: Speichert Ausbilder-Anmeldung und Schüler-Zuordnung."""
     form = AnmeldungForm()
 
     if not form.validate_on_submit():
@@ -138,25 +142,30 @@ def route_bestaetigung() -> ResponseReturnValue:
     neue_schueler_ids = _parse_schueler_ids()
 
     try:
+        # Ist der Ausbilder bereits vorhanden, oder neu?
         ausbilder = get_ausbilder_by_email(ausbilder_email)
         neu_angelegt = ausbilder is None
-
-        if neu_angelegt:
-            ausbilder = create_ausbilder(form)
 
         neue_schueler: list[Azubis] = []
         liste_fehler: list[str] = []
 
         if neue_schueler_ids:
+            # Gibt es Schüler zu diesen IDs
             neue_schueler = get_schueler_by_ids(neue_schueler_ids)
             liste_fehler = get_fehlende_ids(neue_schueler_ids, neue_schueler)
-            assign_schueler(neue_schueler, ausbilder_email)
 
-        if neue_schueler:
-            state.db.session.commit()
-            if neu_angelegt:
-                answer, category = send_mail_to_ausbilder(ausbilder)
-                flash(answer, category)
+            if neue_schueler:
+                # Es gibt Schüler mit den IDs
+                if neu_angelegt:
+                    # Der Ausbilder muss neu angelegt werden
+                    ausbilder = create_ausbilder(form)
+                # Die Schüler werden dem Ausbilder zugeordnet
+                assign_schueler(neue_schueler, ausbilder_email)
+                state.db.session.commit()
+
+                if neu_angelegt:
+                    answer, category = send_mail_to_ausbilder(ausbilder)
+                    flash(answer, category)
 
         _flash_zuordnung_feedback(neue_schueler_ids, liste_fehler)
 
@@ -164,12 +173,12 @@ def route_bestaetigung() -> ResponseReturnValue:
             form,
             liste_erfolgreich=neue_schueler,
             liste_fehler=liste_fehler,
-            ausbilder=ausbilder,
+            ausbilder=ausbilder,  # Wenn None -> wird im Template abgesichert
         )
 
     except SQLAlchemyError as e:
         state.db.session.rollback()
-        logger.error("DB-Fehler in route_bestaetigung: %s", e)
+        logger.exception("DB-Fehler in route_bestaetigung: %s", e)
         flash("Ein Datenbankfehler ist aufgetreten.", "error")
         return _render_bestaetigung(form)
 
@@ -197,7 +206,7 @@ def route_azubismitausbilder() -> ResponseReturnValue:
             flash("Ihre Anmeldung wurde bestätigt", "warning")
 
         azubi_liste: list[Azubis] = list(ausbilder.accounts)
-        infos = state.get_text("infos", "azubimitausbilder")
+        infos = state.infos.content.azubimitausbilder
         flash(Markup(infos), "success")
 
         return render_template(
@@ -213,17 +222,19 @@ def route_azubismitausbilder() -> ResponseReturnValue:
         abort(500)
 
 
-@main_bp.route("/api/zugeordete_schueler/<string:klasse_name>")
-def zugeordete_schueler(klasse_name: str) -> ResponseReturnValue:
+@main_bp.route("/api/zugeordnete_schueler/<string:klasse_name>")
+@requires_auth(_ALLOWED_ROLES_TSS)
+def zugeordnete_schueler(klasse_name: str) -> ResponseReturnValue:
     """API-Endpunkt: Gibt alle Azubis einer Klasse als JSON zurück."""
     try:
         data: list[Any] = get_azubi_list_for_csv(klasse_name)
         return jsonify(data)
     except Exception as e:
-        logger.error("Fehler in zugeordete_schueler: %s", e)
+        logger.error("Fehler in zugeordnete_schueler: %s", e)
         return jsonify([])
 
 
 @main_bp.route("/impressum.html", methods=["GET"])
 def route_impressum() -> ResponseReturnValue:
+    """Zeigt die Impressumseite an"""
     return render_template("impressum.html")

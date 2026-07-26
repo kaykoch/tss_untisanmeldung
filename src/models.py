@@ -1,8 +1,8 @@
 # ------------------------------------------------------------------------------
-#  DATENBANK-MODELLE UND -ABFRAGEN
+# Überprüft durch Claude 4
 # ------------------------------------------------------------------------------
 
-from datetime import datetime
+from datetime import UTC, datetime
 import logging
 from secrets import token_urlsafe
 
@@ -25,20 +25,17 @@ DEFAULT_ADMINPASSWORD = "admin"
 # Ausbilder Zugang
 DEFAULT_TSSPASSWORD = "tssbit"
 
-# Kontaktperson
-DEFAULT_VORNAME = "John"
-DEFAULT_NACHNAME = "Lennon"
-DEFAULT_MAIL = "john@beatles.com"
 
 # Mail Zugang
 DEFAULT_MAIL_SERVER = "smtp.office365.com"
 DEFAULT_MAIL_PORT = 587
+DEFAULT_MAIL_ENCRYPTION = "tls"
 DEFAULT_MAIL_SENDER = "paul@beatles.com"
 DEFAULT_MAIL_USER = "john@beatles.com"
-DEFAULT_MAIL_PASS = "yellosubmarine"
+DEFAULT_MAIL_PASS = ""
 
 # Weitere
-TOKEN_LENGTH = 12
+TOKEN_LENGTH = 12  # token_urlsafe(12) → ~16 Zeichen Base64-kodiert
 DEFAULT_TIMETOWAIT = 120
 
 
@@ -59,10 +56,10 @@ class Ausbilder(db.Model):
     bestaetigt = db.Column(db.Boolean, nullable=False, default=False)
     # WICHTIG: Callable (ohne Klammern) übergeben, damit es bei jedem Insert neu berechnet wird
     token = db.Column(db.String(32), default=lambda: token_urlsafe(TOKEN_LENGTH))
-    created_at = db.Column(db.DateTime, default=datetime.now)
+    created_at = db.Column(db.DateTime, default=lambda: datetime.now(UTC))
 
     # Beziehung zu Azubis (Backref erlaubt Zugriff von Azubi auf Ausbilder)
-    accounts = db.relationship("Azubis", backref="Ausbilder", lazy=True)
+    accounts = db.relationship("Azubis", backref="ausbilder", lazy=True)
 
     def __repr__(self) -> str:
         return f"<Ausbilder: {self.ausbilder_email}: {self.ausbilder_name}>"
@@ -111,8 +108,7 @@ class ConfigSetting(db.Model):
     # Mail-Server-Einstellungen
     mail_server = db.Column(db.String(255), default=DEFAULT_MAIL_SERVER)
     mail_port = db.Column(db.Integer, default=DEFAULT_MAIL_PORT)
-    mail_use_tls = db.Column(db.Boolean, default=True)
-    mail_use_ssl = db.Column(db.Boolean, default=False)
+    mail_encryption = db.Column(db.String(10), default=DEFAULT_MAIL_ENCRYPTION)
     mail_username = db.Column(db.String(255), default=DEFAULT_MAIL_USER)
     mail_password = db.Column(db.String(255), default=DEFAULT_MAIL_PASS)
     mail_default_sender = db.Column(db.String(255), default=DEFAULT_MAIL_SENDER)
@@ -128,18 +124,32 @@ class ConfigSetting(db.Model):
 
 def delete_all(model) -> None:
     """Löscht alle Einträge eines Modells und committed sofort.
-
+    Args:
+            model (_type_): Model, aus dem die Werte gelöscht werden
     Verwendet von: update_ausbilder_safe, _update_azubis_safe
     """
-    db.session.query(model).delete()
-    db.session.commit()
+    try:
+        db.session.query(model).delete()
+        db.session.commit()
+    except Exception:
+        db.session.rollback()
+        logger.exception("delete_all: Fehler beim Löschen von %s", model.__tablename__)
+        raise
 
 
-def get_existing_keys(model, column) -> set:
+def get_existing_keys(model, key_attr: str) -> set[str]:
     """Gibt alle vorhandenen Werte einer Spalte als Set zurück.
 
     Verwendet von: update_ausbilder_safe, _update_azubis_safe
+
+    Args:
+        model (_type_): Model, aus dem die Werte gelesen werden
+        key_attr (str): Attributname
+
+    Returns:
+        set[str]: Set mit Einträgen
     """
+    column = getattr(model, key_attr)
     return {r[0] for r in db.session.query(column).all()}
 
 
@@ -166,8 +176,13 @@ def add_new_entries(
     to_add = [item for key, item in unique_input.items() if key not in existing_keys]
 
     if to_add:
-        db.session.add_all(to_add)
-        db.session.commit()
-        return (f"{len(to_add)} neue {label} hinzugefügt.", "success")
-
-    return (f"Keine neuen {label} gefunden (alle existieren bereits).", "success")
+        try:
+            db.session.add_all(to_add)
+            db.session.commit()
+            return (f"{len(to_add)} neue {label} hinzugefügt.", "success")
+        except Exception:
+            db.session.rollback()
+            logger.exception("add_new_entries: Fehler beim Einfügen von %s", label)
+            return (f"Fehler beim Einfügen der {label}.", "error")
+    else:
+        return (f"Keine neuen {label} gefunden (alle existieren bereits).", "success")

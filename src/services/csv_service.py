@@ -1,6 +1,7 @@
 # ------------------------------------------------------------------------------
-#  CSV-Hilfsfunktionen
+# Überprüft durch Claude 4
 # ------------------------------------------------------------------------------
+
 from collections.abc import Callable, Iterable
 import csv
 from datetime import datetime
@@ -85,24 +86,12 @@ def write_dicts_to_bytesio(fieldnames: list[str], rows: Iterable[dict[str, Any]]
     writer.writeheader()
     # writer.writerows akzeptiert Iterable[list|tuple], sicherheitshalber in Liste umwandeln,
     # falls rows ein Generator ist
-    writer.writerows(list(rows))
+    writer.writerows(rows)
 
     # UTF-8 with BOM für Excel:
     bytes_io = BytesIO(str_io.getvalue().encode("utf-8-sig"))
     bytes_io.seek(0)
     return bytes_io
-
-
-def _read_bytesio_as_csv(bytes_io: BytesIO) -> csv.DictReader:
-    """Setzt den BytesIO-Zeiger zurück und gibt einen DictReader zurück.
-
-    Hinweis: Der Aufrufer ist verantwortlich für das Schließen des TextIOWrapper.
-
-    Verwendet von: _generic_bytesio_import
-    """
-    bytes_io.seek(0)
-    wrapper = TextIOWrapper(bytes_io, encoding="utf-8", errors="replace", newline="")
-    return csv.DictReader(wrapper, delimiter=";"), wrapper
 
 
 def _generic_bytesio_import(
@@ -119,20 +108,34 @@ def _generic_bytesio_import(
         context:    Optionaler Name für Logging-Ausgaben.
 
     Verwendet von: import_azubis_from_bytesio, import_ausbilder_from_bytesio
+
+    Hinweis:
+        TextIOWrapper wird via detach() vom BytesIO getrennt, bevor er
+        geschlossen wird — so bleibt bytes_io für den Aufrufer weiterhin nutzbar.
     """
     bytes_io.seek(0)
     ergebnis: list[Any] = []
+    label = context or getattr(row_mapper, "__name__", "unbekannt")
 
+    wrapper = TextIOWrapper(bytes_io, encoding="utf-8", errors="replace", newline="")
     try:
-        with TextIOWrapper(bytes_io, encoding="utf-8", errors="replace", newline="") as f:
-            for row in csv.DictReader(f, delimiter=";"):
+        for row in csv.DictReader(wrapper, delimiter=";"):
+            try:
                 item = row_mapper(row)
                 if item is not None:
                     ergebnis.append(item)
-        return ergebnis
-    except Exception as e:
-        logger.error("Fehler beim BytesIO-Import (%s): %s", context or row_mapper.__name__, e)
+            except Exception:
+                # Einzelne fehlerhafte Zeile überspringen, Import fortsetzen
+                logger.warning("_generic_bytesio_import (%s): Zeile übersprungen: %s", label, row)
+    except Exception:
+        # Fehler auf Datei-/Stream-Ebene: gesamten Import abbrechen
+        logger.exception("Fehler beim BytesIO-Import (%s)", label)
         return []
+    finally:
+        # detach() verhindert, dass TextIOWrapper den BytesIO schließt
+        wrapper.detach()
+
+    return ergebnis
 
 
 def _generic_csv_import(csv_file: str, row_mapper: Callable[[dict], Any | None]) -> list[Any]:
@@ -148,7 +151,7 @@ def _generic_csv_import(csv_file: str, row_mapper: Callable[[dict], Any | None])
 
     Verwendet von: import_azubis_from_csv, import_ausbilder_from_csv
     """
-    codec = _get_codec(csv_file)
+    codec = _get_codec(csv_file) or "utf-8"
     ergebnis: list[Any] = []
 
     try:
@@ -233,15 +236,19 @@ def _map_ausbilder(row: dict) -> Ausbilder:
 
     Verwendet von: import_ausbilder_from_csv, import_ausbilder_from_bytesio
     """
-    return Ausbilder(
-        ausbilder_email=row["ausbilder_email"],
-        ausbilder_name=row["ausbilder_name"],
-        ausbilder_vorname=row["ausbilder_vorname"],
-        ausbilder_betrieb=row["ausbilder_betrieb"],
-        bestaetigt=row["bestaetigt"].strip().lower() == "true",  # bool("False") wäre True!
-        token=row["token"],
-        created_at=datetime.strptime(row["created_at"], "%Y-%m-%d %H:%M:%S.%f"),
-    )
+    try:
+        return Ausbilder(
+            ausbilder_email=row["ausbilder_email"],
+            ausbilder_name=row["ausbilder_name"],
+            ausbilder_vorname=row["ausbilder_vorname"],
+            ausbilder_betrieb=row["ausbilder_betrieb"],
+            bestaetigt=row["bestaetigt"].strip().lower() == "true",
+            token=row["token"],
+            created_at=datetime.strptime(row["created_at"], "%Y-%m-%d %H:%M:%S.%f"),
+        )
+    except (KeyError, ValueError) as e:
+        logger.warning("_map_ausbilder: Zeile übersprungen (%s): %s", e, row)
+        return None
 
 
 # ------------------------------------------------------------------------------
@@ -269,7 +276,14 @@ def merge_csv_to_bytesio(upload_folder: str) -> BytesIO:
     for filepath in csv_files:
         headers, rows = _read_csv_file(filepath)
         if not fieldnames:
-            fieldnames = headers  # Spalten der ersten Datei als Referenz
+            fieldnames = headers
+        elif headers != fieldnames:
+            logger.warning(
+                "merge_csv_to_bytesio: Spalten in %s weichen ab (erwartet: %s, gefunden: %s)",
+                filepath,
+                fieldnames,
+                headers,
+            )
         all_rows.extend(rows)
 
     return write_dicts_to_bytesio(fieldnames, all_rows)
@@ -301,8 +315,8 @@ def export_to_csv(klasse: str) -> BytesIO | None:
     except ValueError as e:
         logger.exception("export_to_csv -> %s", e)
         return None
-    except OSError as e:
-        logger.exception("export_to_csv -> %s", e)
+    except Exception:
+        logger.exception("export_to_csv: Fehler beim Erstellen der CSV")
         return None
 
 

@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------
-#  FORMULARE
+# Überprüft durch Claude 4
 # ------------------------------------------------------------------------------
 
 import re
@@ -7,7 +7,6 @@ import re
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileAllowed
 from wtforms import (
-    BooleanField,
     EmailField,
     FileField,
     HiddenField,
@@ -17,20 +16,14 @@ from wtforms import (
     StringField,
     SubmitField,
 )
-from wtforms.validators import DataRequired, Email, Length, NumberRange, Optional
+from wtforms.validators import AnyOf, DataRequired, Email, Length, NumberRange, Optional
 
 
 # ------------------------------------------------------------------------------
 # Konstanten
 # ------------------------------------------------------------------------------
 
-EMAIL_VALIDATORS = [
-    DataRequired(message="Bitte geben Sie eine E-Mail-Adresse ein."),
-    Email(message="Bitte geben Sie eine gültige E-Mail-Adresse ein."),
-    Length(max=255),
-]
-
-ALLOWED_UPLOAD_EXTENSIONS = ["csv", "pdf"]
+_ALLOWED_UPLOAD_EXTENSIONS = frozenset({"csv", "pdf"})
 
 PASSWORD_LENGTH = Length(min=4, max=15)
 NAME_LENGTH = Length(max=255)
@@ -38,8 +31,21 @@ EMAIL_LENGTH = Length(max=320)
 
 
 # ------------------------------------------------------------------------------
-# Filter
+# Hilfsfunktionen
 # ------------------------------------------------------------------------------
+def email_validators() -> list:
+    """Gibt eine neue Liste mit Standard-E-Mail-Validatoren zurück.
+
+    Jeder Aufruf erzeugt eine eigene Instanz, um mutable shared state zu vermeiden.
+
+    Returns:
+        Liste mit DataRequired, Email und Length-Validator.
+    """
+    return [
+        DataRequired(message="Bitte geben Sie eine E-Mail-Adresse ein."),
+        Email(message="Bitte geben Sie eine gültige E-Mail-Adresse ein."),
+        Length(max=255),
+    ]
 
 
 def normalize_whitespace(value: str | None) -> str | None:
@@ -53,7 +59,8 @@ def normalize_whitespace(value: str | None) -> str | None:
     """
     if value is None:
         return None
-    return re.sub(r"\s+", " ", str(value).strip())
+    result = re.sub(r"\s+", " ", str(value).strip())
+    return result or None  # "" → None → DataRequired() schlägt an
 
 
 # ------------------------------------------------------------------------------
@@ -67,7 +74,7 @@ class AusbilderAktionForm(FlaskForm):
     ausbilder_email = HiddenField(
         "Email",
         filters=[normalize_whitespace],
-        validators=EMAIL_VALIDATORS,
+        validators=email_validators(),
         render_kw={"id": "form_email"},
     )
     action = HiddenField(
@@ -86,7 +93,7 @@ class FilehandlingAktionForm(FlaskForm):
         "Datei auswählen",
         validators=[
             Optional(),
-            FileAllowed(ALLOWED_UPLOAD_EXTENSIONS, "Nur CSV- und PDF-Dateien sind erlaubt!"),
+            FileAllowed(_ALLOWED_UPLOAD_EXTENSIONS, "Nur CSV- und PDF-Dateien sind erlaubt!"),
         ],
         render_kw={"accept": ".csv,.pdf"},
     )
@@ -130,13 +137,12 @@ class AnmeldungForm(FlaskForm):
     ausbilder_email = EmailField(
         "Ihre Mailadresse:",
         filters=[normalize_whitespace],
-        validators=EMAIL_VALIDATORS,
+        validators=email_validators(),
         render_kw={"placeholder": "max.mustermann@musterfirma.com"},
     )
     anzahl_schueler = SelectField(
         "Wieviele Schüler möchten Sie anmelden",
         choices=[("", "Bitte wählen...")] + [(str(i), str(i)) for i in range(1, 16)],
-        filters=[normalize_whitespace],
         validators=[DataRequired()],
         render_kw={"class": "form-select"},
     )
@@ -151,7 +157,7 @@ class ConfigForm(FlaskForm):
     """Konfigurationsformular für Admin-Einstellungen, Kontakt und Mail-Server."""
 
     # Admin
-    admin_login = StringField("Admin Login", validators=[Optional(), PASSWORD_LENGTH])
+    admin_login = StringField("Admin Login", validators=[Optional(), Length(min=3, max=100)])
     admin_password = PasswordField("Admin Passwort", validators=[Optional(), PASSWORD_LENGTH])
 
     # Ausbilder
@@ -160,10 +166,18 @@ class ConfigForm(FlaskForm):
     # Mail-Server
     mail_server = StringField("Mail Server", validators=[Optional(), NAME_LENGTH])
     mail_port = IntegerField("Mail Port", validators=[Optional(), NumberRange(min=1, max=65535)])
-    mail_use_ssl = BooleanField("Nutze SSL", validators=[Optional()])
-    mail_use_tls = BooleanField("Nutze TLS", validators=[Optional()])
+    mail_encryption = SelectField(
+        "Verschlüsselung",
+        choices=[
+            ("none", "Keine Verschlüsselung (Port 25)"),
+            ("tls", "STARTTLS (Empfohlen, z. B. Port 587)"),
+            ("ssl", "SSL / Implicit TLS (z. B. Port 465)"),
+        ],
+        validators=[AnyOf(["none", "tls", "ssl"])],
+        default="tls",
+    )
     mail_username = StringField("Mail Benutzername", validators=[Optional(), NAME_LENGTH])
-    mail_password = PasswordField("Mail Passwort", validators=[Optional(), NAME_LENGTH])
+    mail_password = PasswordField("Mail Passwort", validators=[Optional(), PASSWORD_LENGTH])
     mail_default_sender = StringField("Standard Absender (E-Mail)", validators=[Optional(), EMAIL_LENGTH])
 
     # Sonstiges

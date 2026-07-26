@@ -9,7 +9,7 @@ mail          = "koch@tssbit.de"
 komplett      = "Koch, Kay (koch@tssbit.de)" 
 
 
-[content]
+[infos]
 index = """
     <p>
         Tragen Sie zuerst Ihre Kontaktdaten ein und wählen Sie eine Anzahl aus – 

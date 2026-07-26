@@ -1,39 +1,41 @@
+# ------------------------------------------------------------------------------
+# Überprüft durch Claude 4
+# ------------------------------------------------------------------------------
+
 from io import BytesIO
 import logging
 from re import match as re_match
 from smtplib import SMTPAuthenticationError, SMTPException
 from time import sleep
 
-from flask import flash, render_template, request
+from flask import render_template, request
 from flask_mail import Message
-from markupsafe import Markup
 
 from src.extensions import state
 
 
 logger = logging.getLogger(__name__)
 
-logger = logging.getLogger(__name__)
 _EMAIL_REGEX = r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$"
 _MAIL_LIMIT = 30  # Maximale Anzahl Mails pro Versandaufruf
 _MAIL_DELAY = 1  # Sekunden Pause zwischen Mails
 
 _SUBJECT_UNTIS = "Ihr WebUntis-Zugang – Zugriff auf Fehlzeiten Ihrer Auszubildenden"
 _SUBJECT_CONFIRM = "Bestätigung der Azubianmeldung für WebUntis an der TSS Bitburg"
+_SUBJECT_KONTAKTPERSON = "Liste der Azubis mit dem zugeordneten Ausbilder für den Untis Import"
 
 # ------------------------------------------------------------------------------
 # Hilfsfunktionen – intern
 # ------------------------------------------------------------------------------
 
 
-def __send_mail(msg: Message) -> bool:
+def _send_mail(msg: Message) -> bool:
     """Sendet eine Flask-Mail-Message.
 
     Returns:
         True bei erfolgreichem Versand, sonst False.
     """
     try:
-        print(state.app.config)
         print(msg.recipients)
         # state.mail.send(msg)
         logger.debug("Mail gesendet an: %s", msg.recipients)
@@ -67,15 +69,15 @@ def _is_not_valid_mail(email: str) -> bool:
 # ------------------------------------------------------------------------------
 
 
-def send_mail_to_kontaktperson(file_io: BytesIO, klasse: str) -> None:
+def send_mail_to_kontaktperson(file_io: BytesIO, klasse: str) -> tuple[str, str]:
     """Erstellt eine CSV-Datei für die Klasse und versendet sie per Mail an die Kontaktperson.
 
     Verwendet von: route_azubianzeige
     """
-    recipients = [state.get_text("kontaktperson", "mail")]
-    subject = "Bestätigung der Azubianmeldung für WebUntis an der TSS Bitburg"
+    recipients = [state.infos.kontaktperson.mail]
+    subject = _SUBJECT_KONTAKTPERSON
     html = (
-        f"Hallo {state.get_text('kontaktperson', 'vorname')} {state.get_text('kontaktperson', 'nachname')},<br>"
+        f"Hallo {state.infos.kontaktperson.vorname} {state.infos.kontaktperson.nachname},<br>"
         f"im Anhang befindet sich die Datei mit Ausbildern für die Klasse: {klasse}."
     )
     msg = Message(subject=subject, recipients=recipients, html=html)
@@ -85,23 +87,22 @@ def send_mail_to_kontaktperson(file_io: BytesIO, klasse: str) -> None:
         data=file_io.getvalue(),
     )
 
-    if __send_mail(msg):
-        info = f"Die CSV-Datei der Klasse {klasse} wurde an {state.get_text('kontaktperson', 'mail')} versandt."
-        logger.info("Mail mit Azubis (%s) verschickt an: %s", klasse, state.get_text("kontaktperson", "mail"))
-        flash(Markup(info), "success")
+    if _send_mail(msg):
+        info = f"Die CSV-Datei der Klasse {klasse} wurde an {state.infos.kontaktperson.mail} versandt."
+        logger.info("Mail mit Azubis (%s) verschickt an: %s", klasse, state.infos.kontaktperson.mail)
+        return (info, "success")
     else:
-        flash(
-            Markup(f"Die Mail an {state.get_section('kontaktperson')} konnte nicht versandt werden."),
-            "error",
-        )
+        info = f"Die Mail an {state.get_section('kontaktperson')} konnte nicht versandt werden."
+        return (info, "error")
 
 
-def send_untisinfo_to_ausbilder(ausbilder_liste: list) -> None:
+def send_untisinfo_to_ausbilder(ausbilder_liste: list) -> list[tuple[str, str]]:
     """Sendet WebUntis-Zugangsinformationen an bis zu `_MAIL_LIMIT` Ausbilder.
 
     Args:
         ausbilder_liste: Liste von Ausbilder-Objekten.
     """
+    results = []
     for ausbilder in ausbilder_liste[:_MAIL_LIMIT]:
         html = render_template(
             "mail/mail_untis_ausbilder.html",
@@ -109,21 +110,22 @@ def send_untisinfo_to_ausbilder(ausbilder_liste: list) -> None:
             ausbilder=ausbilder,
         )
         msg = Message(subject=_SUBJECT_UNTIS, recipients=[ausbilder.ausbilder_email], html=html)
-        sent = __send_mail(msg)
+        sent = _send_mail(msg)
 
         recipient = f"{ausbilder.ausbilder_betrieb} ({ausbilder.ausbilder_email})"
         info, result = __build_flash_result(
             sent,
-            ok_msg=f"OK: An {recipient} gesendet.<br>",
+            ok_msg=f"OK: An {recipient} gesendet",
             err_msg=f"FEHLER: An {recipient} konnte nicht versandt werden.",
         )
 
         logger.info(info)
-        flash(Markup(info), result)
+        results.append((info, result))
         sleep(_MAIL_DELAY)
+    return results
 
 
-def send_mail_to_ausbilder(ausbilder) -> tuple[Markup, str]:
+def send_mail_to_ausbilder(ausbilder) -> tuple[str, str]:
     """Sendet eine Bestätigungsmail an einen Ausbilder nach der Anmeldung.
 
     Args:
@@ -139,7 +141,7 @@ def send_mail_to_ausbilder(ausbilder) -> tuple[Markup, str]:
         kontaktperson=state.kontaktperson,
     )
     msg = Message(subject=_SUBJECT_CONFIRM, recipients=[ausbilder.ausbilder_email], html=html)
-    sent = __send_mail(msg)
+    sent = _send_mail(msg)
 
     if sent:
         logger.info(

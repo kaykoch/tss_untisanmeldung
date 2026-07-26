@@ -1,3 +1,7 @@
+# ------------------------------------------------------------------------------
+# Überprüft durch Claude 4
+# ------------------------------------------------------------------------------
+
 import logging
 from pathlib import Path
 import tomllib
@@ -12,13 +16,21 @@ from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy()  # noch ohne App
 mail = Mail()
 
-limiter = Limiter(
-    get_remote_address,
-    default_limits=["10 per minute"],
-    storage_uri="memory://",
-)
+limiter = Limiter(get_remote_address, default_limits=["10 per minute"], storage_uri="memory://")
 
 logger = logging.getLogger(__name__)
+
+
+class TomlState:
+    """verkörpert die Texte aus einer Tomldatei"""
+
+    def __init__(self, data: dict):
+        for key, value in data.items():
+            if isinstance(value, dict):
+                # Verschachtelte Dictionaries ebenfalls umwandeln
+                setattr(self, key, TomlState(value))
+            else:
+                setattr(self, key, value)
 
 
 class AppState:
@@ -32,15 +44,11 @@ class AppState:
     _UPLOAD_DIR = Path(__file__).resolve().parent / "upload"
 
     def __init__(self):
-        # Die Wichtigsten
+        # Extensions / App
         self.db: SQLAlchemy = db
         self.mail = mail
-        self.app: Flask = None
-        self.limiter: Limiter | None = Limiter(
-            get_remote_address,
-            default_limits=["10 per minute"],
-            storage_uri="memory://",
-        )
+        self.limiter: Limiter = limiter
+        self.app: Flask | None = None
 
         # Pfade zu den verschiedenen Dateien
         self.staticfolder: Path = self._STATIC_DIR
@@ -55,7 +63,7 @@ class AppState:
         self.logfile: Path = self.__ensure_file_exists(self._LOG_DIR, self._LOG_FILE)
 
         # Texte aus text.toml
-        self.infos: dict | None = None
+        self.infos: TomlState = TomlState({})
 
         self.allowed_extensions = ["csv", "pdf"]
         self.codecs = ["UTF-8", "ISO-8859-1", "utf-8-sig"]
@@ -70,83 +78,58 @@ class AppState:
 
                 erlaubte keys sind:
                 infofile (str): Name der pdf Datei, die heruntergeladen werden kann
-                textfile (str): Name der toml-Datei mit Textbausteinen
+                tomlfile (str): Name der toml-Datei mit Textbausteinen
                 prototypeazubi (str): Name der CSV-Datei im korrekten Format für den Upload
                 prototypeausbilder (str): Name der CSV-Datei im korrekten Format für den Upload
         """
         # app in state soeichern
-        self.app: Flask = app
+        self.app = app
 
         for attr_name, filename in kwargs.items():
-            # Alle übergebenden Werte
-            if hasattr(self, attr_name):
-                # Es gibt den Schlüssel hier in der Class
+            if hasattr(self, attr_name) and isinstance(filename, str) and filename:
                 file_path = self.__ensure_file_exists(self.datafolder, filename)
                 setattr(self, attr_name, file_path)
+                logger.info("Datei '%s' vorhanden: %s", attr_name, file_path)
 
-                logger.info(f"Datei: {attr_name} vorhanden")
-
+        # Falls tomlfile nicht angegeben war: auf Standard texts.toml im data-Ordner setzen
+        if self.tomlfile is None:
+            self.tomlfile = self.__ensure_file_exists(self.datafolder, "texts.toml")
+            logger.info("Standard TOML gesetzt: %s", self.tomlfile)
         # Textbausteine laden
-        self.load_texts()
+        self.infos = self.load_texts(self.tomlfile)
 
-    def load_texts(self) -> None:
+    def load_texts(self, tomlfile) -> None:
         """Lädt die Texte aus der TOML-Datei in den internen Cache."""
+        if tomlfile is None:
+            logger.warning("Keine TOML-Datei angegeben; verwende leere Texte.")
+            return TomlState({})
         try:
-            with open(self.tomlfile, "rb") as f:
-                self.infos = tomllib.load(f)
+            with open(tomlfile, "rb") as f:
+                data = tomllib.load(f)
+            logger.info("Texte geladen aus: %s", tomlfile)
+            return TomlState(data)
 
-            logger.info("Texte geladen aus: %s", self.tomlfile)
         except FileNotFoundError:
-            logger.error("texts.toml nicht gefunden: %s", self.tomlfile)
-            self.infos = {}
+            logger.error("texts.toml nicht gefunden: %s", tomlfile)
+            return TomlState({})
         except tomllib.TOMLDecodeError:
             logger.exception("Fehler beim Parsen von texts.toml")
-            self.infos = {}
+            return TomlState({})
 
-    def get_text(self, section: str, key: str, fallback: str = "") -> str:
-        """Gibt einen Text aus dem Cache zurück.
-
-        Args:
-            section:  Abschnitt in der TOML-Datei, z. B. "anmeldung".
-            key:      Schlüssel innerhalb des Abschnitts, z. B. "intro".
-            fallback: Rückgabewert, wenn Abschnitt oder Schlüssel fehlen.
-
-        Returns:
-            str: Der gefundene Text oder der Fallback.
-        """
-        return self.infos.get(section, {}).get(key, fallback)
-
-    def get_section(self, section: str) -> dict[str, str]:
-        """Gibt einen ganzen Abschnitt zurück (z. B. für Template-Übergabe).
-
-        Args:
-            section: Abschnitt in der TOML-Datei.
-
-        Returns:
-            dict[str, str]: Alle Key-Value-Paare des Abschnitts, oder leeres Dict.
-        """
-        return self.infos.get(section, {})
-
-    def __ensure_file_exists(self, directory: str, filename: str) -> Path:
-        # 1. Sicherstellen, dass directory ein String ist (falls None übergeben wurde)
-        directory_str = directory or "."
-
-        # 2. Pfad-Objekt erstellen
-        filepath = Path(directory_str) / filename
+    def __ensure_file_exists(self, directory: Path | str, filename: str) -> Path:
+        # 1. Pfad-Objekt erstellen
+        base = Path(directory) if directory else Path(".")
+        filepath = base / filename
 
         try:
-            # 3. Elternverzeichnis erstellen, falls es nicht existiert
+            # 2. Elternverzeichnis erstellen
             filepath.parent.mkdir(parents=True, exist_ok=True)
-
-            # 4. Datei erstellen (tut nichts, wenn sie schon existiert)
+            # 3. Datei anlegen (wenn fehlend)
             filepath.touch(exist_ok=True)
-
-            # 5. Absoluten Pfad zurückgeben
+            # 4. Absoluten Pfad zurückgeben
             return filepath.resolve()
-
         except Exception as e:
-            logger.exception(f"Kann Datei nicht anlegen: {filepath}: ({e})")
-            # 6. Im Fehlerfall ein leeres Pfad-Objekt zurückgeben
+            logger.exception("Kann Datei nicht anlegen: %s (%s)", filepath, e)
             return Path()
 
 

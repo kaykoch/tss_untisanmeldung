@@ -47,10 +47,12 @@ def create_app(config_object=ProductionConfig) -> Flask:
     """
     _setup_logging()
     app = Flask(__name__)
+
     app.config.from_object(config_object)
     state.db.init_app(app)
 
     with app.app_context():
+        # update_db()
         _bootstrap(app)
 
     register_routes(app)

@@ -1,13 +1,20 @@
 {% extends "base.html" %} {% block content %}
-
+  <div class="flash success">
+    Nach der Auswahl einer Klasse werden alle Azubis mit der verknüpften Mailadresse angezeigt.<br>
+    Auf Wunsch kann:
+    <ul class="square">
+      <li>die Liste anschließend heruntergeladen werden</li>
+      <li>die Liste direkt per Mail an die Kontaktperson versendet werden → {{kontaktperson.komplett}}</li>
+      <li>alle Ausbilder per Mail über den angelegten Untis-Account informiert werden </li>
+  </ul>
+</div> 
+        
+<hr>
 <form method="POST">
   {{ form.csrf_token }} 
 
   {{ form.klassen.label }} 
   {{ form.klassen }} 
-  
-  
-
 
   <div class="container-wrapper">   
       <div class="tooltip"  data-tooltip="Download der angezeigten Schülern als CSV-Datei">
@@ -39,7 +46,7 @@
       if (!klasseName) return;
 
       try {
-        const res = await fetch(`/api/zugeordete_schueler/${encodeURIComponent(klasseName)}`, {
+        const res = await fetch(`/api/zugeordnete_schueler/${encodeURIComponent(klasseName)}`, {
           headers: { Accept: "application/json" },
           cache: "no-store",
         });

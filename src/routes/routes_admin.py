@@ -1,9 +1,8 @@
 # ------------------------------------------------------------------------------
-#     ADMIN-BEREICH
+# Überprüft durch Claude 4
 # ------------------------------------------------------------------------------
 
 import logging
-import os
 
 from flask import (
     Blueprint,
@@ -39,10 +38,16 @@ from src.services.csv_service import (
     import_azubis_from_bytesio,
     merge_csv_to_bytesio,
 )
-from src.services.file_service import delete_file_safe, get_files_from_upload, save_file, uploaded_file_to_bytesio
+from src.services.file_service import (
+    delete_file_safe,
+    get_files_from_upload,
+    save_file,
+    upload_file,
+    uploaded_file_to_bytesio,
+)
 from src.services.mail_service import send_mail_to_ausbilder, send_mail_to_kontaktperson, send_untisinfo_to_ausbilder
 from src.utils.auth import requires_auth
-from src.utils.helpers import flash_form_errors
+from src.utils.helpers import flash_all, flash_form_errors
 
 
 # ------------------------------------------------------------------------------
@@ -68,6 +73,7 @@ ALLOWED_FILE_ACTIONS: frozenset[str] = frozenset(
     {"delete_single", "delete_all", "update_db", "reset_db", "upload_file"}
 )
 
+_PROTOTYPE_FILES = {"info": state.infofile, "ausbilder": state.prototypeausbilder, "azubis": state.prototypeazubi}
 # ------------------------------------------------------------------------------
 # Setup
 # ------------------------------------------------------------------------------
@@ -126,7 +132,7 @@ def _update_db_from_upload(reset: bool = False) -> None:
         answer, category = update_azubis_safe(neue_azubis, reset)
         flash(answer, category)
     except Exception:
-        logger.error("Allg. Fehler bei _update_db_from_upload")
+        logger.exception("Allg. Fehler bei _update_db_from_upload")
         flash("Fehler beim Aktualisieren der Daten.", "error")
 
 
@@ -156,26 +162,31 @@ def route_config() -> ResponseReturnValue:
                 cfg = ConfigSetting()
                 state.db.session.add(cfg)
 
-            apply_config_form(form, cfg)
-
             try:
+                apply_config_form(form, cfg)
                 state.db.session.commit()
                 flash("Konfiguration erfolgreich gespeichert.", "success")
                 load_defaults()
 
+            except RuntimeError as exc:
+                state.db.session.rollback()
+                logger.exception("Konfigurationsfehler")
+                flash(str(exc), "error")
+                return render_template(TEMPLATE_CONFIG, title=TITLE_CONFIG, form=form), 400
+
             except SQLAlchemyError:
                 state.db.session.rollback()
-                logger.error("DB-Fehler beim Speichern der Config")
+                logger.exception("DB-Fehler beim Speichern der Config")
                 flash("Datenbankfehler beim Speichern der Konfiguration.", "error")
                 return render_template(TEMPLATE_CONFIG, title=TITLE_CONFIG, form=form), 500
 
         elif request.method == "POST":
-            logger.error("Formular-Fehler in route_config: %s", form.errors)
+            logger.warning("Formular-Fehler in route_config: %s", form.errors)
 
         return render_template(TEMPLATE_CONFIG, title=TITLE_CONFIG, form=form)
 
-    except Exception as e:
-        logger.error("Fehler in route_config: %s", e)
+    except Exception:
+        logger.exception("Fehler in route_config: ")
         abort(500)
 
 
@@ -187,9 +198,9 @@ def route_ausbilderanzeige() -> ResponseReturnValue:
 
     try:
         if form.validate_on_submit() and form.action.data in ALLOWED_AUSBILDER_ACTIONS:
-            ausbilder_email: str | None = form.ausbilder_email.data
             action: str = form.action.data
-            ausbilder = get_ausbilder_by_email(ausbilder_email)
+            ausbilder = get_ausbilder_by_email(form.ausbilder_email.data)
+            answer = None
 
             match action:
                 case "show":
@@ -201,19 +212,18 @@ def route_ausbilderanzeige() -> ResponseReturnValue:
                 case "resend":
                     if ausbilder:
                         answer, category = send_mail_to_ausbilder(ausbilder)
-                        flash(answer, category)
                 case "delete":
                     if ausbilder:
-                        ausbilder_email = ausbilder.ausbilder_email
-                        delete_ausbilder(ausbilder)
-                        flash(f"{ausbilder_email} und alle Verknüpfungen zu Azubis wurden gelöscht.", "success")
+                        answer, category = delete_ausbilder(ausbilder)
                 case "download":
                     try:
                         return _send_csv_file(export_to_csv("ausbilder"), "ausbilder.csv")
                     except Exception:
-                        logger.error("Fehler beim CSV-Export in route_ausbilderanzeige")
+                        logger.exception("Fehler beim CSV-Export in route_ausbilderanzeige")
                         flash("Fehler beim Erstellen der CSV-Datei.", "error")
                         return redirect(url_for("admin.route_ausbilderanzeige"))
+            if answer:
+                flash(answer, category)
         else:
             if request.method == "GET":
                 flash("Für weitere Informationen mit der Maus über die Kopfzeile fahren.", "success")
@@ -227,8 +237,8 @@ def route_ausbilderanzeige() -> ResponseReturnValue:
             form=form,
         )
 
-    except Exception as e:
-        logger.error("Fehler in route_ausbilderanzeige: %s", e)
+    except Exception:
+        logger.exception("Fehler in route_ausbilderanzeige: ")
         abort(500)
 
 
@@ -243,39 +253,34 @@ def route_azubianzeige() -> ResponseReturnValue:
         if form.validate_on_submit():
             klasse: str = form.klassen.data
 
-            if getattr(form, "submit_csv", None) and form.submit_csv.data:
-                return _send_csv_file(export_to_csv(klasse), "azubis.csv")
+            if form.submit_csv.data:
+                try:
+                    return _send_csv_file(export_to_csv(klasse), "azubis.csv")
+                except Exception:
+                    logger.exception("Fehler beim CSV-Export in route_azubianzeige")
+                    flash("Fehler beim Erstellen der CSV-Datei.", "error")
+                    return render_template(TEMPLATE_AZUBIANZEIGE, title=TITLE_AZUBIS, form=form)
 
-            if getattr(form, "submit_mail_tss", None) and form.submit_mail_tss.data:
-                send_mail_to_kontaktperson(export_to_csv(klasse), klasse)
+            if form.submit_mail_tss.data:
+                answer, category = send_mail_to_kontaktperson(export_to_csv(klasse), klasse)
+                flash(Markup(answer), category)
 
-            elif getattr(form, "submit_mail_untis", None) and form.submit_mail_untis.data:
-                send_untisinfo_to_ausbilder(get_ausbilder_list_by_klasse(klasse))
+            elif form.submit_mail_untis.data:
+                flash_results = send_untisinfo_to_ausbilder(get_ausbilder_list_by_klasse(klasse))
+                flash_all(flash_results)
 
             else:
                 return "Aktion nicht gefunden", 404
 
         elif request.method == "POST":
-            logger.error("Formular-Fehler in route_azubianzeige: %s", form.errors)
-
-        info = Markup(
-            "Nach der Auswahl einer Klasse werden alle Azubis mit der verknüpften Mailadresse angezeigt.<br>"
-            "Auf Wunsch kann:<br>"
-            "- die Liste anschließend heruntergeladen werden<br>"
-            " - die Liste direkt per Mail an die Kontaktperson versendet werden "
-            f"→ {state.get_text('kontaktperson', 'komplett')}<br>"
-            " - alle Ausbilder per Mail über den angelegten Untis-Account informiert werden"
-        )
-        flash(info, "success")
+            logger.warning("Formular-Fehler in route_azubianzeige: %s", form.errors)
 
         return render_template(
-            TEMPLATE_AZUBIANZEIGE,
-            title=TITLE_AZUBIS,
-            form=form,
+            TEMPLATE_AZUBIANZEIGE, title=TITLE_AZUBIS, form=form, kontaktperson=state.infos.kontaktperson
         )
 
-    except Exception as e:
-        logger.error("Fehler in route_azubianzeige: %s", e)
+    except Exception:
+        logger.exception("Fehler in route_azubianzeige: ")
         abort(500)
 
 
@@ -305,8 +310,8 @@ def route_upload() -> ResponseReturnValue:
             form=form,
         )
 
-    except Exception as e:
-        logger.error("Fehler in route_upload: %s", e)
+    except Exception:
+        logger.exception("Fehler in route_upload: ")
         abort(500)
 
 
@@ -320,7 +325,7 @@ def route_upload_direkt() -> ResponseReturnValue:
 
     if not (form.validate_on_submit() and form.action.data in ALLOWED_UPLOAD_ACTIONS):
         if request.method == "POST":
-            flash_form_errors(form, "route_upload_direkt")
+            flash_form_errors("route_upload_direkt", form)
         return render_template(TEMPLATE_UPLOAD, title=title, action=action, form=form)
 
     file = form.upload_file.data
@@ -361,18 +366,13 @@ def route_upload_direkt() -> ResponseReturnValue:
 @requires_auth("admin")
 def route_download_prototyp() -> ResponseReturnValue:
     """Stellt Prototyp-Dateien (Info, Ausbilder, Azubis) zum Download bereit."""
-    PROTOTYPE_FILES = {
-        "info": state.infofile,
-        "ausbilder": state.prototypeausbilder,
-        "azubis": state.prototypeazubi,
-    }
 
     try:
         action = request.args.get("action")
         if not action:
             abort(400)
 
-        prototype_path = PROTOTYPE_FILES.get(action)
+        prototype_path = _PROTOTYPE_FILES.get(action)
         if not prototype_path:
             abort(400)
 
@@ -388,8 +388,8 @@ def route_download_prototyp() -> ResponseReturnValue:
 
     except FileNotFoundError:
         return "Datei nicht gefunden", 404
-    except Exception as e:
-        logger.error("Fehler beim Download des Prototyps: %s", e)
+    except Exception:
+        logger.exception("Fehler beim Download des Prototyps: ")
         abort(500)
 
 
@@ -405,11 +405,13 @@ def route_filehandling() -> ResponseReturnValue:
 
             match action:
                 case "delete_single":
-                    delete_file_safe(form.filename.data)
+                    answer, category = delete_file_safe(form.filename.data)
+                    flash(answer, category)
                 case "delete_all":
-                    if os.path.exists(state.uploadfolder):
-                        for name in os.listdir(state.uploadfolder):
-                            delete_file_safe(name)
+                    if state.uploadfolder.exists():
+                        for path in state.uploadfolder.iterdir():
+                            answer, category = delete_file_safe(path.name)
+                            flash(answer, category)
                 case "update_db":
                     _update_db_from_upload(reset=False)
                 case "reset_db":
@@ -419,13 +421,13 @@ def route_filehandling() -> ResponseReturnValue:
                     if not file:
                         flash("Keine Datei ausgewählt.", "warning")
                     else:
-                        answer, category = save_file(file, state.uploadfolder, True)
+                        answer, category = upload_file(file, state.uploadfolder)
                         flash(answer, category)
                 case _:
                     flash("Unbekannte Aktion.", "error")
 
         elif request.method == "POST":
-            flash_form_errors(form, "route_filehandling")
+            flash_form_errors("route_filehandling", form)
 
         files = get_files_from_upload(state.uploadfolder)
         return render_template(
@@ -436,8 +438,8 @@ def route_filehandling() -> ResponseReturnValue:
             form=form,
         )
 
-    except Exception as e:
-        logger.error("Fehler in route_filehandling: %s", e)
+    except Exception:
+        logger.exception("Fehler in route_filehandling: ")
         abort(500)
 
 
@@ -448,15 +450,15 @@ def route_upload_file() -> ResponseReturnValue:
     form = FilehandlingAktionForm()
 
     if form.validate_on_submit():
-        file = form.filename.data
+        file = form.upload_file.data
         if not file:
             flash("Keine Datei ausgewählt.", "warning")
             return redirect(url_for("admin.route_filehandling"))
         try:
-            answer, category = save_file(file, state.uploadfolder, True)
+            answer, category = upload_file(file, state.uploadfolder)
             flash(answer, category)
-        except Exception as e:
-            logger.error("Fehler beim Datei-Upload: %s", e)
+        except Exception:
+            logger.exception("Fehler beim Datei-Upload: ")
             flash("Beim Upload ist ein Fehler aufgetreten.", "error")
 
     elif request.method == "POST":

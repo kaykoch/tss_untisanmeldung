@@ -121,7 +121,7 @@ def update_azubis_safe(liste: list[Azubis], delete_existing: bool = False) -> tu
             delete_all(Azubis)
 
         # vorhandene Werte des primarykeys "schueler_stamm_id" als Set lesen
-        existing = get_existing_keys(Azubis, Azubis.schueler_stamm_id)
+        existing = get_existing_keys(Azubis, "schueler_stamm_id")
 
         # Fügt neue Werte anhand des Primarykeys in "Azubis" ein ohne vorhandene zu überschreiben
         answer, category = add_new_entries(liste, "schueler_stamm_id", existing, "Azubis")
