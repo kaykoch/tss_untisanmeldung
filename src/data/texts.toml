@@ -11,6 +11,9 @@ komplett      = "Koch, Kay (koch@tssbit.de)"
 [schule]
 name          = "Theobald-Simon-Schule"
 
+[betriebe]
+login         ="tssbit"
+
 [content]
 index = """
     <p>

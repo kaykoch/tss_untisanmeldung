@@ -74,6 +74,7 @@ def _check_auth_and_get_type(username: str, password: str) -> str | None:
         "admin" | "tss" bei Erfolg, None bei ungültigen Daten.
     """
     admin_login = state.app.config.get("ADMIN_LOGIN")
+    tss_login = getattr(state.infos.betriebe, "login", "tssbit")
     admin_password_hash = state.app.config.get("ADMIN_PASSWORD")
     tss_password_hash = state.app.config.get("TSS_PASSWORD")
 
@@ -84,7 +85,7 @@ def _check_auth_and_get_type(username: str, password: str) -> str | None:
     if username == admin_login and check_password_hash(admin_password_hash, password):
         return "admin"
 
-    if username == _AUSBILDER_USER and check_password_hash(tss_password_hash, password):
+    if username == tss_login and check_password_hash(tss_password_hash, password):
         return "tss"
 
     return None
