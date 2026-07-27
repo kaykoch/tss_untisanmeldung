@@ -24,6 +24,7 @@ ___
   - [Variante 3 – systemd (Produktion)](#variante-3--systemd-produktion)
 - [Stoppen der Anwendung](#stoppen-der-anwendung)
 - [Hinweise zur Sicherheit](#hinweise-zur-sicherheit)
+- [Dokumentation](#dokumentation)
 
 ___
 
@@ -187,6 +188,6 @@ ___
     └── untis.py                          # Einstiegspunkt der Anwendung
  
     
-# Anwendung
+# Dokumentation
 Eine Dokumentation befindet sich [Hier](./src/static/Dokumentation.pdf)
 ![Bild](./src/static/image.png)
