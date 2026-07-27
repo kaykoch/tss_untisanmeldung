@@ -1,18 +1,54 @@
-# tss_untisanmeldung
-## 
+Untis-Betriebsportal
+====================
 
-## Einleitung
-tss_untisanmeldung ist eine webbasierte Anwendung zur Verwaltung von Untis-Anmeldungen.
+### Einleitung
 
-Damit Ausbilder Zugang zu WebUntis erhalten, müssen sie in Untis registriert werden.
-Diese Applikation stellt Ihnen die Möglichkeit zur Verfügung, ihre eigenen Schüler mit ihren Daten
-zu verknüpfen. Ihre Daten werden in einer Datenbank gespeichert, und können als CSV-Datei 
-export werden. Die Datei kann direkt in Untis importiert werden. Die Ausbilder können
-anschließend darüber informiert werden.
+An Berufsschulen ist die Verknüpfung von Ausbildungsbetrieben mit ihren Azubis in WebUntis
+jedes Jahr eine wiederkehrende, manuelle Aufgabe: Betriebe füllen Papierformulare aus,
+die Schulleitung tippt die Daten in eine CSV-Datei und importiert diese in Untis —
+fehleranfällig, zeitaufwendig und jedes Jahr von vorne.
 
-Das Setup-Skript richtet automatisch eine virtuelle Python-Umgebung ein, installiert
-alle Abhängigkeiten und generiert kryptografische Schlüssel für den Betrieb.
+**Untis-Betriebsportal** digitalisiert und automatisiert diesen Prozess vollständig.
 
+___
+
+### Wie es funktioniert
+
+Ausbildungsbetriebe registrieren sich einmalig über eine Weboberfläche und verknüpfen
+sich dort direkt mit ihren Azubis über deren Untis-IDs. Nach Ablauf der Eingabefrist
+wird automatisch eine importfertige CSV-Datei erstellt und per Mail an die Schulleitung
+übermittelt. Diese importiert die Datei direkt in WebUntis — ohne manuelle Dateneingabe.
+
+Sobald der Import abgeschlossen ist, erhalten alle Betriebe automatisch eine
+Benachrichtigung, dass ihr Zugang angelegt bzw. ihre neuen Azubis eingepflegt wurden.
+
+Im Folgejahr müssen Betriebe nur noch einen Link anklicken: ihre Stammdaten werden
+aus der Datenbank geladen und es müssen lediglich die neuen Azubis mit ihren
+Untis-IDs ergänzt werden.
+
+___
+
+### Was das Projekt löst
+
+| Vorher (manuell)                              | Nachher (mit Untis-Betriebsportal)         |
+|-----------------------------------------------|--------------------------------------------|
+| Papierformulare, handschriftlich ausgefüllt   | Digitale Eingabe über Weboberfläche        |
+| Manuelle Dateneingabe durch die Schulleitung  | Automatisch generierte CSV                 |
+| Fehleranfällige Übertragung                   | Direkt importfertig für WebUntis           |
+| Jedes Jahr komplett neu ausfüllen             | Stammdaten bleiben erhalten, nur Azubis ergänzen |
+| Manuelle Benachrichtigung der Betriebe        | Automatischer Mailversand nach Import      |
+
+___
+
+### Für wen ist dieses Projekt gedacht?
+
+Dieses Projekt richtet sich an **Berufsschulen**, die WebUntis einsetzen und den
+jährlichen Prozess der Betriebsanmeldung digitalisieren möchten. Es ist als
+eigenständige Webanwendung konzipiert und kann auf einem schuleigenen Server
+betrieben werden.
+
+> ℹ️ Das Projekt wurde an der **Theobald-Simon-Schule Bitburg (TSS)** entwickelt
+> und wird dort produktiv eingesetzt.
 ___
 
 # Inhaltsverzeichnis
