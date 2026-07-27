@@ -57,6 +57,10 @@ def create_app(config_object=ProductionConfig) -> Flask:
 
     register_routes(app)
 
+    @app.context_processor
+    def inject_school_name():
+        return {"school_name": state.infos.schule.name}
+
     logger.info("%s", _SEPARATOR)
     logger.info("  --> !! App: Untisanmeldung wurde erfolgreich gestartet !!")
     logger.info("%s", _SEPARATOR)

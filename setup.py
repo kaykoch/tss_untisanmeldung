@@ -1,4 +1,9 @@
 #!/usr/bin/env python3
+
+# ------------------------------------------------------------------------------
+# Überprüft durch Claude 4
+# ------------------------------------------------------------------------------
+
 import os
 import platform
 import shutil
@@ -55,8 +60,7 @@ def check_www_data_user():
         pwd.getpwnam("www-data")
         okay("Benutzer 'www-data' existiert.")
     except KeyError:
-        error("Benutzer 'www-data' existiert nicht. Abbruch.")
-        sys.exit(1)
+        warn("Benutzer 'www-data' existiert nicht. Für Produktiveinsatz (systemd) erforderlich.")
 
 
 def handle_venv():
@@ -103,13 +107,13 @@ def create_env_file():
     fernet_bytes = secrets.token_bytes(32)
     encryption_key = base64.urlsafe_b64encode(fernet_bytes).decode()
     # 5MB als max. Upload sollte reichen
-    max_lenght = 5 * 1024 * 1024
+    max_length = 5 * 1024 * 1024
 
     try:
         with open(env_path, "w", encoding="utf-8") as f:
             f.write(f"SECRET_KEY={flask_secret}\n")
             f.write(f"ENCRYPTION_KEY={encryption_key}\n")
-            f.write(f"MAX_CONTENT_LENGTH={max_lenght}\n")
+            f.write(f"MAX_CONTENT_LENGTH={max_length}\n")
             f.write("# Hier bei Bedarf weitere Variablen eintragen (z.B. MAIL_PASSWORD)\n")
         okay(".env-Datei wurde erfolgreich mit sicheren Keys generiert!")
     except OSError as e:
@@ -147,11 +151,11 @@ def set_permissions():
         return
 
     info("Setze Berechtigungen für das Verzeichnis auf www-data:www-data...")
-    parent_dir = os.path.dirname(os.getcwd())
+    project_dir = os.getcwd()
 
     try:
         # Entspricht chown -R www-data:www-data
-        subprocess.run(["chown", "-R", "www-data:www-data", parent_dir], check=True)
+        subprocess.run(["chown", "-R", "www-data:www-data", project_dir], check=True)
         okay("Berechtigungen erfolgreich gesetzt.")
     except subprocess.CalledProcessError:
         error("Berechtigungen konnten nicht gesetzt werden. (Hast du das Skript mit sudo ausgeführt?)")
@@ -172,7 +176,7 @@ def print_usage_hints():
 
     print()
     warn("=" * 60 + "\n")
-    error("Für Produktiveinsatz unbedingt systemd nutzen --> README.MD")
+    error("Für Produktiveinsatz unbedingt systemd nutzen --> README.md")
     warn("=" * 60 + "\n")
 
 

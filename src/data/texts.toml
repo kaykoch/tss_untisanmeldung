@@ -8,6 +8,8 @@ vorname       = "Kay"
 mail          = "koch@tssbit.de"
 komplett      = "Koch, Kay (koch@tssbit.de)" 
 
+[schule]
+name          = "Theobald-Simon-Schule"
 
 [content]
 index = """
