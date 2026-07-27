@@ -102,11 +102,14 @@ def create_env_file():
     # Fernet benötigt exakt 32 kryptografisch sichere Bytes, Base64 kodiert
     fernet_bytes = secrets.token_bytes(32)
     encryption_key = base64.urlsafe_b64encode(fernet_bytes).decode()
+    # 5MB als max. Upload sollte reichen
+    max_lenght = 5 * 1024 * 1024
 
     try:
         with open(env_path, "w", encoding="utf-8") as f:
             f.write(f"SECRET_KEY={flask_secret}\n")
             f.write(f"ENCRYPTION_KEY={encryption_key}\n")
+            f.write(f"MAX_CONTENT_LENGTH={max_lenght}\n")
             f.write("# Hier bei Bedarf weitere Variablen eintragen (z.B. MAIL_PASSWORD)\n")
         okay(".env-Datei wurde erfolgreich mit sicheren Keys generiert!")
     except OSError as e:

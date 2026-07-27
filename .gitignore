@@ -9,5 +9,4 @@ instance/
 src/upload/*
 src/data/azubis.csv
 src/data/ausbilder.csv
-src/data/logfile.log
-logs/
+logs/untis.log

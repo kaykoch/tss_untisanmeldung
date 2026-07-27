@@ -1,390 +1,330 @@
-2026-07-26 17:16:41 ERROR src.routes.routes_admin: Fehler in route_config: 
-Traceback (most recent call last):
-  File "/home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/routes/routes_admin.py", line 186, in route_config
-    return render_template(TEMPLATE_CONFIG, title=TITLE_CONFIG, form=form)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/.venv/lib/python3.12/site-packages/flask/templating.py", line 151, in render_template
-    return _render(app, template, context)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/.venv/lib/python3.12/site-packages/flask/templating.py", line 132, in _render
-    rv = template.render(context)
-         ^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/.venv/lib/python3.12/site-packages/jinja2/environment.py", line 1295, in render
-    self.environment.handle_exception()
-  File "/home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/.venv/lib/python3.12/site-packages/jinja2/environment.py", line 942, in handle_exception
-    raise rewrite_traceback_stack(source=source)
-  File "/home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/templates/admin/config.html", line 1, in top-level template code
-    {% extends "base.html" %} {% block content %}
-    ^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/templates/base.html", line 32, in top-level template code
-    {% block content %}
-  File "/home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/templates/admin/config.html", line 54, in block 'content'
-    {{ form.mail_type.label }}
-    ^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/.venv/lib/python3.12/site-packages/jinja2/environment.py", line 490, in getattr
-    return getattr(obj, attribute)
-           ^^^^^^^^^^^^^^^^^^^^^^^
-jinja2.exceptions.UndefinedError: 'src.forms.ConfigForm object' has no attribute 'mail_type'
-2026-07-26 17:16:41 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 17:16:41] "[35m[1mGET /admin/config.html HTTP/1.1[0m" 500 -
-2026-07-26 17:17:23 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 17:17:23] "GET /admin/config.html HTTP/1.1" 200 -
-2026-07-26 17:17:23 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 17:17:23] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
-2026-07-26 17:17:23 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 17:17:23] "[36mGET /static/logo.png HTTP/1.1[0m" 304 -
-2026-07-26 17:17:23 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 17:17:23] "[36mGET /static/favicon.ico HTTP/1.1[0m" 304 -
-2026-07-26 17:19:17 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 17:19:17] "GET /admin/config.html HTTP/1.1" 200 -
-2026-07-26 17:19:17 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 17:19:17] "GET /static/style.css HTTP/1.1" 200 -
-2026-07-26 17:19:17 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 17:19:17] "[36mGET /static/logo.png HTTP/1.1[0m" 304 -
-2026-07-26 17:19:18 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 17:19:18] "[36mGET /static/favicon.ico HTTP/1.1[0m" 304 -
-2026-07-26 17:19:49 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 17:19:49] "POST /admin/config.html HTTP/1.1" 200 -
-2026-07-26 17:19:49 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 17:19:49] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
-2026-07-26 17:19:49 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 17:19:49] "[36mGET /static/logo.png HTTP/1.1[0m" 304 -
-2026-07-26 17:20:29 INFO werkzeug:  * Detected change in '/home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/services/config_service.py', reloading
-2026-07-26 17:20:29 INFO werkzeug:  * Restarting with stat
-2026-07-26 17:20:29 INFO src.app: --------------------------------------------------
-2026-07-26 17:20:29 INFO src.extensions: Datei 'infofile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/info.pdf
-2026-07-26 17:20:29 INFO src.extensions: Datei 'tomlfile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
-2026-07-26 17:20:29 INFO src.extensions: Datei 'prototypeazubi' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_azubis.csv
-2026-07-26 17:20:29 INFO src.extensions: Datei 'prototypeausbilder' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_ausbilder.csv
-2026-07-26 17:20:29 INFO src.extensions: Texte geladen aus: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
-2026-07-26 17:20:29 INFO src.app: Datenbanktabellen erstellt/überprüft.
-2026-07-26 17:20:29 INFO src.app: --------------------------------------------------
-2026-07-26 17:20:29 INFO src.app:   --> !! App: Untisanmeldung wurde erfolgreich gestartet !!
-2026-07-26 17:20:29 INFO src.app: --------------------------------------------------
-2026-07-26 17:20:29 WARNING werkzeug:  * Debugger is active!
-2026-07-26 17:20:30 INFO werkzeug:  * Debugger PIN: 204-675-412
-2026-07-26 17:21:59 INFO werkzeug:  * Detected change in '/home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/services/config_service.py', reloading
-2026-07-26 17:22:00 INFO werkzeug:  * Restarting with stat
-2026-07-26 17:22:00 INFO src.app: --------------------------------------------------
-2026-07-26 17:22:00 INFO src.extensions: Datei 'infofile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/info.pdf
-2026-07-26 17:22:00 INFO src.extensions: Datei 'tomlfile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
-2026-07-26 17:22:00 INFO src.extensions: Datei 'prototypeazubi' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_azubis.csv
-2026-07-26 17:22:00 INFO src.extensions: Datei 'prototypeausbilder' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_ausbilder.csv
-2026-07-26 17:22:00 INFO src.extensions: Texte geladen aus: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
-2026-07-26 17:22:00 INFO src.app: Datenbanktabellen erstellt/überprüft.
-2026-07-26 17:22:00 INFO src.app: --------------------------------------------------
-2026-07-26 17:22:00 INFO src.app:   --> !! App: Untisanmeldung wurde erfolgreich gestartet !!
-2026-07-26 17:22:00 INFO src.app: --------------------------------------------------
-2026-07-26 17:22:00 WARNING werkzeug:  * Debugger is active!
-2026-07-26 17:22:00 INFO werkzeug:  * Debugger PIN: 204-675-412
-2026-07-26 17:26:16 INFO werkzeug:  * Detected change in '/home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/services/config_service.py', reloading
-2026-07-26 17:26:17 INFO werkzeug:  * Restarting with stat
-2026-07-26 17:26:17 INFO src.app: --------------------------------------------------
-2026-07-26 17:26:17 INFO src.extensions: Datei 'infofile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/info.pdf
-2026-07-26 17:26:17 INFO src.extensions: Datei 'tomlfile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
-2026-07-26 17:26:17 INFO src.extensions: Datei 'prototypeazubi' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_azubis.csv
-2026-07-26 17:26:17 INFO src.extensions: Datei 'prototypeausbilder' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_ausbilder.csv
-2026-07-26 17:26:17 INFO src.extensions: Texte geladen aus: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
-2026-07-26 17:26:17 INFO src.app: Datenbanktabellen erstellt/überprüft.
-2026-07-26 17:26:17 INFO src.app: --------------------------------------------------
-2026-07-26 17:26:17 INFO src.app:   --> !! App: Untisanmeldung wurde erfolgreich gestartet !!
-2026-07-26 17:26:17 INFO src.app: --------------------------------------------------
-2026-07-26 17:26:17 WARNING werkzeug:  * Debugger is active!
-2026-07-26 17:26:17 INFO werkzeug:  * Debugger PIN: 204-675-412
-2026-07-26 17:30:09 INFO werkzeug:  * Detected change in '/home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/services/config_service.py', reloading
-2026-07-26 17:30:10 INFO werkzeug:  * Restarting with stat
-2026-07-26 17:30:11 INFO src.app: --------------------------------------------------
-2026-07-26 17:30:11 INFO src.extensions: Datei 'infofile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/info.pdf
-2026-07-26 17:30:11 INFO src.extensions: Datei 'tomlfile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
-2026-07-26 17:30:11 INFO src.extensions: Datei 'prototypeazubi' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_azubis.csv
-2026-07-26 17:30:11 INFO src.extensions: Datei 'prototypeausbilder' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_ausbilder.csv
-2026-07-26 17:30:11 INFO src.extensions: Texte geladen aus: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
-2026-07-26 17:30:11 INFO src.app: Datenbanktabellen erstellt/überprüft.
-2026-07-26 17:30:11 INFO src.app: --------------------------------------------------
-2026-07-26 17:30:11 INFO src.app:   --> !! App: Untisanmeldung wurde erfolgreich gestartet !!
-2026-07-26 17:30:11 INFO src.app: --------------------------------------------------
-2026-07-26 17:30:11 WARNING werkzeug:  * Debugger is active!
-2026-07-26 17:30:11 INFO werkzeug:  * Debugger PIN: 204-675-412
-2026-07-26 17:30:50 INFO werkzeug:  * Detected change in '/home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/services/config_service.py', reloading
-2026-07-26 17:30:50 INFO werkzeug:  * Restarting with stat
-2026-07-26 17:30:51 INFO src.app: --------------------------------------------------
-2026-07-26 17:30:51 INFO src.extensions: Datei 'infofile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/info.pdf
-2026-07-26 17:30:51 INFO src.extensions: Datei 'tomlfile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
-2026-07-26 17:30:51 INFO src.extensions: Datei 'prototypeazubi' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_azubis.csv
-2026-07-26 17:30:51 INFO src.extensions: Datei 'prototypeausbilder' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_ausbilder.csv
-2026-07-26 17:30:51 INFO src.extensions: Texte geladen aus: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
-2026-07-26 17:30:51 INFO src.app: Datenbanktabellen erstellt/überprüft.
-2026-07-26 17:30:51 INFO src.app: --------------------------------------------------
-2026-07-26 17:30:51 INFO src.app:   --> !! App: Untisanmeldung wurde erfolgreich gestartet !!
-2026-07-26 17:30:51 INFO src.app: --------------------------------------------------
-2026-07-26 17:30:51 WARNING werkzeug:  * Debugger is active!
-2026-07-26 17:30:51 INFO werkzeug:  * Debugger PIN: 204-675-412
-2026-07-26 17:32:43 INFO werkzeug:  * Detected change in '/home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/forms.py', reloading
-2026-07-26 17:32:44 INFO werkzeug:  * Restarting with stat
-2026-07-26 17:32:44 INFO src.app: --------------------------------------------------
-2026-07-26 17:32:44 INFO src.extensions: Datei 'infofile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/info.pdf
-2026-07-26 17:32:44 INFO src.extensions: Datei 'tomlfile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
-2026-07-26 17:32:44 INFO src.extensions: Datei 'prototypeazubi' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_azubis.csv
-2026-07-26 17:32:44 INFO src.extensions: Datei 'prototypeausbilder' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_ausbilder.csv
-2026-07-26 17:32:44 INFO src.extensions: Texte geladen aus: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
-2026-07-26 17:32:44 INFO src.app: Datenbanktabellen erstellt/überprüft.
-2026-07-26 17:32:44 INFO src.app: --------------------------------------------------
-2026-07-26 17:32:44 INFO src.app:   --> !! App: Untisanmeldung wurde erfolgreich gestartet !!
-2026-07-26 17:32:44 INFO src.app: --------------------------------------------------
-2026-07-26 17:32:44 WARNING werkzeug:  * Debugger is active!
-2026-07-26 17:32:44 INFO werkzeug:  * Debugger PIN: 204-675-412
-2026-07-26 17:43:31 INFO werkzeug:  * Detected change in '/home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/forms.py', reloading
-2026-07-26 17:43:31 INFO werkzeug:  * Restarting with stat
-2026-07-26 17:43:32 INFO src.app: --------------------------------------------------
-2026-07-26 17:43:32 INFO src.extensions: Datei 'infofile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/info.pdf
-2026-07-26 17:43:32 INFO src.extensions: Datei 'tomlfile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
-2026-07-26 17:43:32 INFO src.extensions: Datei 'prototypeazubi' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_azubis.csv
-2026-07-26 17:43:32 INFO src.extensions: Datei 'prototypeausbilder' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_ausbilder.csv
-2026-07-26 17:43:32 INFO src.extensions: Texte geladen aus: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
-2026-07-26 17:43:32 INFO src.app: Datenbanktabellen erstellt/überprüft.
-2026-07-26 17:43:32 INFO src.app: --------------------------------------------------
-2026-07-26 17:43:32 INFO src.app:   --> !! App: Untisanmeldung wurde erfolgreich gestartet !!
-2026-07-26 17:43:32 INFO src.app: --------------------------------------------------
-2026-07-26 17:43:32 WARNING werkzeug:  * Debugger is active!
-2026-07-26 17:43:32 INFO werkzeug:  * Debugger PIN: 204-675-412
-2026-07-26 17:46:49 INFO werkzeug:  * Detected change in '/home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/forms.py', reloading
-2026-07-26 17:46:50 INFO werkzeug:  * Restarting with stat
-2026-07-26 17:46:50 INFO src.app: --------------------------------------------------
-2026-07-26 17:46:50 INFO src.extensions: Datei 'infofile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/info.pdf
-2026-07-26 17:46:50 INFO src.extensions: Datei 'tomlfile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
-2026-07-26 17:46:50 INFO src.extensions: Datei 'prototypeazubi' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_azubis.csv
-2026-07-26 17:46:50 INFO src.extensions: Datei 'prototypeausbilder' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_ausbilder.csv
-2026-07-26 17:46:50 INFO src.extensions: Texte geladen aus: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
-2026-07-26 17:46:50 INFO src.app: Datenbanktabellen erstellt/überprüft.
-2026-07-26 17:46:50 INFO src.app: --------------------------------------------------
-2026-07-26 17:46:50 INFO src.app:   --> !! App: Untisanmeldung wurde erfolgreich gestartet !!
-2026-07-26 17:46:50 INFO src.app: --------------------------------------------------
-2026-07-26 17:46:50 WARNING werkzeug:  * Debugger is active!
-2026-07-26 17:46:50 INFO werkzeug:  * Debugger PIN: 204-675-412
-2026-07-26 17:46:54 INFO werkzeug:  * Detected change in '/home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/models.py', reloading
-2026-07-26 17:46:54 INFO werkzeug:  * Restarting with stat
-2026-07-26 17:46:55 INFO src.app: --------------------------------------------------
-2026-07-26 17:46:55 INFO src.extensions: Datei 'infofile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/info.pdf
-2026-07-26 17:46:55 INFO src.extensions: Datei 'tomlfile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
-2026-07-26 17:46:55 INFO src.extensions: Datei 'prototypeazubi' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_azubis.csv
-2026-07-26 17:46:55 INFO src.extensions: Datei 'prototypeausbilder' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_ausbilder.csv
-2026-07-26 17:46:55 INFO src.extensions: Texte geladen aus: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
-2026-07-26 17:46:55 INFO src.app: Datenbanktabellen erstellt/überprüft.
-2026-07-26 17:46:55 INFO src.app: --------------------------------------------------
-2026-07-26 17:46:55 INFO src.app:   --> !! App: Untisanmeldung wurde erfolgreich gestartet !!
-2026-07-26 17:46:55 INFO src.app: --------------------------------------------------
-2026-07-26 17:46:55 WARNING werkzeug:  * Debugger is active!
-2026-07-26 17:46:55 INFO werkzeug:  * Debugger PIN: 204-675-412
-2026-07-26 17:47:06 INFO werkzeug:  * Detected change in '/home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/models.py', reloading
-2026-07-26 17:47:06 INFO werkzeug:  * Restarting with stat
-2026-07-26 17:47:07 INFO src.app: --------------------------------------------------
-2026-07-26 17:47:07 INFO src.extensions: Datei 'infofile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/info.pdf
-2026-07-26 17:47:07 INFO src.extensions: Datei 'tomlfile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
-2026-07-26 17:47:07 INFO src.extensions: Datei 'prototypeazubi' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_azubis.csv
-2026-07-26 17:47:07 INFO src.extensions: Datei 'prototypeausbilder' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_ausbilder.csv
-2026-07-26 17:47:07 INFO src.extensions: Texte geladen aus: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
-2026-07-26 17:47:07 INFO src.app: Datenbanktabellen erstellt/überprüft.
-2026-07-26 17:47:07 INFO src.app: --------------------------------------------------
-2026-07-26 17:47:07 INFO src.app:   --> !! App: Untisanmeldung wurde erfolgreich gestartet !!
-2026-07-26 17:47:07 INFO src.app: --------------------------------------------------
-2026-07-26 17:47:07 WARNING werkzeug:  * Debugger is active!
-2026-07-26 17:47:07 INFO werkzeug:  * Debugger PIN: 204-675-412
-2026-07-26 17:47:39 INFO werkzeug:  * Detected change in '/home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/models.py', reloading
-2026-07-26 17:47:39 INFO werkzeug:  * Restarting with stat
-2026-07-26 17:47:40 INFO src.app: --------------------------------------------------
-2026-07-26 17:47:40 INFO src.extensions: Datei 'infofile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/info.pdf
-2026-07-26 17:47:40 INFO src.extensions: Datei 'tomlfile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
-2026-07-26 17:47:40 INFO src.extensions: Datei 'prototypeazubi' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_azubis.csv
-2026-07-26 17:47:40 INFO src.extensions: Datei 'prototypeausbilder' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_ausbilder.csv
-2026-07-26 17:47:40 INFO src.extensions: Texte geladen aus: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
-2026-07-26 17:47:40 INFO src.app: Datenbanktabellen erstellt/überprüft.
-2026-07-26 17:47:40 INFO src.app: --------------------------------------------------
-2026-07-26 17:47:40 INFO src.app:   --> !! App: Untisanmeldung wurde erfolgreich gestartet !!
-2026-07-26 17:47:40 INFO src.app: --------------------------------------------------
-2026-07-26 17:47:40 WARNING werkzeug:  * Debugger is active!
-2026-07-26 17:47:40 INFO werkzeug:  * Debugger PIN: 204-675-412
-2026-07-26 17:49:49 INFO werkzeug:  * Detected change in '/home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/routes/routes_main.py', reloading
-2026-07-26 17:49:50 INFO werkzeug:  * Restarting with stat
-2026-07-26 17:49:50 INFO src.app: --------------------------------------------------
-2026-07-26 17:49:50 INFO src.extensions: Datei 'infofile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/info.pdf
-2026-07-26 17:49:50 INFO src.extensions: Datei 'tomlfile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
-2026-07-26 17:49:50 INFO src.extensions: Datei 'prototypeazubi' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_azubis.csv
-2026-07-26 17:49:50 INFO src.extensions: Datei 'prototypeausbilder' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_ausbilder.csv
-2026-07-26 17:49:50 INFO src.extensions: Texte geladen aus: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
-2026-07-26 17:49:50 INFO src.app: Datenbanktabellen erstellt/überprüft.
-2026-07-26 17:49:50 INFO src.app: --------------------------------------------------
-2026-07-26 17:49:50 INFO src.app:   --> !! App: Untisanmeldung wurde erfolgreich gestartet !!
-2026-07-26 17:49:50 INFO src.app: --------------------------------------------------
-2026-07-26 17:49:50 WARNING werkzeug:  * Debugger is active!
-2026-07-26 17:49:50 INFO werkzeug:  * Debugger PIN: 204-675-412
-2026-07-26 17:50:28 INFO werkzeug:  * Detected change in '/home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/routes/routes_main.py', reloading
-2026-07-26 17:50:28 INFO werkzeug:  * Restarting with stat
-2026-07-26 17:50:29 INFO src.app: --------------------------------------------------
-2026-07-26 17:50:29 INFO src.extensions: Datei 'infofile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/info.pdf
-2026-07-26 17:50:29 INFO src.extensions: Datei 'tomlfile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
-2026-07-26 17:50:29 INFO src.extensions: Datei 'prototypeazubi' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_azubis.csv
-2026-07-26 17:50:29 INFO src.extensions: Datei 'prototypeausbilder' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_ausbilder.csv
-2026-07-26 17:50:29 INFO src.extensions: Texte geladen aus: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
-2026-07-26 17:50:29 INFO src.app: Datenbanktabellen erstellt/überprüft.
-2026-07-26 17:50:29 INFO src.app: --------------------------------------------------
-2026-07-26 17:50:29 INFO src.app:   --> !! App: Untisanmeldung wurde erfolgreich gestartet !!
-2026-07-26 17:50:29 INFO src.app: --------------------------------------------------
-2026-07-26 17:50:29 WARNING werkzeug:  * Debugger is active!
-2026-07-26 17:50:29 INFO werkzeug:  * Debugger PIN: 204-675-412
-2026-07-26 17:52:29 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 17:52:29] "GET /admin/ HTTP/1.1" 200 -
-2026-07-26 17:52:29 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 17:52:29] "[36mGET /static/logo.png HTTP/1.1[0m" 304 -
-2026-07-26 17:52:29 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 17:52:29] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
-2026-07-26 17:52:29 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 17:52:29] "[36mGET /static/favicon.ico HTTP/1.1[0m" 304 -
-2026-07-26 17:52:35 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 17:52:35] "GET /admin/azubianzeige.html HTTP/1.1" 200 -
-2026-07-26 17:52:35 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 17:52:35] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
-2026-07-26 17:52:35 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 17:52:35] "[36mGET /static/logo.png HTTP/1.1[0m" 304 -
-2026-07-26 17:52:38 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 17:52:38] "GET /admin/azubianzeige.html HTTP/1.1" 200 -
-2026-07-26 17:53:33 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 17:53:33] "GET /admin/azubianzeige.html HTTP/1.1" 200 -
-2026-07-26 17:53:33 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 17:53:33] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
-2026-07-26 17:53:33 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 17:53:33] "[36mGET /static/logo.png HTTP/1.1[0m" 304 -
-2026-07-26 17:54:27 INFO werkzeug:  * Detected change in '/home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/routes/routes_admin.py', reloading
-2026-07-26 17:54:27 INFO werkzeug:  * Restarting with stat
-2026-07-26 17:54:28 INFO src.app: --------------------------------------------------
-2026-07-26 17:54:28 INFO src.extensions: Datei 'infofile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/info.pdf
-2026-07-26 17:54:28 INFO src.extensions: Datei 'tomlfile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
-2026-07-26 17:54:28 INFO src.extensions: Datei 'prototypeazubi' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_azubis.csv
-2026-07-26 17:54:28 INFO src.extensions: Datei 'prototypeausbilder' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_ausbilder.csv
-2026-07-26 17:54:28 INFO src.extensions: Texte geladen aus: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
-2026-07-26 17:54:28 INFO src.app: Datenbanktabellen erstellt/überprüft.
-2026-07-26 17:54:28 INFO src.app: --------------------------------------------------
-2026-07-26 17:54:28 INFO src.app:   --> !! App: Untisanmeldung wurde erfolgreich gestartet !!
-2026-07-26 17:54:28 INFO src.app: --------------------------------------------------
-2026-07-26 17:54:28 WARNING werkzeug:  * Debugger is active!
-2026-07-26 17:54:28 INFO werkzeug:  * Debugger PIN: 204-675-412
-2026-07-26 17:54:59 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 17:54:59] "GET /admin/azubianzeige.html HTTP/1.1" 200 -
-2026-07-26 17:54:59 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 17:54:59] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
-2026-07-26 17:54:59 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 17:54:59] "[36mGET /static/logo.png HTTP/1.1[0m" 304 -
-2026-07-26 17:54:59 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 17:54:59] "[36mGET /static/favicon.ico HTTP/1.1[0m" 304 -
-2026-07-26 17:55:00 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 17:55:00] "GET /admin/azubianzeige.html HTTP/1.1" 200 -
-2026-07-26 17:55:01 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 17:55:01] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
-2026-07-26 17:55:01 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 17:55:01] "[36mGET /static/logo.png HTTP/1.1[0m" 304 -
-2026-07-26 17:55:01 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 17:55:01] "[36mGET /static/favicon.ico HTTP/1.1[0m" 304 -
-2026-07-26 17:55:14 INFO werkzeug:  * Detected change in '/home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/routes/routes_admin.py', reloading
-2026-07-26 17:55:14 INFO werkzeug:  * Restarting with stat
-2026-07-26 17:55:15 INFO src.app: --------------------------------------------------
-2026-07-26 17:55:15 INFO src.extensions: Datei 'infofile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/info.pdf
-2026-07-26 17:55:15 INFO src.extensions: Datei 'tomlfile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
-2026-07-26 17:55:15 INFO src.extensions: Datei 'prototypeazubi' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_azubis.csv
-2026-07-26 17:55:15 INFO src.extensions: Datei 'prototypeausbilder' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_ausbilder.csv
-2026-07-26 17:55:15 INFO src.extensions: Texte geladen aus: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
-2026-07-26 17:55:15 INFO src.app: Datenbanktabellen erstellt/überprüft.
-2026-07-26 17:55:15 INFO src.app: --------------------------------------------------
-2026-07-26 17:55:15 INFO src.app:   --> !! App: Untisanmeldung wurde erfolgreich gestartet !!
-2026-07-26 17:55:15 INFO src.app: --------------------------------------------------
-2026-07-26 17:55:15 WARNING werkzeug:  * Debugger is active!
-2026-07-26 17:55:15 INFO werkzeug:  * Debugger PIN: 204-675-412
-2026-07-26 17:55:17 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 17:55:17] "GET /admin/azubianzeige.html HTTP/1.1" 200 -
-2026-07-26 17:55:17 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 17:55:17] "[36mGET /static/logo.png HTTP/1.1[0m" 304 -
-2026-07-26 17:55:17 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 17:55:17] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
-2026-07-26 17:55:18 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 17:55:18] "[36mGET /static/favicon.ico HTTP/1.1[0m" 304 -
-2026-07-26 17:56:04 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 17:56:04] "GET /admin/azubianzeige.html HTTP/1.1" 200 -
-2026-07-26 17:56:04 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 17:56:04] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
-2026-07-26 17:56:04 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 17:56:04] "[36mGET /static/logo.png HTTP/1.1[0m" 304 -
-2026-07-26 17:56:04 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 17:56:04] "[36mGET /static/favicon.ico HTTP/1.1[0m" 304 -
-2026-07-26 17:58:22 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 17:58:22] "GET /admin/azubianzeige.html HTTP/1.1" 200 -
-2026-07-26 17:58:22 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 17:58:22] "GET /static/style.css HTTP/1.1" 200 -
-2026-07-26 17:58:22 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 17:58:22] "[36mGET /static/logo.png HTTP/1.1[0m" 304 -
-2026-07-26 17:58:22 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 17:58:22] "[36mGET /static/favicon.ico HTTP/1.1[0m" 304 -
-2026-07-26 17:58:50 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 17:58:50] "GET /admin/azubianzeige.html HTTP/1.1" 200 -
-2026-07-26 17:58:50 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 17:58:50] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
-2026-07-26 17:58:50 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 17:58:50] "[36mGET /static/logo.png HTTP/1.1[0m" 304 -
-2026-07-26 17:58:50 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 17:58:50] "[36mGET /static/favicon.ico HTTP/1.1[0m" 304 -
-2026-07-26 17:59:32 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 17:59:32] "GET /admin/azubianzeige.html HTTP/1.1" 200 -
-2026-07-26 17:59:32 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 17:59:32] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
-2026-07-26 17:59:32 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 17:59:32] "[36mGET /static/logo.png HTTP/1.1[0m" 304 -
-2026-07-26 17:59:32 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 17:59:32] "[36mGET /static/favicon.ico HTTP/1.1[0m" 304 -
-2026-07-26 18:00:16 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 18:00:16] "GET /admin/azubianzeige.html HTTP/1.1" 200 -
-2026-07-26 18:00:16 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 18:00:16] "GET /static/style.css HTTP/1.1" 200 -
-2026-07-26 18:00:16 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 18:00:16] "[36mGET /static/logo.png HTTP/1.1[0m" 304 -
-2026-07-26 18:00:16 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 18:00:16] "[36mGET /static/favicon.ico HTTP/1.1[0m" 304 -
-2026-07-26 18:00:39 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 18:00:39] "GET /admin/azubianzeige.html HTTP/1.1" 200 -
-2026-07-26 18:00:39 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 18:00:39] "GET /static/style.css HTTP/1.1" 200 -
-2026-07-26 18:00:39 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 18:00:39] "[36mGET /static/logo.png HTTP/1.1[0m" 304 -
-2026-07-26 18:00:39 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 18:00:39] "[36mGET /static/favicon.ico HTTP/1.1[0m" 304 -
-2026-07-26 18:00:40 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 18:00:40] "GET /admin/azubianzeige.html HTTP/1.1" 200 -
-2026-07-26 18:00:40 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 18:00:40] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
-2026-07-26 18:00:40 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 18:00:40] "[36mGET /static/logo.png HTTP/1.1[0m" 304 -
-2026-07-26 18:00:40 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 18:00:40] "[36mGET /static/favicon.ico HTTP/1.1[0m" 304 -
-2026-07-26 18:00:59 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 18:00:59] "GET /admin/azubianzeige.html HTTP/1.1" 200 -
-2026-07-26 18:00:59 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 18:00:59] "GET /static/style.css HTTP/1.1" 200 -
-2026-07-26 18:00:59 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 18:00:59] "[36mGET /static/logo.png HTTP/1.1[0m" 304 -
-2026-07-26 18:01:00 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 18:01:00] "[36mGET /static/favicon.ico HTTP/1.1[0m" 304 -
-2026-07-26 18:01:29 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 18:01:29] "GET /admin/azubianzeige.html HTTP/1.1" 200 -
-2026-07-26 18:01:29 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 18:01:29] "GET /static/style.css HTTP/1.1" 200 -
-2026-07-26 18:01:29 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 18:01:29] "[36mGET /static/logo.png HTTP/1.1[0m" 304 -
-2026-07-26 18:01:29 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 18:01:29] "[36mGET /static/favicon.ico HTTP/1.1[0m" 304 -
-2026-07-26 18:01:50 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 18:01:50] "GET /admin/azubianzeige.html HTTP/1.1" 200 -
-2026-07-26 18:01:50 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 18:01:50] "GET /static/style.css HTTP/1.1" 200 -
-2026-07-26 18:01:50 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 18:01:50] "[36mGET /static/logo.png HTTP/1.1[0m" 304 -
-2026-07-26 18:01:50 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 18:01:50] "[36mGET /static/favicon.ico HTTP/1.1[0m" 304 -
-2026-07-26 18:02:11 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 18:02:11] "GET /admin/azubianzeige.html HTTP/1.1" 200 -
-2026-07-26 18:02:11 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 18:02:11] "GET /static/style.css HTTP/1.1" 200 -
-2026-07-26 18:02:11 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 18:02:11] "[36mGET /static/logo.png HTTP/1.1[0m" 304 -
-2026-07-26 18:02:11 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 18:02:11] "[36mGET /static/favicon.ico HTTP/1.1[0m" 304 -
-2026-07-26 18:02:28 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 18:02:28] "GET /admin/azubianzeige.html HTTP/1.1" 200 -
-2026-07-26 18:02:28 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 18:02:28] "GET /static/style.css HTTP/1.1" 200 -
-2026-07-26 18:02:28 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 18:02:28] "[36mGET /static/logo.png HTTP/1.1[0m" 304 -
-2026-07-26 18:02:28 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 18:02:28] "[36mGET /static/favicon.ico HTTP/1.1[0m" 304 -
-2026-07-26 18:02:43 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 18:02:43] "GET /admin/azubianzeige.html HTTP/1.1" 200 -
-2026-07-26 18:02:43 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 18:02:43] "GET /static/style.css HTTP/1.1" 200 -
-2026-07-26 18:02:43 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 18:02:43] "[36mGET /static/logo.png HTTP/1.1[0m" 304 -
-2026-07-26 18:02:43 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 18:02:43] "[36mGET /static/favicon.ico HTTP/1.1[0m" 304 -
-2026-07-26 18:02:57 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 18:02:57] "GET /admin/azubianzeige.html HTTP/1.1" 200 -
-2026-07-26 18:02:57 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 18:02:57] "GET /static/style.css HTTP/1.1" 200 -
-2026-07-26 18:02:57 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 18:02:57] "[36mGET /static/logo.png HTTP/1.1[0m" 304 -
-2026-07-26 18:02:57 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 18:02:57] "[36mGET /static/favicon.ico HTTP/1.1[0m" 304 -
-2026-07-26 18:03:30 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 18:03:30] "GET /admin/azubianzeige.html HTTP/1.1" 200 -
-2026-07-26 18:03:30 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 18:03:30] "GET /static/style.css HTTP/1.1" 200 -
-2026-07-26 18:03:30 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 18:03:30] "[36mGET /static/logo.png HTTP/1.1[0m" 304 -
-2026-07-26 18:03:30 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 18:03:30] "[36mGET /static/favicon.ico HTTP/1.1[0m" 304 -
-2026-07-26 18:03:31 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 18:03:31] "GET /admin/azubianzeige.html HTTP/1.1" 200 -
-2026-07-26 18:03:31 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 18:03:31] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
-2026-07-26 18:03:31 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 18:03:31] "[36mGET /static/logo.png HTTP/1.1[0m" 304 -
-2026-07-26 18:03:31 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 18:03:31] "[36mGET /static/favicon.ico HTTP/1.1[0m" 304 -
-2026-07-26 18:03:44 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 18:03:44] "GET /admin/azubianzeige.html HTTP/1.1" 200 -
-2026-07-26 18:03:44 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 18:03:44] "GET /static/style.css HTTP/1.1" 200 -
-2026-07-26 18:03:44 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 18:03:44] "[36mGET /static/logo.png HTTP/1.1[0m" 304 -
-2026-07-26 18:03:44 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 18:03:44] "[36mGET /static/favicon.ico HTTP/1.1[0m" 304 -
-2026-07-26 18:04:15 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 18:04:15] "GET /admin/azubianzeige.html HTTP/1.1" 200 -
-2026-07-26 18:04:15 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 18:04:15] "GET /static/style.css HTTP/1.1" 200 -
-2026-07-26 18:04:15 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 18:04:15] "[36mGET /static/logo.png HTTP/1.1[0m" 304 -
-2026-07-26 18:04:15 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 18:04:15] "[36mGET /static/favicon.ico HTTP/1.1[0m" 304 -
-2026-07-26 18:04:31 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 18:04:31] "GET /admin/azubianzeige.html HTTP/1.1" 200 -
-2026-07-26 18:04:31 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 18:04:31] "GET /static/style.css HTTP/1.1" 200 -
-2026-07-26 18:04:31 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 18:04:31] "[36mGET /static/logo.png HTTP/1.1[0m" 304 -
-2026-07-26 18:04:31 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 18:04:31] "[36mGET /static/favicon.ico HTTP/1.1[0m" 304 -
-2026-07-26 18:05:03 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 18:05:03] "GET /admin/azubianzeige.html HTTP/1.1" 200 -
-2026-07-26 18:05:03 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 18:05:03] "GET /static/style.css HTTP/1.1" 200 -
-2026-07-26 18:05:03 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 18:05:03] "[36mGET /static/logo.png HTTP/1.1[0m" 304 -
-2026-07-26 18:05:03 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 18:05:03] "[36mGET /static/favicon.ico HTTP/1.1[0m" 304 -
-2026-07-26 18:05:13 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 18:05:13] "GET /admin/azubianzeige.html HTTP/1.1" 200 -
-2026-07-26 18:05:13 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 18:05:13] "GET /static/style.css HTTP/1.1" 200 -
-2026-07-26 18:05:13 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 18:05:13] "[36mGET /static/logo.png HTTP/1.1[0m" 304 -
-2026-07-26 18:05:13 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 18:05:13] "[36mGET /static/favicon.ico HTTP/1.1[0m" 304 -
-2026-07-26 19:08:05 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 19:08:05] "GET /admin/azubianzeige.html HTTP/1.1" 200 -
-2026-07-26 19:08:05 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 19:08:05] "[36mGET /static/logo.png HTTP/1.1[0m" 304 -
-2026-07-26 19:08:05 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 19:08:05] "GET /static/style.css HTTP/1.1" 200 -
-2026-07-26 19:08:05 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 19:08:05] "[36mGET /static/favicon.ico HTTP/1.1[0m" 304 -
-2026-07-26 19:08:30 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 19:08:30] "GET /admin/azubianzeige.html HTTP/1.1" 200 -
-2026-07-26 19:08:30 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 19:08:30] "GET /static/style.css HTTP/1.1" 200 -
-2026-07-26 19:08:30 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 19:08:30] "[36mGET /static/logo.png HTTP/1.1[0m" 304 -
-2026-07-26 19:08:30 INFO werkzeug: 127.0.0.1 - - [26/Jul/2026 19:08:30] "[36mGET /static/favicon.ico HTTP/1.1[0m" 304 -
-2026-07-26 19:26:14 INFO src.app: --------------------------------------------------
-2026-07-26 19:26:14 INFO src.extensions: Datei 'infofile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/info.pdf
-2026-07-26 19:26:14 INFO src.extensions: Datei 'tomlfile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
-2026-07-26 19:26:14 INFO src.extensions: Datei 'prototypeazubi' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_azubis.csv
-2026-07-26 19:26:14 INFO src.extensions: Datei 'prototypeausbilder' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_ausbilder.csv
-2026-07-26 19:26:14 INFO src.extensions: Texte geladen aus: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
-2026-07-26 19:26:14 INFO src.app: Datenbanktabellen erstellt/überprüft.
-2026-07-26 19:26:14 INFO src.app: --------------------------------------------------
-2026-07-26 19:26:14 INFO src.app:   --> !! App: Untisanmeldung wurde erfolgreich gestartet !!
-2026-07-26 19:26:14 INFO src.app: --------------------------------------------------
-2026-07-26 19:26:14 INFO werkzeug: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
- * Running on http://127.0.0.1:5000
-2026-07-26 19:26:14 INFO werkzeug: [33mPress CTRL+C to quit[0m
-2026-07-26 19:26:14 INFO werkzeug:  * Restarting with stat
-2026-07-26 19:26:15 INFO src.app: --------------------------------------------------
-2026-07-26 19:26:15 INFO src.extensions: Datei 'infofile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/info.pdf
-2026-07-26 19:26:15 INFO src.extensions: Datei 'tomlfile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
-2026-07-26 19:26:15 INFO src.extensions: Datei 'prototypeazubi' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_azubis.csv
-2026-07-26 19:26:15 INFO src.extensions: Datei 'prototypeausbilder' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_ausbilder.csv
-2026-07-26 19:26:15 INFO src.extensions: Texte geladen aus: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
-2026-07-26 19:26:15 INFO src.app: Datenbanktabellen erstellt/überprüft.
-2026-07-26 19:26:15 INFO src.app: --------------------------------------------------
-2026-07-26 19:26:15 INFO src.app:   --> !! App: Untisanmeldung wurde erfolgreich gestartet !!
-2026-07-26 19:26:15 INFO src.app: --------------------------------------------------
-2026-07-26 19:26:15 WARNING werkzeug:  * Debugger is active!
-2026-07-26 19:26:15 INFO werkzeug:  * Debugger PIN: 204-675-412
+2026-07-27 09:06:33 INFO src.app: --------------------------------------------------
+2026-07-27 09:06:33 INFO src.extensions: Datei 'infofile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/info.pdf
+2026-07-27 09:06:33 INFO src.extensions: Datei 'tomlfile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-27 09:06:33 INFO src.extensions: Datei 'prototypeazubi' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_azubis.csv
+2026-07-27 09:06:33 INFO src.extensions: Datei 'prototypeausbilder' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_ausbilder.csv
+2026-07-27 09:06:33 INFO src.extensions: Texte geladen aus: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-27 09:06:33 INFO src.app: Datenbanktabellen erstellt/überprüft.
+2026-07-27 09:06:33 INFO src.app: --------------------------------------------------
+2026-07-27 09:06:33 INFO src.app:   --> !! App: Untisanmeldung wurde erfolgreich gestartet !!
+2026-07-27 09:06:33 INFO src.app: --------------------------------------------------
+2026-07-27 09:06:34 INFO src.app: --------------------------------------------------
+2026-07-27 09:06:34 INFO src.extensions: Datei 'infofile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/info.pdf
+2026-07-27 09:06:34 INFO src.extensions: Datei 'tomlfile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-27 09:06:34 INFO src.extensions: Datei 'prototypeazubi' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_azubis.csv
+2026-07-27 09:06:34 INFO src.extensions: Datei 'prototypeausbilder' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_ausbilder.csv
+2026-07-27 09:06:34 INFO src.extensions: Texte geladen aus: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-27 09:06:34 INFO src.app: --------------------------------------------------
+2026-07-27 09:06:34 INFO src.extensions: Datei 'infofile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/info.pdf
+2026-07-27 09:06:34 INFO src.extensions: Datei 'tomlfile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-27 09:06:34 INFO src.extensions: Datei 'prototypeazubi' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_azubis.csv
+2026-07-27 09:06:34 INFO src.extensions: Datei 'prototypeausbilder' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_ausbilder.csv
+2026-07-27 09:06:34 INFO src.extensions: Texte geladen aus: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-27 09:06:34 INFO src.app: Datenbanktabellen erstellt/überprüft.
+2026-07-27 09:06:34 INFO src.app: Datenbanktabellen erstellt/überprüft.
+2026-07-27 09:06:34 INFO src.app: --------------------------------------------------
+2026-07-27 09:06:34 INFO src.app:   --> !! App: Untisanmeldung wurde erfolgreich gestartet !!
+2026-07-27 09:06:34 INFO src.app: --------------------------------------------------
+2026-07-27 09:06:34 INFO src.app: --------------------------------------------------
+2026-07-27 09:06:34 INFO src.app:   --> !! App: Untisanmeldung wurde erfolgreich gestartet !!
+2026-07-27 09:06:34 INFO src.app: --------------------------------------------------
+2026-07-27 09:06:44 INFO src.app: --------------------------------------------------
+2026-07-27 09:06:44 INFO src.extensions: Datei 'infofile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/info.pdf
+2026-07-27 09:06:44 INFO src.extensions: Datei 'tomlfile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-27 09:06:44 INFO src.extensions: Datei 'prototypeazubi' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_azubis.csv
+2026-07-27 09:06:44 INFO src.extensions: Datei 'prototypeausbilder' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_ausbilder.csv
+2026-07-27 09:06:44 INFO src.extensions: Texte geladen aus: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-27 09:06:44 INFO src.app: Datenbanktabellen erstellt/überprüft.
+2026-07-27 09:06:44 INFO src.app: --------------------------------------------------
+2026-07-27 09:06:44 INFO src.app:   --> !! App: Untisanmeldung wurde erfolgreich gestartet !!
+2026-07-27 09:06:44 INFO src.app: --------------------------------------------------
+2026-07-27 09:06:44 INFO src.app: --------------------------------------------------
+2026-07-27 09:06:44 INFO src.extensions: Datei 'infofile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/info.pdf
+2026-07-27 09:06:44 INFO src.extensions: Datei 'tomlfile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-27 09:06:44 INFO src.extensions: Datei 'prototypeazubi' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_azubis.csv
+2026-07-27 09:06:44 INFO src.extensions: Datei 'prototypeausbilder' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_ausbilder.csv
+2026-07-27 09:06:44 INFO src.extensions: Texte geladen aus: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-27 09:06:44 INFO src.app: Datenbanktabellen erstellt/überprüft.
+2026-07-27 09:06:44 INFO src.app: --------------------------------------------------
+2026-07-27 09:06:44 INFO src.app:   --> !! App: Untisanmeldung wurde erfolgreich gestartet !!
+2026-07-27 09:06:44 INFO src.app: --------------------------------------------------
+2026-07-27 09:06:44 INFO src.app: --------------------------------------------------
+2026-07-27 09:06:44 INFO src.extensions: Datei 'infofile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/info.pdf
+2026-07-27 09:06:44 INFO src.extensions: Datei 'tomlfile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-27 09:06:44 INFO src.extensions: Datei 'prototypeazubi' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_azubis.csv
+2026-07-27 09:06:44 INFO src.extensions: Datei 'prototypeausbilder' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_ausbilder.csv
+2026-07-27 09:06:44 INFO src.extensions: Texte geladen aus: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-27 09:06:44 INFO src.app: Datenbanktabellen erstellt/überprüft.
+2026-07-27 09:06:44 INFO src.app: --------------------------------------------------
+2026-07-27 09:06:44 INFO src.app:   --> !! App: Untisanmeldung wurde erfolgreich gestartet !!
+2026-07-27 09:06:44 INFO src.app: --------------------------------------------------
+2026-07-27 09:15:08 INFO src.app: --------------------------------------------------
+2026-07-27 09:15:08 INFO src.extensions: Datei 'infofile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/info.pdf
+2026-07-27 09:15:08 INFO src.extensions: Datei 'tomlfile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-27 09:15:08 INFO src.extensions: Datei 'prototypeazubi' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_azubis.csv
+2026-07-27 09:15:08 INFO src.extensions: Datei 'prototypeausbilder' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_ausbilder.csv
+2026-07-27 09:15:08 INFO src.extensions: Texte geladen aus: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-27 09:15:08 INFO src.app: Datenbanktabellen erstellt/überprüft.
+2026-07-27 09:15:08 INFO src.app: --------------------------------------------------
+2026-07-27 09:15:08 INFO src.app:   --> !! App: Untisanmeldung wurde erfolgreich gestartet !!
+2026-07-27 09:15:08 INFO src.app: --------------------------------------------------
+2026-07-27 09:15:08 INFO src.app: --------------------------------------------------
+2026-07-27 09:15:08 INFO src.extensions: Datei 'infofile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/info.pdf
+2026-07-27 09:15:08 INFO src.extensions: Datei 'tomlfile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-27 09:15:08 INFO src.extensions: Datei 'prototypeazubi' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_azubis.csv
+2026-07-27 09:15:08 INFO src.extensions: Datei 'prototypeausbilder' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_ausbilder.csv
+2026-07-27 09:15:08 INFO src.extensions: Texte geladen aus: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-27 09:15:08 INFO src.app: --------------------------------------------------
+2026-07-27 09:15:08 INFO src.extensions: Datei 'infofile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/info.pdf
+2026-07-27 09:15:08 INFO src.extensions: Datei 'tomlfile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-27 09:15:08 INFO src.extensions: Datei 'prototypeazubi' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_azubis.csv
+2026-07-27 09:15:08 INFO src.extensions: Datei 'prototypeausbilder' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_ausbilder.csv
+2026-07-27 09:15:08 INFO src.extensions: Texte geladen aus: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-27 09:15:08 INFO src.app: Datenbanktabellen erstellt/überprüft.
+2026-07-27 09:15:08 INFO src.app: Datenbanktabellen erstellt/überprüft.
+2026-07-27 09:15:08 INFO src.app: --------------------------------------------------
+2026-07-27 09:15:08 INFO src.app:   --> !! App: Untisanmeldung wurde erfolgreich gestartet !!
+2026-07-27 09:15:08 INFO src.app: --------------------------------------------------
+2026-07-27 09:15:08 INFO src.app: --------------------------------------------------
+2026-07-27 09:15:08 INFO src.app:   --> !! App: Untisanmeldung wurde erfolgreich gestartet !!
+2026-07-27 09:15:08 INFO src.app: --------------------------------------------------
+2026-07-27 09:17:51 INFO src.app: --------------------------------------------------
+2026-07-27 09:17:51 INFO src.extensions: Datei 'infofile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/info.pdf
+2026-07-27 09:17:51 INFO src.extensions: Datei 'tomlfile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-27 09:17:51 INFO src.extensions: Datei 'prototypeazubi' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_azubis.csv
+2026-07-27 09:17:51 INFO src.extensions: Datei 'prototypeausbilder' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_ausbilder.csv
+2026-07-27 09:17:51 INFO src.extensions: Texte geladen aus: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-27 09:17:51 INFO src.app: Datenbanktabellen erstellt/überprüft.
+2026-07-27 09:17:51 INFO src.app: --------------------------------------------------
+2026-07-27 09:17:51 INFO src.app:   --> !! App: Untisanmeldung wurde erfolgreich gestartet !!
+2026-07-27 09:17:51 INFO src.app: --------------------------------------------------
+2026-07-27 09:17:51 INFO src.app: --------------------------------------------------
+2026-07-27 09:17:51 INFO src.extensions: Datei 'infofile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/info.pdf
+2026-07-27 09:17:51 INFO src.extensions: Datei 'tomlfile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-27 09:17:51 INFO src.extensions: Datei 'prototypeazubi' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_azubis.csv
+2026-07-27 09:17:51 INFO src.extensions: Datei 'prototypeausbilder' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_ausbilder.csv
+2026-07-27 09:17:51 INFO src.extensions: Texte geladen aus: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-27 09:17:51 INFO src.app: Datenbanktabellen erstellt/überprüft.
+2026-07-27 09:17:51 INFO src.app: --------------------------------------------------
+2026-07-27 09:17:51 INFO src.app:   --> !! App: Untisanmeldung wurde erfolgreich gestartet !!
+2026-07-27 09:17:51 INFO src.app: --------------------------------------------------
+2026-07-27 09:17:51 INFO src.app: --------------------------------------------------
+2026-07-27 09:17:51 INFO src.extensions: Datei 'infofile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/info.pdf
+2026-07-27 09:17:51 INFO src.extensions: Datei 'tomlfile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-27 09:17:51 INFO src.extensions: Datei 'prototypeazubi' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_azubis.csv
+2026-07-27 09:17:51 INFO src.extensions: Datei 'prototypeausbilder' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_ausbilder.csv
+2026-07-27 09:17:51 INFO src.extensions: Texte geladen aus: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-27 09:17:51 INFO src.app: Datenbanktabellen erstellt/überprüft.
+2026-07-27 09:17:51 INFO src.app: --------------------------------------------------
+2026-07-27 09:17:51 INFO src.app:   --> !! App: Untisanmeldung wurde erfolgreich gestartet !!
+2026-07-27 09:17:51 INFO src.app: --------------------------------------------------
+2026-07-27 09:20:51 INFO src.app: --------------------------------------------------
+2026-07-27 09:20:51 INFO src.extensions: Datei 'infofile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/info.pdf
+2026-07-27 09:20:51 INFO src.extensions: Datei 'tomlfile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-27 09:20:51 INFO src.extensions: Datei 'prototypeazubi' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_azubis.csv
+2026-07-27 09:20:51 INFO src.extensions: Datei 'prototypeausbilder' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_ausbilder.csv
+2026-07-27 09:20:51 INFO src.extensions: Texte geladen aus: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-27 09:20:51 INFO src.app: Datenbanktabellen erstellt/überprüft.
+2026-07-27 09:20:51 INFO src.app: --------------------------------------------------
+2026-07-27 09:20:51 INFO src.app:   --> !! App: Untisanmeldung wurde erfolgreich gestartet !!
+2026-07-27 09:20:51 INFO src.app: --------------------------------------------------
+2026-07-27 09:20:51 INFO src.app: --------------------------------------------------
+2026-07-27 09:20:51 INFO src.app: --------------------------------------------------
+2026-07-27 09:20:51 INFO src.extensions: Datei 'infofile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/info.pdf
+2026-07-27 09:20:51 INFO src.extensions: Datei 'tomlfile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-27 09:20:51 INFO src.extensions: Datei 'infofile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/info.pdf
+2026-07-27 09:20:51 INFO src.extensions: Datei 'prototypeazubi' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_azubis.csv
+2026-07-27 09:20:51 INFO src.extensions: Datei 'tomlfile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-27 09:20:51 INFO src.extensions: Datei 'prototypeausbilder' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_ausbilder.csv
+2026-07-27 09:20:51 INFO src.extensions: Datei 'prototypeazubi' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_azubis.csv
+2026-07-27 09:20:51 INFO src.extensions: Datei 'prototypeausbilder' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_ausbilder.csv
+2026-07-27 09:20:51 INFO src.extensions: Texte geladen aus: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-27 09:20:51 INFO src.extensions: Texte geladen aus: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-27 09:20:51 INFO src.app: Datenbanktabellen erstellt/überprüft.
+2026-07-27 09:20:51 INFO src.app: Datenbanktabellen erstellt/überprüft.
+2026-07-27 09:20:51 INFO src.app: --------------------------------------------------
+2026-07-27 09:20:51 INFO src.app: --------------------------------------------------
+2026-07-27 09:20:51 INFO src.app:   --> !! App: Untisanmeldung wurde erfolgreich gestartet !!
+2026-07-27 09:20:51 INFO src.app:   --> !! App: Untisanmeldung wurde erfolgreich gestartet !!
+2026-07-27 09:20:51 INFO src.app: --------------------------------------------------
+2026-07-27 09:20:51 INFO src.app: --------------------------------------------------
+2026-07-27 09:20:57 INFO src.app: --------------------------------------------------
+2026-07-27 09:20:57 INFO src.extensions: Datei 'infofile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/info.pdf
+2026-07-27 09:20:57 INFO src.extensions: Datei 'tomlfile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-27 09:20:57 INFO src.extensions: Datei 'prototypeazubi' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_azubis.csv
+2026-07-27 09:20:57 INFO src.extensions: Datei 'prototypeausbilder' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_ausbilder.csv
+2026-07-27 09:20:57 INFO src.extensions: Texte geladen aus: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-27 09:20:57 INFO src.app: Datenbanktabellen erstellt/überprüft.
+2026-07-27 09:20:57 INFO src.app: --------------------------------------------------
+2026-07-27 09:20:57 INFO src.app:   --> !! App: Untisanmeldung wurde erfolgreich gestartet !!
+2026-07-27 09:20:57 INFO src.app: --------------------------------------------------
+2026-07-27 09:20:57 INFO src.app: --------------------------------------------------
+2026-07-27 09:20:57 INFO src.extensions: Datei 'infofile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/info.pdf
+2026-07-27 09:20:57 INFO src.extensions: Datei 'tomlfile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-27 09:20:57 INFO src.extensions: Datei 'prototypeazubi' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_azubis.csv
+2026-07-27 09:20:57 INFO src.extensions: Datei 'prototypeausbilder' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_ausbilder.csv
+2026-07-27 09:20:57 INFO src.extensions: Texte geladen aus: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-27 09:20:57 INFO src.app: Datenbanktabellen erstellt/überprüft.
+2026-07-27 09:20:57 INFO src.app: --------------------------------------------------
+2026-07-27 09:20:57 INFO src.app:   --> !! App: Untisanmeldung wurde erfolgreich gestartet !!
+2026-07-27 09:20:57 INFO src.app: --------------------------------------------------
+2026-07-27 09:20:57 INFO src.app: --------------------------------------------------
+2026-07-27 09:20:57 INFO src.extensions: Datei 'infofile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/info.pdf
+2026-07-27 09:20:57 INFO src.extensions: Datei 'tomlfile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-27 09:20:57 INFO src.extensions: Datei 'prototypeazubi' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_azubis.csv
+2026-07-27 09:20:57 INFO src.extensions: Datei 'prototypeausbilder' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_ausbilder.csv
+2026-07-27 09:20:57 INFO src.extensions: Texte geladen aus: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-27 09:20:57 INFO src.app: Datenbanktabellen erstellt/überprüft.
+2026-07-27 09:20:57 INFO src.app: --------------------------------------------------
+2026-07-27 09:20:57 INFO src.app:   --> !! App: Untisanmeldung wurde erfolgreich gestartet !!
+2026-07-27 09:20:57 INFO src.app: --------------------------------------------------
+2026-07-27 09:21:04 INFO src.app: --------------------------------------------------
+2026-07-27 09:21:04 INFO src.extensions: Datei 'infofile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/info.pdf
+2026-07-27 09:21:04 INFO src.extensions: Datei 'tomlfile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-27 09:21:04 INFO src.extensions: Datei 'prototypeazubi' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_azubis.csv
+2026-07-27 09:21:04 INFO src.extensions: Datei 'prototypeausbilder' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_ausbilder.csv
+2026-07-27 09:21:04 INFO src.extensions: Texte geladen aus: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-27 09:21:04 INFO src.app: Datenbanktabellen erstellt/überprüft.
+2026-07-27 09:21:04 INFO src.app: --------------------------------------------------
+2026-07-27 09:21:04 INFO src.app:   --> !! App: Untisanmeldung wurde erfolgreich gestartet !!
+2026-07-27 09:21:04 INFO src.app: --------------------------------------------------
+2026-07-27 09:21:04 INFO src.app: --------------------------------------------------
+2026-07-27 09:21:04 INFO src.extensions: Datei 'infofile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/info.pdf
+2026-07-27 09:21:04 INFO src.extensions: Datei 'tomlfile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-27 09:21:04 INFO src.extensions: Datei 'prototypeazubi' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_azubis.csv
+2026-07-27 09:21:04 INFO src.extensions: Datei 'prototypeausbilder' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_ausbilder.csv
+2026-07-27 09:21:04 INFO src.extensions: Texte geladen aus: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-27 09:21:04 INFO src.app: Datenbanktabellen erstellt/überprüft.
+2026-07-27 09:21:04 INFO src.app: --------------------------------------------------
+2026-07-27 09:21:04 INFO src.app:   --> !! App: Untisanmeldung wurde erfolgreich gestartet !!
+2026-07-27 09:21:04 INFO src.app: --------------------------------------------------
+2026-07-27 09:21:04 INFO src.app: --------------------------------------------------
+2026-07-27 09:21:04 INFO src.extensions: Datei 'infofile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/info.pdf
+2026-07-27 09:21:04 INFO src.extensions: Datei 'tomlfile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-27 09:21:04 INFO src.extensions: Datei 'prototypeazubi' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_azubis.csv
+2026-07-27 09:21:04 INFO src.extensions: Datei 'prototypeausbilder' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_ausbilder.csv
+2026-07-27 09:21:04 INFO src.extensions: Texte geladen aus: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-27 09:21:04 INFO src.app: Datenbanktabellen erstellt/überprüft.
+2026-07-27 09:21:04 INFO src.app: --------------------------------------------------
+2026-07-27 09:21:04 INFO src.app:   --> !! App: Untisanmeldung wurde erfolgreich gestartet !!
+2026-07-27 09:21:04 INFO src.app: --------------------------------------------------
+2026-07-27 09:26:28 INFO src.app: --------------------------------------------------
+2026-07-27 09:26:28 INFO src.extensions: Datei 'infofile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/info.pdf
+2026-07-27 09:26:28 INFO src.extensions: Datei 'tomlfile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-27 09:26:28 INFO src.extensions: Datei 'prototypeazubi' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_azubis.csv
+2026-07-27 09:26:28 INFO src.extensions: Datei 'prototypeausbilder' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_ausbilder.csv
+2026-07-27 09:26:28 INFO src.extensions: Texte geladen aus: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-27 09:26:28 INFO src.app: Datenbanktabellen erstellt/überprüft.
+2026-07-27 09:26:28 INFO src.app: --------------------------------------------------
+2026-07-27 09:26:28 INFO src.app:   --> !! App: Untisanmeldung wurde erfolgreich gestartet !!
+2026-07-27 09:26:28 INFO src.app: --------------------------------------------------
+2026-07-27 09:26:28 INFO src.app: --------------------------------------------------
+2026-07-27 09:26:28 INFO src.extensions: Datei 'infofile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/info.pdf
+2026-07-27 09:26:28 INFO src.extensions: Datei 'tomlfile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-27 09:26:28 INFO src.extensions: Datei 'prototypeazubi' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_azubis.csv
+2026-07-27 09:26:28 INFO src.extensions: Datei 'prototypeausbilder' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_ausbilder.csv
+2026-07-27 09:26:28 INFO src.extensions: Texte geladen aus: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-27 09:26:28 INFO src.app: Datenbanktabellen erstellt/überprüft.
+2026-07-27 09:26:28 INFO src.app: --------------------------------------------------
+2026-07-27 09:26:28 INFO src.app:   --> !! App: Untisanmeldung wurde erfolgreich gestartet !!
+2026-07-27 09:26:28 INFO src.app: --------------------------------------------------
+2026-07-27 09:26:28 INFO src.app: --------------------------------------------------
+2026-07-27 09:26:28 INFO src.extensions: Datei 'infofile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/info.pdf
+2026-07-27 09:26:28 INFO src.extensions: Datei 'tomlfile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-27 09:26:28 INFO src.extensions: Datei 'prototypeazubi' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_azubis.csv
+2026-07-27 09:26:28 INFO src.extensions: Datei 'prototypeausbilder' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_ausbilder.csv
+2026-07-27 09:26:28 INFO src.extensions: Texte geladen aus: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-27 09:26:28 INFO src.app: Datenbanktabellen erstellt/überprüft.
+2026-07-27 09:26:28 INFO src.app: --------------------------------------------------
+2026-07-27 09:26:28 INFO src.app:   --> !! App: Untisanmeldung wurde erfolgreich gestartet !!
+2026-07-27 09:26:28 INFO src.app: --------------------------------------------------
+2026-07-27 09:31:41 INFO src.app: --------------------------------------------------
+2026-07-27 09:31:41 INFO src.extensions: Datei 'infofile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/info.pdf
+2026-07-27 09:31:41 INFO src.extensions: Datei 'tomlfile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-27 09:31:41 INFO src.extensions: Datei 'prototypeazubi' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_azubis.csv
+2026-07-27 09:31:41 INFO src.extensions: Datei 'prototypeausbilder' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_ausbilder.csv
+2026-07-27 09:31:41 INFO src.extensions: Texte geladen aus: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-27 09:31:42 INFO src.app: Datenbanktabellen erstellt/überprüft.
+2026-07-27 09:31:42 INFO src.app: --------------------------------------------------
+2026-07-27 09:31:42 INFO src.app:   --> !! App: Untisanmeldung wurde erfolgreich gestartet !!
+2026-07-27 09:31:42 INFO src.app: --------------------------------------------------
+2026-07-27 09:31:42 INFO src.app: --------------------------------------------------
+2026-07-27 09:31:42 INFO src.extensions: Datei 'infofile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/info.pdf
+2026-07-27 09:31:42 INFO src.extensions: Datei 'tomlfile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-27 09:31:42 INFO src.extensions: Datei 'prototypeazubi' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_azubis.csv
+2026-07-27 09:31:42 INFO src.extensions: Datei 'prototypeausbilder' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_ausbilder.csv
+2026-07-27 09:31:42 INFO src.extensions: Texte geladen aus: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-27 09:31:42 INFO src.app: Datenbanktabellen erstellt/überprüft.
+2026-07-27 09:31:42 INFO src.app: --------------------------------------------------
+2026-07-27 09:31:42 INFO src.app:   --> !! App: Untisanmeldung wurde erfolgreich gestartet !!
+2026-07-27 09:31:42 INFO src.app: --------------------------------------------------
+2026-07-27 09:31:42 INFO src.app: --------------------------------------------------
+2026-07-27 09:31:42 INFO src.extensions: Datei 'infofile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/info.pdf
+2026-07-27 09:31:42 INFO src.extensions: Datei 'tomlfile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-27 09:31:42 INFO src.extensions: Datei 'prototypeazubi' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_azubis.csv
+2026-07-27 09:31:42 INFO src.extensions: Datei 'prototypeausbilder' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_ausbilder.csv
+2026-07-27 09:31:42 INFO src.extensions: Texte geladen aus: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-27 09:31:42 INFO src.app: Datenbanktabellen erstellt/überprüft.
+2026-07-27 09:31:42 INFO src.app: --------------------------------------------------
+2026-07-27 09:31:42 INFO src.app:   --> !! App: Untisanmeldung wurde erfolgreich gestartet !!
+2026-07-27 09:31:42 INFO src.app: --------------------------------------------------
+2026-07-27 09:32:46 INFO src.app: --------------------------------------------------
+2026-07-27 09:32:46 INFO src.extensions: Datei 'infofile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/info.pdf
+2026-07-27 09:32:46 INFO src.extensions: Datei 'tomlfile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-27 09:32:46 INFO src.extensions: Datei 'prototypeazubi' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_azubis.csv
+2026-07-27 09:32:46 INFO src.extensions: Datei 'prototypeausbilder' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_ausbilder.csv
+2026-07-27 09:32:46 INFO src.extensions: Texte geladen aus: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-27 09:32:46 INFO src.app: Datenbanktabellen erstellt/überprüft.
+2026-07-27 09:32:46 INFO src.app: --------------------------------------------------
+2026-07-27 09:32:46 INFO src.app:   --> !! App: Untisanmeldung wurde erfolgreich gestartet !!
+2026-07-27 09:32:46 INFO src.app: --------------------------------------------------
+2026-07-27 09:32:46 INFO src.app: --------------------------------------------------
+2026-07-27 09:32:46 INFO src.extensions: Datei 'infofile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/info.pdf
+2026-07-27 09:32:46 INFO src.extensions: Datei 'tomlfile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-27 09:32:46 INFO src.extensions: Datei 'prototypeazubi' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_azubis.csv
+2026-07-27 09:32:46 INFO src.extensions: Datei 'prototypeausbilder' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_ausbilder.csv
+2026-07-27 09:32:46 INFO src.extensions: Texte geladen aus: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-27 09:32:46 INFO src.app: Datenbanktabellen erstellt/überprüft.
+2026-07-27 09:32:46 INFO src.app: --------------------------------------------------
+2026-07-27 09:32:46 INFO src.app:   --> !! App: Untisanmeldung wurde erfolgreich gestartet !!
+2026-07-27 09:32:46 INFO src.app: --------------------------------------------------
+2026-07-27 09:32:46 INFO src.app: --------------------------------------------------
+2026-07-27 09:32:46 INFO src.extensions: Datei 'infofile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/info.pdf
+2026-07-27 09:32:46 INFO src.extensions: Datei 'tomlfile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-27 09:32:46 INFO src.extensions: Datei 'prototypeazubi' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_azubis.csv
+2026-07-27 09:32:46 INFO src.extensions: Datei 'prototypeausbilder' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_ausbilder.csv
+2026-07-27 09:32:46 INFO src.extensions: Texte geladen aus: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-27 09:32:46 INFO src.app: Datenbanktabellen erstellt/überprüft.
+2026-07-27 09:32:46 INFO src.app: --------------------------------------------------
+2026-07-27 09:32:46 INFO src.app:   --> !! App: Untisanmeldung wurde erfolgreich gestartet !!
+2026-07-27 09:32:46 INFO src.app: --------------------------------------------------
+2026-07-27 09:32:51 INFO src.app: --------------------------------------------------
+2026-07-27 09:32:51 INFO src.extensions: Datei 'infofile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/info.pdf
+2026-07-27 09:32:51 INFO src.extensions: Datei 'tomlfile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-27 09:32:51 INFO src.extensions: Datei 'prototypeazubi' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_azubis.csv
+2026-07-27 09:32:51 INFO src.extensions: Datei 'prototypeausbilder' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_ausbilder.csv
+2026-07-27 09:32:51 INFO src.extensions: Texte geladen aus: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-27 09:32:51 INFO src.app: Datenbanktabellen erstellt/überprüft.
+2026-07-27 09:32:51 INFO src.app: --------------------------------------------------
+2026-07-27 09:32:51 INFO src.app:   --> !! App: Untisanmeldung wurde erfolgreich gestartet !!
+2026-07-27 09:32:51 INFO src.app: --------------------------------------------------
+2026-07-27 09:32:51 INFO src.app: --------------------------------------------------
+2026-07-27 09:32:51 INFO src.extensions: Datei 'infofile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/info.pdf
+2026-07-27 09:32:51 INFO src.extensions: Datei 'tomlfile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-27 09:32:51 INFO src.extensions: Datei 'prototypeazubi' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_azubis.csv
+2026-07-27 09:32:51 INFO src.extensions: Datei 'prototypeausbilder' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_ausbilder.csv
+2026-07-27 09:32:51 INFO src.extensions: Texte geladen aus: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-27 09:32:51 INFO src.app: Datenbanktabellen erstellt/überprüft.
+2026-07-27 09:32:51 INFO src.app: --------------------------------------------------
+2026-07-27 09:32:51 INFO src.app:   --> !! App: Untisanmeldung wurde erfolgreich gestartet !!
+2026-07-27 09:32:51 INFO src.app: --------------------------------------------------
+2026-07-27 09:32:51 INFO src.app: --------------------------------------------------
+2026-07-27 09:32:51 INFO src.extensions: Datei 'infofile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/info.pdf
+2026-07-27 09:32:51 INFO src.extensions: Datei 'tomlfile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-27 09:32:51 INFO src.extensions: Datei 'prototypeazubi' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_azubis.csv
+2026-07-27 09:32:51 INFO src.extensions: Datei 'prototypeausbilder' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_ausbilder.csv
+2026-07-27 09:32:51 INFO src.extensions: Texte geladen aus: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-27 09:32:51 INFO src.app: Datenbanktabellen erstellt/überprüft.
+2026-07-27 09:32:51 INFO src.app: --------------------------------------------------
+2026-07-27 09:32:51 INFO src.app:   --> !! App: Untisanmeldung wurde erfolgreich gestartet !!
+2026-07-27 09:32:51 INFO src.app: --------------------------------------------------

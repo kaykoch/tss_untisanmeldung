@@ -1,0 +1,40 @@
+[Unit]
+Description=Gunicorn Untisanmeldung (8082)
+After=network.target
+
+[Service]
+# Benutzer und Gruppe, unter der Gunicorn läuft
+User=www-data
+Group=www-data
+
+# Arbeitsverzeichnis
+WorkingDirectory=/var/www/tss_untisanmeldung/
+
+# Umgebungsvariablen (z. B. für Virtualenv)
+Environment="PATH=/var/www/tss_untisanmeldung/.venv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+Environment="PYTHONUNBUFFERED=1"
+
+# Erstellt automatisch /var/log/gunicorn mit Rechten für www-data
+RuntimeDirectory=gunicorn
+RuntimeDirectoryMode=0755
+
+# Gunicorn-Befehl direkt aus der venv
+ExecStart=/var/www/tss_untisanmeldung/.venv/bin/gunicorn \
+    --workers 2 \
+    --bind 0.0.0.0:8082 \
+    --log-level info \
+    --access-logfile /var/log/gunicorn/tss_untisanmeldung_access.log \
+    --error-logfile /var/log/gunicorn/tss_untisanmeldung_error.log \
+    --timeout 30 \
+    --graceful-timeout 10 \
+    untis:app
+
+# Automatischer Neustart bei Absturz
+Restart=always
+RestartSec=5
+
+# Timeout für sauberes Beenden
+TimeoutStopSec=30
+
+[Install]
+WantedBy=multi-user.target
