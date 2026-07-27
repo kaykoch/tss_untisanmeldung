@@ -35,8 +35,9 @@ def _send_mail(msg: Message) -> bool:
     Returns:
         True bei erfolgreichem Versand, sonst False.
     """
+    print(7)
     try:
-        print(msg.recipients)
+        print(msg.html)
         # state.mail.send(msg)
         logger.debug("Mail gesendet an: %s", msg.recipients)
         return True
@@ -138,7 +139,7 @@ def send_mail_to_ausbilder(ausbilder) -> tuple[str, str]:
         "mail/mail_confirm_ausbilder.html",
         ausbilder=ausbilder,
         server_url=f"https://{request.host}/",
-        kontaktperson=state.kontaktperson,
+        kontaktperson=state.infos.kontaktperson,
     )
     msg = Message(subject=_SUBJECT_CONFIRM, recipients=[ausbilder.ausbilder_email], html=html)
     sent = _send_mail(msg)

@@ -2,18 +2,22 @@
 # Alle anpassbaren Texte der Anwendung
 # Kann vom Admin ohne Python-Kenntnisse bearbeitet werden.
 
+# Kontaktperson, die auf den Seiten angezeigt wird
 [kontaktperson]
 nachname      = "Koch"
 vorname       = "Kay"
 mail          = "koch@tssbit.de"
-komplett      = "Koch, Kay (koch@tssbit.de)" 
+komplett      = "OStR Kay Koch (koch@tssbit.de)" 
 
+# Name der Schule, die auf den Seiten angezeigt wird. Das Logo kann im Ordner static geändert werden
 [schule]
 name          = "Theobald-Simon-Schule"
 
+# Loginname für die Betriebe. Das Passwort wird im Webinterface geändert
 [betriebe]
 login         ="tssbit"
 
+# Texte, die auf den Seiten für die Betriebe angezeigt werden
 [content]
 index = """
     <p>

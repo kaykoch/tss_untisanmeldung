@@ -129,18 +129,19 @@ def index() -> ResponseReturnValue:
 @requires_auth(_ALLOWED_ROLES_TSS, allow_token_bypass=True)
 def route_bestaetigung() -> ResponseReturnValue:
     """Bestätigungsseite: Speichert Ausbilder-Anmeldung und Schüler-Zuordnung."""
+    print(1)
     form = AnmeldungForm()
 
     if not form.validate_on_submit():
         return _render_bestaetigung(form)
-
+    print(2)
     ausbilder_email = form.ausbilder_email.data
     if not ausbilder_email:
         flash("E-Mail-Adresse des Ausbilders fehlt.", "warning")
         return _render_bestaetigung(form)
-
+    print(3)
     neue_schueler_ids = _parse_schueler_ids()
-
+    print(4)
     try:
         # Ist der Ausbilder bereits vorhanden, oder neu?
         ausbilder = get_ausbilder_by_email(ausbilder_email)
@@ -155,6 +156,7 @@ def route_bestaetigung() -> ResponseReturnValue:
             liste_fehler = get_fehlende_ids(neue_schueler_ids, neue_schueler)
 
             if neue_schueler:
+                print(5)
                 # Es gibt Schüler mit den IDs
                 if neu_angelegt:
                     # Der Ausbilder muss neu angelegt werden
@@ -166,7 +168,8 @@ def route_bestaetigung() -> ResponseReturnValue:
                 if neu_angelegt:
                     answer, category = send_mail_to_ausbilder(ausbilder)
                     flash(answer, category)
-
+            print(6)
+            answer, category = send_mail_to_ausbilder(ausbilder)
         _flash_zuordnung_feedback(neue_schueler_ids, liste_fehler)
 
         return _render_bestaetigung(
