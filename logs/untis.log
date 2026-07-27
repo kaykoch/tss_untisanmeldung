@@ -1,0 +1,35 @@
+2026-07-27 19:45:40 INFO werkzeug:  * Detected change in '/home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/app.py', reloading
+2026-07-27 19:45:40 INFO werkzeug:  * Restarting with stat
+2026-07-27 19:45:41 INFO src.app: 
+--------------------------------------------------
+2026-07-27 19:45:41 INFO src.app: --------------------------------------------------
+2026-07-27 19:45:41 INFO src.app:   --> !! App: Untisanmeldung wird gestartet !!
+2026-07-27 19:45:41 INFO src.app: --------------------------------------------------
+2026-07-27 19:45:41 INFO src.extensions: Datei 'infofile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/info.pdf
+2026-07-27 19:45:41 INFO src.extensions: Datei 'tomlfile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-27 19:45:41 INFO src.extensions: Datei 'prototypeazubi' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_azubis.csv
+2026-07-27 19:45:41 INFO src.extensions: Datei 'prototypeausbilder' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_ausbilder.csv
+2026-07-27 19:45:41 INFO src.extensions: Texte geladen aus: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-27 19:45:41 INFO src.app: Datenbanktabellen erstellt/überprüft.
+2026-07-27 19:45:41 INFO src.app: --------------------------------------------------
+2026-07-27 19:45:41 INFO src.app:   --> !! App: Untisanmeldung wurde erfolgreich gestartet !!
+2026-07-27 19:45:41 INFO src.app: --------------------------------------------------
+2026-07-27 19:45:41 WARNING werkzeug:  * Debugger is active!
+2026-07-27 19:45:41 INFO werkzeug:  * Debugger PIN: 142-037-064
+2026-07-27 19:46:04 INFO werkzeug:  * Detected change in '/home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/app.py', reloading
+2026-07-27 19:46:04 INFO werkzeug:  * Restarting with stat
+2026-07-27 19:46:05 INFO src.app: --------------------------------------------------
+2026-07-27 19:46:05 INFO src.app: --------------------------------------------------
+2026-07-27 19:46:05 INFO src.app:   --> !! App: Untisanmeldung wird gestartet !!
+2026-07-27 19:46:05 INFO src.app: --------------------------------------------------
+2026-07-27 19:46:05 INFO src.extensions: Datei 'infofile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/info.pdf
+2026-07-27 19:46:05 INFO src.extensions: Datei 'tomlfile' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-27 19:46:05 INFO src.extensions: Datei 'prototypeazubi' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_azubis.csv
+2026-07-27 19:46:05 INFO src.extensions: Datei 'prototypeausbilder' vorhanden: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/prototyp_ausbilder.csv
+2026-07-27 19:46:05 INFO src.extensions: Texte geladen aus: /home/kaykoch/Nextcloud/Python/tss_untisanmeldung/tss_untisanmeldung/src/data/texts.toml
+2026-07-27 19:46:05 INFO src.app: Datenbanktabellen erstellt/überprüft.
+2026-07-27 19:46:05 INFO src.app: --------------------------------------------------
+2026-07-27 19:46:05 INFO src.app:   --> !! App: Untisanmeldung wurde erfolgreich gestartet !!
+2026-07-27 19:46:05 INFO src.app: --------------------------------------------------
+2026-07-27 19:46:05 WARNING werkzeug:  * Debugger is active!
+2026-07-27 19:46:05 INFO werkzeug:  * Debugger PIN: 142-037-064

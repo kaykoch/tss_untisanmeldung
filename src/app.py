@@ -46,6 +46,10 @@ def create_app(config_object=ProductionConfig) -> Flask:
         Fertig konfigurierte Flask-App.
     """
     _setup_logging()
+    logger.info("%s", _SEPARATOR)
+    logger.info("%s", _SEPARATOR)
+    logger.info("  --> !! App: Untisanmeldung wird gestartet !!")
+    logger.info("%s", _SEPARATOR)
     app = Flask(__name__)
 
     app.config.from_object(config_object)
@@ -75,7 +79,7 @@ def _bootstrap(app: Flask) -> None:
         app: Die laufende Flask-App.
     """
     try:
-        logger.info("%s", _SEPARATOR)
+        # globale statevariable initialisieren
         state.set_data(
             app,
             infofile=INFOFILE,
@@ -83,9 +87,13 @@ def _bootstrap(app: Flask) -> None:
             prototypeazubi=PROTOTYPE_AZUBI,
             prototypeausbilder=PROTOTYPE_AUSBILDER,
         )
+        # Datenbank sicherstellen
         _init_db()
+        # Konfigwerte aus DB laden (Mail, Admin, Passwort, etc)
         load_defaults()
+        # Mail Funktion mit geladenen Werten initialisieren
         state.mail.init_app(app)
+
     except Exception as e:
         logger.exception("Fehler bei der App-Initialisierung: %s", e)
         raise
@@ -106,8 +114,10 @@ def _init_db() -> None:
         # Locale für Datumsformatierung setzen (Fallback auf C.UTF-8)
         locale.setlocale(locale.LC_TIME, "C.UTF-8")
 
+        # Datenbank erzeugen, wenn es sie nicht gibt
         state.db.create_all()
 
+        # Default Werte der Config vorbesetzen, wenn die DB gerade neu erstellt wurde
         _seed_defaults(src.models)
         state.db.session.commit()
 

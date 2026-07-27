@@ -37,8 +37,8 @@ def _send_mail(msg: Message) -> bool:
     """
     print(7)
     try:
-        print(msg.html)
-        # state.mail.send(msg)
+        # print(msg.html)
+        state.mail.send(msg)
         logger.debug("Mail gesendet an: %s", msg.recipients)
         return True
 
