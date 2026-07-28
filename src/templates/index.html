@@ -4,7 +4,7 @@
 <form method="POST" action="{{ url_for('main.route_bestaetigung') }}">
     {{ form.csrf_token }}
     
-    <div class="grid">
+    <div class="grid_test">
         <!-- ##########################################-->
         <div class="field">
             {{ form.ausbilder_betrieb.label }}
@@ -32,11 +32,6 @@
             {{ form.ausbilder_email }}
         </div>
     </div>
-
-
-
-
-
         <label id="labelSchuelerEingabe" style="display: none; margin-top:15px;">Schüler:</label>
         <table id="schuelerEingabe">
             <tbody>

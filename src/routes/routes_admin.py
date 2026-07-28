@@ -223,7 +223,7 @@ def route_ausbilderanzeige() -> ResponseReturnValue:
                         flash("Fehler beim Erstellen der CSV-Datei.", "error")
                         return redirect(url_for("admin.route_ausbilderanzeige"))
             if answer:
-                flash(answer, category)
+                flash(Markup(answer), category)
         else:
             if request.method == "GET":
                 flash("Für weitere Informationen mit der Maus über die Kopfzeile fahren.", "success")

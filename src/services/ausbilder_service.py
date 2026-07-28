@@ -78,9 +78,10 @@ def delete_ausbilder(ausbilder: Ausbilder) -> tuple:
 
     try:
         mail = ausbilder.ausbilder_email
+        betrieb = ausbilder.ausbilder_betrieb
         state.db.session.delete(ausbilder)
         state.db.session.commit()
-        return (f"{mail} und alle Verknüpfungen zu Azubis wurden gelöscht.", "success")
+        return (f"Der Betrieb <b>{betrieb}</b> ({mail}) und alle Verknüpfungen zu Azubis wurden gelöscht.", "success")
 
     except SQLAlchemyError:
         state.db.session.rollback()

@@ -141,7 +141,7 @@ class AnmeldungForm(FlaskForm):
         render_kw={"placeholder": "max.mustermann@musterfirma.com"},
     )
     anzahl_schueler = SelectField(
-        "Wieviele Schüler möchten Sie anmelden",
+        "Anzahl Schüler:",
         choices=[("", "Bitte wählen...")] + [(str(i), str(i)) for i in range(1, 16)],
         validators=[DataRequired()],
         render_kw={"class": "form-select"},
