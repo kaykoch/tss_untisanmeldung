@@ -190,7 +190,7 @@ def route_config() -> ResponseReturnValue:
         abort(500)
 
 
-@admin_bp.route("/ausbilderanzeige.html", methods=["GET", "POST"])
+@admin_bp.route("/ausbilderanzeige", methods=["GET", "POST"])
 @requires_auth("admin")
 def route_ausbilderanzeige() -> ResponseReturnValue:
     """Zeigt alle Ausbilder an und erlaubt Aktionen (anzeigen, hinzufügen, Mail, löschen, Download)."""
@@ -201,7 +201,7 @@ def route_ausbilderanzeige() -> ResponseReturnValue:
             action: str = form.action.data
             ausbilder = get_ausbilder_by_email(form.ausbilder_email.data)
             answer = None
-
+            print(1)
             match action:
                 case "show":
                     if ausbilder:
@@ -216,6 +216,7 @@ def route_ausbilderanzeige() -> ResponseReturnValue:
                     if ausbilder:
                         answer, category = delete_ausbilder(ausbilder)
                 case "download":
+                    print(2)
                     try:
                         return _send_csv_file(export_to_csv("ausbilder"), "ausbilder.csv")
                     except Exception:
@@ -234,6 +235,7 @@ def route_ausbilderanzeige() -> ResponseReturnValue:
             TEMPLATE_AUSBILDER,
             title=TITLE_AUSBILDER,
             ausbilder_liste=ausbilder_liste,
+            kontaktperson=state.infos.kontaktperson,
             form=form,
         )
 
@@ -242,7 +244,7 @@ def route_ausbilderanzeige() -> ResponseReturnValue:
         abort(500)
 
 
-@admin_bp.route("/azubianzeige.html", methods=["GET", "POST"])
+@admin_bp.route("/azubianzeige", methods=["GET", "POST"])
 @requires_auth("admin")
 def route_azubianzeige() -> ResponseReturnValue:
     """Anzeige und Download der Azubis einer Klasse oder aller Klassen."""
@@ -284,7 +286,7 @@ def route_azubianzeige() -> ResponseReturnValue:
         abort(500)
 
 
-@admin_bp.route("/upload.html", methods=["GET", "POST"])
+@admin_bp.route("/upload", methods=["GET", "POST"])
 @requires_auth("admin")
 def route_upload() -> ResponseReturnValue:
     """Einstiegsseite für den direkten Datei-Upload (Azubis, Ausbilder, Info)."""
@@ -443,7 +445,7 @@ def route_filehandling() -> ResponseReturnValue:
         abort(500)
 
 
-@admin_bp.route("/upload", methods=["POST"])
+@admin_bp.route("/upload_file", methods=["POST"])
 @requires_auth("admin")
 def route_upload_file() -> ResponseReturnValue:
     """Datei-Upload-Endpunkt für den Filehandling-Bereich."""

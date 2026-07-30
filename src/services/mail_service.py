@@ -35,7 +35,6 @@ def _send_mail(msg: Message) -> bool:
     Returns:
         True bei erfolgreichem Versand, sonst False.
     """
-    print(7)
     try:
         # print(msg.html)
         state.mail.send(msg)

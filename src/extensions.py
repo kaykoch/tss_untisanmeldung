@@ -36,8 +36,10 @@ class TomlState:
 class AppState:
     """verkörpert Zustände, die während der Laufzeit gespeichert werden müssen"""
 
-    _LOG_DIR = Path(__file__).resolve().parent.parent / "logs"
+    _ROOT_DIR = Path(__file__).resolve().parent.parent
+    _LOG_DIR = _ROOT_DIR / "logs"
     _LOG_FILE = "untis.log"
+    _TOML_FILE = "texts.toml"
 
     _STATIC_DIR = Path(__file__).resolve().parent / "static"
     _DATA_DIR = Path(__file__).resolve().parent / "data"
@@ -93,12 +95,12 @@ class AppState:
 
         # Falls tomlfile nicht angegeben war: auf Standard texts.toml im data-Ordner setzen
         if self.tomlfile is None:
-            self.tomlfile = self.__ensure_file_exists(self.datafolder, "texts.toml")
+            self.tomlfile = self.__ensure_file_exists(self._ROOT_DIR, self._TOML_FILE)
             logger.info("Standard TOML gesetzt: %s", self.tomlfile)
         # Textbausteine laden
         self.infos = self.load_texts(self.tomlfile)
 
-    def load_texts(self, tomlfile) -> None:
+    def load_texts(self, tomlfile) -> TomlState:
         """Lädt die Texte aus der TOML-Datei in den internen Cache."""
         if tomlfile is None:
             logger.warning("Keine TOML-Datei angegeben; verwende leere Texte.")

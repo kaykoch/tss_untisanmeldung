@@ -1,5 +1,6 @@
-{% extends "base.html" %}
+<!-- Überprüft durch Claude 4 -->
 
+{% extends "base.html" %}
 {% block content %}
 
 
@@ -9,49 +10,37 @@
   {{ form.action }}
   {{ form.ausbilder_email }}
 
-  <button type="button" class="btn btn-primary small" onclick="submitAction('koch@tssbit.de', 'download')">
+  <button type="button" class="btn btn-primary small" onclick="submitAction('{{kontaktperson.mail}}', 'download')">
     Download
   </button>
 
   <table class="ausbilder">
+    <caption>Ausbilderliste</caption>
     <thead>
       <tr>
 
-        <th>
-          <div class="tooltip" data-tooltip=" ✅: Bestätigt ❌: Nicht bestätigt">
-            <div>Mail</div>
-          </div>
+        <th class="tooltip" data-tooltip=" ✅: Bestätigt ❌: Nicht bestätigt">
+          Mail 
         </th>
 
-        <th>
-          <div class="tooltip"
-            data-tooltip="Der Betrieb mit Namen und Mailadresse des zugeordneten Ausbilders">
-            <div>Betrieb</div>
-          </div>
+        <th class="tooltip" data-tooltip="Der Betrieb mit Namen und Mailadresse des zugeordneten Ausbilders">
+          Betrieb
         </th>
 
-        <th>
-          <div class="tooltip" data-tooltip="Alle dem Ausbilder zugeordneten Azubis anzeigen">
-            <div>Azubis</div>
-          </div>
+        <th class="tooltip" data-tooltip="Alle dem Ausbilder zugeordneten Azubis anzeigen">
+          Azubis
         </th>
 
-        <th>
-          <div class="tooltip" data-tooltip="Neue Azubis hinzufügen">
-            <div>Azubis</div>
-          </div>
+        <th class="tooltip" data-tooltip="Neue Azubis hinzufügen">
+          Azubis
         </th>
 
-        <th>
-          <div class="tooltip" data-tooltip="Bestätigugsmail erneut an Ausbilder senden">
-            <div>Mail</div>
-          </div>
+        <th class="tooltip" data-tooltip="Bestätigungsmail erneut an Ausbilder senden">
+          Mail
         </th>
 
-        <th>
-          <div class="tooltip-danger" data-tooltip="Ausbilder und alle Zuordnungen löschen">
-            <div>Ausbilder</div>
-          </div>
+        <th class="tooltip-danger" data-tooltip="Ausbilder und alle Zuordnungen löschen">
+          Ausbilder
         </th>
 
       </tr>
@@ -60,7 +49,7 @@
 
       {% for ausbilder in ausbilder_liste %}
       <tr>
-        <td style="text-align: center;">{% if ausbilder.bestaetigt %} ✅{% else %} ❌ {% endif %} </td>
+        <td class="text-center">{% if ausbilder.bestaetigt %} ✅{% else %} ❌ {% endif %} </td>
 
         <td>
           <b>{{ausbilder.ausbilder_betrieb}}</b><br>
@@ -76,14 +65,14 @@
         </td>
 
         <td>
-          <button type="button" class="btn btn-primary  small"
+          <button type="button" class="btn btn-primary small"
             onclick="submitAction('{{ ausbilder.ausbilder_email }}', 'add')">
             hinzufügen
           </button>
         </td>
 
         <td>
-          <button type="button" class="btn btn-primary  small"
+          <button type="button" class="btn btn-primary small"
             onclick="submitAction('{{ ausbilder.ausbilder_email }}', 'resend', 'Möchten Sie die E-Mail wirklich erneut senden?')">
             senden
           </button>
@@ -95,7 +84,7 @@
             löschen
           </button>
         </td>
-        
+
       </tr>
       {% endfor %}
 
@@ -111,8 +100,16 @@
     }
 
     // Die versteckten Inputs des globalen Formulars heraussuchen
-    document.getElementById('form_email').value = email;
-    document.getElementById('form_action').value = action;
+    const emailField = document.getElementById('form_email');
+    const actionField = document.getElementById('form_action');
+   
+    if (!emailField || !actionField) {
+      console.error('Form fields not found');
+      return;
+    }
+   
+   emailField.value = email;
+   actionField.value = action;
 
     // Das Formular absenden
     document.getElementById('globalActionForm').submit();

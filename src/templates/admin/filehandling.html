@@ -1,10 +1,16 @@
-{% extends "base.html" %} {% block content %}
+<!-- Überprüft durch Claude 4 -->
+
+{% extends "base.html" %} 
+{% block content %}
+
 <form id="globalActionForm" action="{{ url_for('admin.route_filehandling') }}" method="POST" enctype="multipart/form-data">
     {{ form.csrf_token }}
+
     <div class="upload-form">
         {{ form.action(value="upload_file") }}
         {{ form.filename(value="NIX") }}
         {{form.upload_file }}
+
         <button type="submit" class="tooltip btn btn-primary midi"
             data-tooltip="Es können nur *.csv Dateien hochgeladen werden">
             Datei hochladen
@@ -15,6 +21,7 @@
     {{ form.filename }}
     {{ form.action }}
     <table>
+        <caption>Untis-Importe</caption>
         <thead>
             <tr>
                 <th>Dateiname</th>
@@ -27,34 +34,34 @@
                 <td>{{ file }}</td>
                 <td>
                     <button type="button" class="btn btn-danger big"
-                        onclick="submitAction('{{ file }}', 'delete_single', 'Möchten Sie {{file}} wirklich löschen?')">
+                        onclick="submitAction('{{ file }}', 'delete_single', 'Möchten Sie {{ file }} wirklich löschen?')">
                         löschen
                     </button>
                 </td>
             </tr>
             {% endfor %}
             <tr>
-                <td colspan="2" style="background-color: transparent; border: 0px">
+                <td colspan="2" class="action-cell">
                     <button type="button" class="tooltip-warning btn btn-warning big"
-                        onclick="submitAction( 'test.txt', 'delete_all', 'Möchten Sie alle Dateien wirklich löschen?',)"
-                        data-tooltip="Nur die Dateien werden gelöscht. Nicht die Datenbank">
+                        onclick="submitAction('', 'delete_all', 'Möchten Sie alle Dateien wirklich löschen?')"
+                        data-tooltip="Nur die Dateien werden gelöscht, nicht die Datenbank">
                         Alle Dateien löschen
                     </button>
                 </td>
             </tr>
             <tr>
-                <td colspan="2" style="background-color: transparent; border: 0px">
+                <td colspan="2" class="action-cell">
                     <button type="button" class="tooltip-warning btn btn-warning big"
-                        onclick="submitAction('test.txt', 'update_db','Möchtest du wirklich die Datenbank mit neuen Azubis ergänzen?', )"
+                        onclick="submitAction('', 'update_db', 'Möchtest du wirklich die Datenbank mit neuen Azubis ergänzen?')"
                         data-tooltip="Die Azubi-Datenbank wird erweitert, aber es werden KEINE Daten gelöscht !!">
                         Neue Azubis hinzufügen
                     </button>
                 </td>
             </tr>
             <tr>
-                <td colspan="2" style="background-color: transparent; border: 0px">
+                <td colspan="2" class="action-cell">
                     <button type="button" class="tooltip-danger btn btn-danger big"
-                        onclick="submitAction('test.txt','reset_db','!! Möchtest du wirklich ALLE Azubis löschen und mit neuen Azubis überschreiben? !!',)"
+                        onclick="submitAction('','reset_db', '!! Möchtest du wirklich ALLE Azubis löschen und mit neuen Azubis überschreiben? !!')"
                         data-tooltip="!! ACHTUNG - Die Azubi-Datenbank wird überschrieben - ACHTUNG:!!">
                         Azubis löschen und neu erstellen
                     </button>
@@ -64,9 +71,9 @@
     </table>
 
     {% else %}
-    <p style="color: #666; font-style: italic">
+    <div class="info-box">
         Aktuell befinden sich keine Dateien im Ordner.
-    </p>
+    </div>
     {% endif %}
 </form>
 
@@ -78,8 +85,16 @@
         }
 
         // Die versteckten Inputs des globalen Formulars heraussuchen
-        document.getElementById("filename").value = filename;
-        document.getElementById("action").value = action;
+        const filenameField = document.getElementById("filename");
+        const actionField = document.getElementById("action");
+        
+        if (!filenameField || !actionField) {
+            console.error('Formularfelder nicht gefunden');
+            return;
+        }
+        
+        filenameField.value = filename;
+        actionField.value = action;
 
         // Das Formular absenden
         document.getElementById("globalActionForm").submit();

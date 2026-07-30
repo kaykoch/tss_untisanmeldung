@@ -1,22 +1,28 @@
-{% extends "base.html" %}
+<!-- Überprüft durch Claude 4 -->
 
+{% extends "base.html" %}
 {% block content %}
+
 {% if liste_erfolgreich %}
-<label for="azubiListeJA">
-    Erfolgreich mit Ihrer Mailadresse verknüpft:<br>
-    Ausbilder: {{ausbilder.ausbilder_name}}, {{ausbilder.ausbilder_vorname}} ( {{ausbilder.ausbilder_email }} )
-</label>
+<div class="info-box">
+     <p>Betrieb: {{ausbilder.ausbilder_betrieb}} - 
+        Ausbilder: {{ausbilder.ausbilder_name}}, {{ausbilder.ausbilder_vorname}} ({{ausbilder.ausbilder_email}})
+    </p>
+     <p>Erfolgreich mit Ihrer Mailadresse verknüpft:</p>
+</div>
 
 <table id="azubiListeJA" class="success">
-    <tbody>
+    <thead>
         <tr>
             <th style="width:110px;">Profilname</th>
             <th style="width:170px;">Nachname</th>
             <th style="width:170px;">Vorname</th>
             <th>Klasse</th>
         </tr>
-        {% for schueler in liste_erfolgreich %}
+    </thead>
 
+    <tbody>
+        {% for schueler in liste_erfolgreich %}
         <tr>
             <td>{{schueler.schueler_untis_id}}</td>
             <td>{{schueler.schueler_familienname}}</td>
@@ -24,24 +30,27 @@
             <td>{{schueler.klasse}}</td>
         </tr>
         {% endfor %}
-        
     </tbody>
 </table>
 {% endif %}
 
 {% if liste_fehler %}
-<br>
-<label for="azubiListeNEIN">Nicht in Datenbank gefunden: (Bitte fragen Sie Ihre Auszubildenden nach ihrer Untis-ID)</label>
+<div class="info-box" style="margin-top: 1.5rem;">
+     <p>Nicht in Datenbank gefunden: (Bitte fragen Sie Ihre Auszubildenden nach ihrer Untis-ID)</p>
+</div>
 <table id="azubiListeNEIN" class="error">
-    <tbody>
+    <thead>
         <tr>
             <th>Profilname</th>
         </tr>
-        {% for schueler in liste_fehler %}
-        <tr>
-            <td>{{schueler}}</td>
-        </tr>
-        {% endfor %}
+    </thead>
+    
+    <tbody>
+    {% for schueler in liste_fehler %}
+    <tr>
+        <td>{{schueler}}</td>
+    </tr>
+    {% endfor %}
     </tbody>
 </table>
 {% endif %}

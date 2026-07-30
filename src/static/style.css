@@ -1,3 +1,16 @@
+/* -------------------- Custom Properties ----------------------------------- */
+:root {
+  --color-primary:      #007bff;
+  --color-primary-dark: #0069d9;
+  --color-danger:       #dc3545;
+  --color-danger-dark:  #c82333;
+  --color-warning:      #ffc107;
+  --color-warning-dark: #e0a800;
+  --color-accent:       #950d00;
+  --color-table-bg:     #c3defc;
+}
+
+/* -------------------- Basis ------------------------------------------------ */
 html {
   font-size: 20px;
 }
@@ -7,20 +20,47 @@ body {
   margin: 40px;
   background-color: #f4f4f9;
 }
-/* -------------------- Logo ------------------------------------------- */
-.title {
-  margin: 0;
-  font-size: 1.5rem;
+
+h1 {
+  font-size: 1.6rem;
+  text-transform: capitalize;
 }
+
+h2 {
+  border-bottom: 2px solid var(--color-table-bg);
+  padding-bottom: 8px;
+  margin-top: 30px;
+  font-size: 1.2rem;
+  text-transform: uppercase;
+}
+
+h3 span {
+  font-size: 0.8rem;
+  text-transform: none;
+  margin: 10px 0 0 60px;
+}
+/* -------------------- Logo / Header --------------------------------------- */
+h1.title {
+  margin: 0;
+}
+
+h2.title {
+  margin: 0 0 10px 0;
+  text-transform: none;
+  border: none;
+}
+
 .hdr {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
-  border-bottom: 2px solid #950d00;
-  color: #950d00;
-  padding:10px;
+  border-bottom: 2px solid var(--color-accent);
+  color: var(--color-accent);
+  padding: 10px;
   margin-bottom: 10px;
 }
+
+/* -------------------- Layout ---------------------------------------------- */
 .container {
   max-width: 850px;
   background: white;
@@ -29,129 +69,7 @@ body {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   margin: auto;
 }
-caption, label {
-  font-size: 0.65rem;
-  font-weight: 600;
-  color: #3c4043;
-  margin: 10px 0px 5px 5px;
-}
-caption{
-  font-size: 0.85rem;
-}
-.footer {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  margin-top: 10px;
-  padding: 10px;
-  border-top: 1px solid #950d00;
-  border-bottom: 1px solid #950d00;
-}
 
-.footer span,
-caption span,
-.under_footer {
-  font-size: 0.7rem;
-}
-
-
-label,
-.label {
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: #3c4043;
-  margin-bottom: 5px;
-}
-
-h2.tss {
-  border-bottom: 1px solid #950d00;
-  background-image: url("./logo.png");
-  background-repeat: no-repeat;
-  width: 100%;
-  height: 95px;
-}
-h1 {
-  font-size: 1.2rem;
-}
-h2 {
-  font-size: 1.1rem;
-}
-h3 {
-  font-size: 1rem;
-}
-
-button {
-  background-color: transparent;
-  border: 0px;
-  width: 100%;
-  margin: auto;
-}
-
-select,
-input,
-div.select {
-  width: 100%;
-  padding: 10px;
-  box-sizing: border-box;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-table {
-  width: 100%;
-}
-
-th {
-  border: 1px solid #ccc;
-  background-color: #0069d9;
-  color: white;
-  font-size: 0.85rem;
-  padding: 8px;
-}
-
-th .tooltip{
-   width: 100%;
-}
-
-td {
-  border: 1px solid #ccc;
-  background-color: #c3defc;
-  color: #0056b3;
-  padding: 5px ;
-  font-size: 0.8rem;
-}
-table.success th {
-  background-color: #309203;
-  color: white;
-}
-
-table.success td {
-  background-color: #b6fa97;
-}
-
-table.error {
-  background-color: transparent;
-  border: 1px solid #ccc;
-}
-
-table.error th {
-  background-color: #dc3545;
-}
-
-table.error td {
-  background-color: #ffa099;
-}
-
-tr.even td {
-  background-color: #c3defc;
-}
-
-tr.odd td {
-  background-color: #d8e3ef;
-}
-
-/* -------------------- Container für Admin Seite -------------------- */
-/* Der Container, der die Boxen zusammenhält */
 .container-wrapper {
   text-align: center;
   display: flex;
@@ -166,39 +84,175 @@ tr.odd td {
   text-decoration: none;
   font-weight: bold;
 }
-/* -------------------- Tool Tips ------------------------------------------- */
 
-/* Gemeinsame Basis-Stile für alle Tooltip-Container */
+.box {
+  display: flex;
+  justify-content: center;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 15px;
+
+}
+
+.grid.three-columns {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.grid.two-columns {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.grid.one-columns {
+  grid-template-columns: repeat(1, 1fr);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+}
+
+.field.password {
+  position: relative;
+}
+
+.field.password span {
+  position: absolute;
+  right: 10px;
+  top: 32px;
+  cursor: pointer;
+}
+
+.text-center { 
+  text-align: center; 
+}
+/* -------------------- Footer ---------------------------------------------- */
+.footer {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+  padding: 10px;
+  border-top: 1px solid var(--color-accent);
+  border-bottom: 1px solid var(--color-accent);
+}
+
+.footer span,
+caption span,
+.under_footer {
+  font-size: 0.7rem;
+}
+
+/* -------------------- Formular -------------------------------------------- */
+label,
+.label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #3c4043;
+  margin-bottom: 5px;
+}
+
+select,
+input {
+  width: 100%;
+  padding: 10px;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+}
+/* -------------------- Nachrichten ----------------------------------------- */
+.success-msg {
+  color: black;
+  text-align: center;
+  background-color: #fac923;
+  font-size: 1.3rem;
+  font-weight: bold;
+  padding: 10px;
+  width: 100%;
+}
+
+.warning {
+  background-color: #fff8e1;
+  border: 1px solid #f0c040;
+  padding: 10px 14px;
+  border-radius: 4px;
+  margin-bottom: 15px;
+  font-size: 0.8rem;
+  color: #7a5c00;
+}
+
+.info-box {
+  background-color: #f5f5f5;
+  border-left: 4px solid #003366;
+  padding: 12px 16px;
+  margin: 16px 0;
+  border-radius: 0 4px 4px 0;
+}
+
+.info-box table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.info-box td {
+  padding: 4px 8px;
+  vertical-align: top;
+  background-color: transparent;
+  font-size: 0.9rem;
+  border: none;
+}
+
+.info-box td:first-child {
+  font-weight: bold;
+  white-space: nowrap;
+  width: 80px;
+  color: #555;
+}
+
+/* -------------------- Blink ----------------------------------------------- */
+.blink {
+  animation: animation_blink 1s ease-in infinite;
+  font-size: 1rem;
+  color: #e4881b;
+  font-weight: bolder;
+}
+
+@keyframes animation_blink {
+  0%,
+  100% { opacity: 1; }
+  50%  { opacity: 0.1; }
+}
+
+/* -------------------- Tool Tips ------------------------------------------- */
 .tooltip,
 .tooltip-danger,
 .tooltip-warning {
   position: relative;
   text-decoration: none;
-  display: inline-block; /* Wichtig für korrekte Positionierung relativ zum Inhalt */
-
 }
-th .tooltip{  width: 100%;}
-/* Gemeinsame Basis-Stile für den Tooltip-Inhalt (das :after Pseudo-Element) */
+
 .tooltip:after,
 .tooltip-danger:after,
 .tooltip-warning:after {
-  content: attr(data-tooltip); /* Inhalt aus data-tooltip Attribut */
+  content: attr(data-tooltip);
   position: absolute;
-  left: 50%; /* Horizontal zentrieren */
-  transform: translateX(-50%); /* Eigene Breite berücksichtigen */
-  padding: 10px; /* Einheitlicher Abstand */
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 10px;
   border-radius: 10px;
-  white-space: nowrap; /* <<< WICHTIG für Zeilenumbrüche (siehe unten) */
+  white-space: nowrap;
   opacity: 0;
-  visibility: hidden; /* Vollständig verstecken, wenn nicht gehovert */
-  pointer-events: none; /* Klicks durch den Tooltip lassen, wenn versteckt */
-  transition: opacity 0.3s ease, visibility 0.3s ease, bottom 0.3s ease; /* Sanfter Übergang */
-  z-index: 10; /* Sicherstellen, dass der Tooltip über anderem Inhalt liegt */
-  min-width: 150px; /* Verhindert zu schmale Tooltips */
-  text-align: center; /* Text im Tooltip zentrieren */
-  bottom: calc(100% + 15px); /* Position über dem Element + Pfeilhöhe */
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.3s ease, visibility 0.3s ease, bottom 0.3s ease;
+  z-index: 10;
+  min-width: 150px;
+  text-align: center;
+  bottom: calc(100% + 15px);
 }
-/* Gemeinsame Basis-Stile für den Tooltip-Pfeil (das :before Pseudo-Element) */
+
 .tooltip:before,
 .tooltip-danger:before,
 .tooltip-warning:before {
@@ -207,16 +261,15 @@ th .tooltip{  width: 100%;}
   left: 50%;
   transform: translateX(-50%);
   border-style: solid;
-  border-width: 8px 8px 0 8px; /* Erzeugt einen nach unten zeigenden Pfeil */
+  border-width: 8px 8px 0 8px;
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
   transition: opacity 0.3s ease, visibility 0.3s ease, bottom 0.3s ease;
-  z-index: 11; /* Pfeil über dem Tooltip-Inhalt */
-  bottom: calc(100% + 7px); /* Position direkt unter dem Tooltip-Inhalt */
+  z-index: 11;
+  bottom: calc(100% + 7px);
 }
 
-/* Gemeinsamer Hover-Zustand für alle Tooltip-Typen (Inhalt und Pfeil) */
 .tooltip:hover:after,
 .tooltip-danger:hover:after,
 .tooltip-warning:hover:after,
@@ -225,39 +278,217 @@ th .tooltip{  width: 100%;}
 .tooltip-warning:hover:before {
   opacity: 1;
   visibility: visible;
-  /* Die bottom-Position wird durch die Basis-Stile und den Übergang gesteuert */
 }
 
-/* Spezifische Stile für jeden Tooltip-Typ (Farben und Ränder) */
-/* Normaler Tooltip */
 .tooltip:after {
-  background: #c3defc;
+  background: var(--color-table-bg);
   color: black;
-  border: #c3defc solid 1px;
+  border: 1px solid var(--color-table-bg);
 }
 .tooltip:before {
-  border-color: #c3defc transparent transparent transparent;
+  border-color: var(--color-table-bg) transparent transparent transparent;
 }
 
-/* Warning Tooltip */
 .tooltip-warning:after {
-  background: #ffc107;
+  background: var(--color-warning);
   color: black;
-  border: #ffc107 solid 1px;
+  border: 1px solid var(--color-warning);
 }
 .tooltip-warning:before {
-  border-color: #ffc107 transparent transparent transparent;
+  border-color: var(--color-warning) transparent transparent transparent;
 }
 
-/* Danger Tooltip */
 .tooltip-danger:after {
-  background: #dc3545;
+  background: var(--color-danger);
   color: white;
-  border: #dc3545 solid 1px;
+  border: 1px solid var(--color-danger);
 }
 .tooltip-danger:before {
-  border-color: #dc3545 transparent transparent transparent;
+  border-color: var(--color-danger) transparent transparent transparent;
 }
+
+/* -------------------- Buttons --------------------------------------------- */
+.btn {
+  width: 200px;
+  padding: 4px 2px;
+  border: none;
+  cursor: pointer;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 0.9rem;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
+  
+}
+
+.btn:hover {
+  transform: scale(1.03);
+}
+
+.btn-primary {
+  background-color: var(--color-primary);
+  color: white;
+  margin: 5px 0;
+}
+
+.btn-primary:hover {
+  background-color: var(--color-primary-dark);
+}
+
+.btn-warning {
+  background-color: var(--color-warning);
+  color: black;
+}
+
+.btn-warning:hover {
+  background-color: var(--color-warning-dark);
+}
+
+.btn-danger {
+  background-color: var(--color-danger);
+  color: white;
+}
+
+.btn-danger:hover {
+  background-color: var(--color-danger-dark);
+}
+
+.btn-td {
+  background-color: #0069d9;
+  color: white;
+  margin: 0px;
+}
+
+.btn-td:hover {
+  background-color: #0069d9;
+  transform: scale(1.01);
+}
+
+/* Links als Buttons stylen (erbt von .btn) */
+a.btn {
+  display: inline-flex;
+}
+
+a.btn-primary {
+  background-color: var(--color-primary);
+  color: white;
+}
+
+a.btn-primary:hover {
+  background-color: var(--color-primary-dark);
+}
+
+a.btn-warning {
+  background-color: var(--color-warning);
+  color: black;
+}
+
+a.btn-warning:hover {
+  background-color: var(--color-warning-dark);
+}
+/* -------------------- Tabellen -------------------------------------------- */
+caption {
+  font-weight: bold;
+  margin-top: 15px;
+  text-align: left;
+}
+
+table {
+  width: 100%;
+}
+
+th {
+  border: 1px solid #ccc;
+  background-color: var(--color-primary-dark);
+  color: white;
+  font-size: 0.75rem;
+  padding: 4px 6px;
+}
+
+td {
+  border: 1px solid #ccc;
+  background-color: var(--color-table-bg);
+  color: #0056b3;
+  padding: 4px 10px;
+  font-size: 0.7rem;
+}
+
+table.success th {
+  background-color: #309203;
+  color: white;
+}
+
+table.success td {
+  background-color: #b6fa97;
+}
+
+table.error th {
+  background-color: var(--color-danger);
+}
+
+table.error td {
+  background-color: #ffa099;
+}
+
+tr.even td {
+  background-color: var(--color-table-bg);
+}
+
+tr.odd td {
+  background-color: #d8e3ef;
+}
+
+/* -------------------- Flash ----------------------------------------------- */
+.flash {
+  padding: 10px;
+  margin-bottom: 20px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+}
+
+.flash.error {
+  border: 2px dashed var(--color-danger);
+}
+
+.flash.warning {
+  border: 2px dashed var(--color-warning-dark);
+}
+
+.flash.success {
+  border: 1px dashed #cccccc;
+}
+
+.flash.error p {
+  background-color: #ffa099;
+  color: black;
+  padding: 5px;
+}
+
+.flash.success p {
+  color: black;
+  margin-bottom: 1px;
+}
+
+.flash h1 {
+  font-size: 1.2rem;
+  text-transform: none;
+}
+/* -------------------- Sonstiges ------------------------------------------- */
+hr {
+  border: 1px solid var(--color-table-bg);
+  margin: 15px 20px;
+}
+
+.big   { width: 100%; }
+.small { width: 120px; }
+.midi  { width: 240px; }
+
+.hidden { display: none; }
+
+
+
 
 
 ul {
@@ -279,78 +510,18 @@ ul.square {
   list-style-type:square;
   
 }
-ul.square li{
-  background:transparent;
+ul.square li {
+  background: transparent;
   border: none;
-  display:list-item;
+  display: list-item;
   margin-left: 50px;
-  padding: 0px
-  
+  padding: 0px;
 }
-/* -------------------- Buttons --------------------------------------------- */
-.btn {
-  width: 200px;
-  padding: 4px 2px;
+
+.action-cell {
+  background-color: transparent;
   border: none;
-  cursor: pointer;
-  border-radius: 8px;
-  font-weight: bold;
-  font-size: 0.9rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: auto;
-  display: flex;
 }
-
-.btn:hover {
-  transform: scale(1.03);
-}
-
-.btn-primary {
-  background-color: #007bff;
-  color: white;
-  margin: 5px 0;
-}
-
-.btn-primary:hover {
-  background-color: #0069d9;
-  transform: scale(1.03);
-}
-
-.btn-warning {
-  background-color: #ffc107;
-  color: black;
-}
-
-.btn-warning:hover {
-  background-color: #e0a800;
-  transform: scale(1.02);
-}
-
-.btn-danger {
-  background-color: #dc3545;
-  color: white;
-  /*text-transform: uppercase; */
-}
-
-.btn-danger:hover {
-  background-color: #c82333;
-  transform: scale(1.03);
-}
-
-
-.btn-td {
-  background-color: #0069d9;
-  color: white;
-  margin: 0px;
-}
-
-.btn-td:hover {
-  background-color: #0069d9;
-  transform: scale(1.01);
-}
-
 
 .upload-form {
   padding: 10px;
@@ -360,88 +531,9 @@ ul.square li{
   text-align: center;
 }
 
-.flash {
-  padding: 10px;
-  margin-bottom: 20px;
-  border-radius: 4px;
-  font-size: 0.75rem;
-}
 
-.flash.error {
-  border: 2px dashed #dc3545;
-}
-
-.flash.warning {
-  border: 2px dashed #e0a800;
-}
-
-.flash.success {
-  border: 1px dashed #cccccc;
-}
-
-.flash.error p {
-  background-color: #ffa099;
-  color: black;
-  padding: 5px;
-}
-
-.flash.success p {
-  color: black;
-  margin-bottom: 1px;
-}
-
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
-  gap: 15px;
-
-}
-.grid_test {
-  display: grid;
-  grid-template-columns: 560px auto;  
-  gap: 15px;
-}
-
-.field {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 10px;
-}
-
-.field.password{
-  position: relative;
-}
-.field.password span{
-  position: absolute; 
-  right: 10px; 
-  top: 40px; 
-  cursor: pointer;
-}
-.big {
-  width: 100%;
-  margin-top: 5px;;
-}
-
-.small {
-  width: 120px;
-}
-
-.midi {
-  width: 250px;
-}
-hr {
-  border: 1px solid #c3defc;
-  margin: 15px 20px;
-
-}
-
-
-.warning {
-  background-color: #fff8e1;
-  border: 1px solid #f0c040;
-  padding: 10px 14px;
-  border-radius: 4px;
-  margin-bottom: 15px;
-  font-size: 0.8rem;
-  color: #7a5c00;
+th .tooltip,
+th .tooltip-danger,
+th .tooltip-warning {
+  display: inline;
 }

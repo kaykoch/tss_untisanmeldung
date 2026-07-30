@@ -1,10 +1,13 @@
+<!-- Überprüft durch Claude 4 -->
+
 <!doctype html>
 <html lang="de">
 
-<head>
-    <meta charset="UTF-8" />
+  <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ title }}</title>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='style.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
 </head>
 
@@ -33,16 +36,16 @@
       {% endblock %}
       
       <div class="footer">
-        <span>Copyright &copy; 2026 Kay Koch This program comes with ABSOLUTELY NO WARRANTY. <br>
+        <span>Copyright &copy; 2026 Kay Koch. This program comes with ABSOLUTELY NO WARRANTY. <br>
           This is Free Software and you are welcome to redistribute it under certain conditions.
       </span>
 
       </div>
       <div class="under_footer">
-        <a href="{{ url_for('main.route_impressum') }}">Impressum</a> |
-        <a href='/static/Dokumentation.pdf'>Dokumentation</a>
+        <a href="{{ url_for('main.route_impressum') }}"  target="_blank">Impressum</a> |
+        <a href="{{ url_for('static', filename='Dokumentation.pdf') }}" target="_blank">Dokumentation</a> |
+        <a href="https://github.com/kaykoch/tss_untisanmeldung" target="_blank">GitHub</a>
       </div>
-    </div>
 
   </body>
 

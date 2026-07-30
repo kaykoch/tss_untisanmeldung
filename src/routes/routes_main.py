@@ -94,14 +94,11 @@ def willkommen():
     else:
         target = url_for("main.index", _external=True)
 
-    link_html = f'<a href="{escape(target)}" rel="noopener noreferrer">{escape(target)}</a>'
-    info = Markup(
-        "<p>Wir sind umgezogen.</p>"
-        f"<p>Unsere neue Seite lautet: {link_html}</p>"
-        "<p>Bitte rufen Sie in Zukunft direkt diesen Link auf, um neue Auszubildende zu registrieren.</p>"
+    escaped_target = escape(target)
+    return render_template(
+        "oldside.html",
+        link_html=Markup(f'<a href="{escaped_target}" rel="noopener noreferrer">{escaped_target}</a>'),
     )
-    flash(info, "warning")
-    return render_template("oldside.html")
 
 
 @main_bp.route("/", methods=["GET", "POST"])
@@ -124,24 +121,22 @@ def index() -> ResponseReturnValue:
     return render_template(_TEMPLATEINDEX, form=form, title=_TITLE_INDEX)
 
 
-@main_bp.route("/bestaetigung.html", methods=["GET", "POST"])
+@main_bp.route("/bestaetigung", methods=["GET", "POST"])
 @state.limiter.limit("3 per minute")
 @requires_auth(_ALLOWED_ROLES_TSS, allow_token_bypass=True)
 def route_bestaetigung() -> ResponseReturnValue:
     """Bestätigungsseite: Speichert Ausbilder-Anmeldung und Schüler-Zuordnung."""
-    print(1)
+
     form = AnmeldungForm()
 
     if not form.validate_on_submit():
         return _render_bestaetigung(form)
-    print(2)
+
     ausbilder_email = form.ausbilder_email.data
     if not ausbilder_email:
         flash("E-Mail-Adresse des Ausbilders fehlt.", "warning")
         return _render_bestaetigung(form)
-    print(3)
     neue_schueler_ids = _parse_schueler_ids()
-    print(4)
     try:
         # Ist der Ausbilder bereits vorhanden, oder neu?
         ausbilder = get_ausbilder_by_email(ausbilder_email)
@@ -156,7 +151,6 @@ def route_bestaetigung() -> ResponseReturnValue:
             liste_fehler = get_fehlende_ids(neue_schueler_ids, neue_schueler)
 
             if neue_schueler:
-                print(5)
                 # Es gibt Schüler mit den IDs
                 if neu_angelegt:
                     # Der Ausbilder muss neu angelegt werden
@@ -168,7 +162,7 @@ def route_bestaetigung() -> ResponseReturnValue:
                 if neu_angelegt:
                     answer, category = send_mail_to_ausbilder(ausbilder)
                     flash(answer, category)
-            print(6)
+
             answer, category = send_mail_to_ausbilder(ausbilder)
         _flash_zuordnung_feedback(neue_schueler_ids, liste_fehler)
 
@@ -186,7 +180,7 @@ def route_bestaetigung() -> ResponseReturnValue:
         return _render_bestaetigung(form)
 
 
-@main_bp.route("/azubismitausbilder.html", methods=["GET", "POST"])
+@main_bp.route("/azubismitausbilder", methods=["GET", "POST"])
 def route_azubismitausbilder() -> ResponseReturnValue:
     """Zeigt alle Azubis eines Ausbilders an.
     Der Ausbilder wird über ein Token identifiziert.
@@ -237,7 +231,7 @@ def zugeordnete_schueler(klasse_name: str) -> ResponseReturnValue:
         return jsonify([])
 
 
-@main_bp.route("/impressum.html", methods=["GET"])
+@main_bp.route("/impressum", methods=["GET"])
 def route_impressum() -> ResponseReturnValue:
     """Zeigt die Impressumseite an"""
     return render_template("impressum.html")

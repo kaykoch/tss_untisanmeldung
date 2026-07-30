@@ -1,29 +1,30 @@
+<!-- Überprüft durch Claude 4 -->
+
 {% extends "base.html" %}
 
 {% block content %}
-<label for="azubis">Betrieb: {{ausbilder.ausbilder_betrieb}}<br>
-  Ausbilder: {{ausbilder.ausbilder_name}}, {{ausbilder.ausbilder_vorname}} ({{ausbilder.ausbilder_email}})
-</label>
+<div class="info-box">
+     <p><strong>Betrieb:</strong> {{ausbilder.ausbilder_betrieb}}</p>
+     <p><strong>Ausbilder:</strong> {{ausbilder.ausbilder_name}}, {{ausbilder.ausbilder_vorname}} ({{ausbilder.ausbilder_email}})</p>
+</div>
 
 <table id="azubis">
-  <tbody>
-
+  <thead>
     <tr>
       <th style="width:110px;">Profilname</th>
       <th style="width:200px;">Nachname</th>
       <th style="width:200px;">Vorname</th>
       <th>Klasse</th>
     </tr>
-    
-    {% for azubi in azubi_liste %}
-
+  </thead>
+  <tbody>
+  {% for azubi in azubi_liste %}
     <tr>
       <td>{{azubi.schueler_untis_id}}</td>
       <td>{{azubi.schueler_familienname}}</td>
       <td>{{azubi.schueler_rufname}}</td>
       <td>{{azubi.klasse}}</td>
     </tr>
-
     {% endfor %}
   </tbody>
 </table>

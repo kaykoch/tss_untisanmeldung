@@ -25,9 +25,9 @@ from wtforms.validators import AnyOf, DataRequired, Email, Length, NumberRange, 
 
 _ALLOWED_UPLOAD_EXTENSIONS = frozenset({"csv", "pdf"})
 
-PASSWORD_LENGTH = Length(min=4, max=15)
-NAME_LENGTH = Length(max=255)
-EMAIL_LENGTH = Length(max=320)
+_PASSWORD_LENGTH = Length(min=4, max=15)
+_NAME_LENGTH = Length(max=100)
+_EMAIL_LENGTH = Length(max=100)
 
 
 # ------------------------------------------------------------------------------
@@ -119,19 +119,19 @@ class AnmeldungForm(FlaskForm):
     ausbilder_betrieb = StringField(
         "Ihr Firmenname:",
         filters=[normalize_whitespace],
-        validators=[DataRequired(), NAME_LENGTH],
+        validators=[DataRequired(), _NAME_LENGTH],
         render_kw={"placeholder": "Musterfirma"},
     )
     ausbilder_name = StringField(
         "Ihr Nachname:",
         filters=[normalize_whitespace],
-        validators=[DataRequired(), NAME_LENGTH],
+        validators=[DataRequired(), _NAME_LENGTH],
         render_kw={"placeholder": "Mustermann"},
     )
     ausbilder_vorname = StringField(
         "Ihr Vorname:",
         filters=[normalize_whitespace],
-        validators=[DataRequired(), NAME_LENGTH],
+        validators=[DataRequired(), _NAME_LENGTH],
         render_kw={"placeholder": "Max"},
     )
     ausbilder_email = EmailField(
@@ -158,13 +158,13 @@ class ConfigForm(FlaskForm):
 
     # Admin
     admin_login = StringField("Admin Login", validators=[Optional(), Length(min=3, max=100)])
-    admin_password = PasswordField("Admin Passwort", validators=[Optional(), PASSWORD_LENGTH])
+    admin_password = PasswordField("Admin Passwort", validators=[Optional(), _PASSWORD_LENGTH])
 
     # Ausbilder
-    tss_password = PasswordField("Ausbilder Passwort", validators=[Optional(), PASSWORD_LENGTH])
+    tss_password = PasswordField("Ausbilder Passwort", validators=[Optional(), _PASSWORD_LENGTH])
 
     # Mail-Server
-    mail_server = StringField("Mail Server", validators=[Optional(), NAME_LENGTH])
+    mail_server = StringField("Mail Server", validators=[Optional(), _NAME_LENGTH])
     mail_port = IntegerField("Mail Port", validators=[Optional(), NumberRange(min=1, max=65535)])
     mail_encryption = SelectField(
         "Verschlüsselung",
@@ -176,9 +176,9 @@ class ConfigForm(FlaskForm):
         validators=[AnyOf(["none", "tls", "ssl"])],
         default="tls",
     )
-    mail_username = StringField("Mail Benutzername", validators=[Optional(), NAME_LENGTH])
-    mail_password = PasswordField("Mail Passwort", validators=[Optional(), PASSWORD_LENGTH])
-    mail_default_sender = StringField("Standard Absender (E-Mail)", validators=[Optional(), EMAIL_LENGTH])
+    mail_username = StringField("Mail Benutzername", validators=[Optional(), _NAME_LENGTH])
+    mail_password = PasswordField("Mail Passwort", validators=[Optional(), _PASSWORD_LENGTH])
+    mail_default_sender = StringField("Standard Absender (E-Mail)", validators=[Optional(), _EMAIL_LENGTH])
 
     # Sonstiges
     timetowait = IntegerField(

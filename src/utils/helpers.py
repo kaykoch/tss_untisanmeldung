@@ -92,7 +92,7 @@ def update_db() -> None:
     from src.extensions import state
 
     new_att = "mail_encryption"
-    print("#####################", new_att)
+    print(new_att)
 
     for cls in ["ConfigSetting"]:
         try:

@@ -1,25 +1,24 @@
+<!-- Überprüft durch Claude 4 -->
+ 
 {% extends "base.html" %}
-
 {% block content %}
+
 <form method="POST" action="{{ url_for('main.route_bestaetigung') }}">
     {{ form.csrf_token }}
     
     <div class="grid_test">
-        <!-- ##########################################-->
         <div class="field">
             {{ form.ausbilder_betrieb.label }}
             {{ form.ausbilder_betrieb }}
         </div>
         <div class="field">
-        {{ form.anzahl_schueler.label }}
-        {{ form.anzahl_schueler }}
+            {{ form.anzahl_schueler.label }}
+            {{ form.anzahl_schueler }}
         </div>
     </div>
 
     <div class="grid">
-        <!-- ##########################################-->
         <div class="field">
-
             {{ form.ausbilder_vorname.label }}
             {{ form.ausbilder_vorname }}
         </div>
@@ -27,41 +26,46 @@
             {{ form.ausbilder_name.label }}
             {{ form.ausbilder_name }}
         </div>
-                <div class="field">
+        <div class="field">
             {{ form.ausbilder_email.label }}
             {{ form.ausbilder_email }}
         </div>
     </div>
-        <label id="labelSchuelerEingabe" style="display: none; margin-top:15px;">Schüler:</label>
-        <table id="schuelerEingabe">
-            <tbody>
 
-            </tbody>
-        </table>
+    <table id="schuelerEingabe">
+        <thead id="schuelerTableHead" style="display: none;">
+            <tr>
+                <th style="width: 150px;">Schüler</th>
+                <th>Profilname (Untis-ID)</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
 
-        {{ form.submit }}
+    {{ form.submit }}
 </form>
 
-
 <script>
-    const anzahl_schueler = document.getElementById('anzahl_schueler');
-    var xTable = document.getElementById('schuelerEingabe');
+    const anzahlSchuelerSelect = document.getElementById('anzahl_schueler');
+    const xTable = document.getElementById('schuelerEingabe');
+    const tableHead = document.getElementById('schuelerTableHead');
 
-    // Wird ausgeführt, sobald sich das Dropdown der Personen ändert
-    anzahl_schueler.addEventListener('change', function () {
-        const anzSchueler = this.value;
-        const labelSchuelerEingabe = document.getElementById("labelSchuelerEingabe");
-        if (anzSchueler) {
-            labelSchuelerEingabe.style.display = "inline";
-            xTable.innerHTML = '';
+    anzahlSchuelerSelect.addEventListener('change', function () {
+        const anzSchueler = parseInt(this.value) || 0;
+    
+        if (anzSchueler > 0) {
+            tableHead.style.display = 'table-header-group';
+            xTable.querySelector('tbody').innerHTML = '';
+            
             for (let step = 1; step <= anzSchueler; step++) {
-                var tr = document.createElement('tr');
-                tr.innerHTML = '<td >Schüler ' + step + ':</td> <td><input type="text" placeholder="Profilname des Schülers in Untis" name="schueler_untis_id[]"></td>'
-                xTable.appendChild(tr);
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td>Schüler ${step}:</td><td><input type="text" placeholder="Profilname des Schülers in Untis" name="schueler_untis_id[]"></td>`;
+                xTable.querySelector('tbody').appendChild(tr);
             }
         } else {
-            anzahl_schueler.innerHTML = '<option value="">Wähle zuerst eine Person aus</option>';
-            anzahl_schueler.disabled = true;
+                tableHead.style.display = 'none';
+                xTable.querySelector('tbody').innerHTML = '';
         }
     });
 </script>

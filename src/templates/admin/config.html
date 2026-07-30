@@ -1,15 +1,16 @@
-{% extends "base.html" %} {% block content %}
+<!-- Überprüft durch Claude 4 -->
+
+{% extends "base.html" %} 
+{% block content %}
 
 <form method="POST">
     {{ form.csrf_token }}
 
-
-
     <h2>Zugänge</h2>
     <div class="grid">
         <div class="field">
-            {{ form.admin_login.label }} {{
-            form.admin_login(class="form-control") }}
+            {{ form.admin_login.label }} 
+            {{ form.admin_login(class="form-control") }}
         </div>
         
         <div class="field password">
@@ -24,20 +25,17 @@
             {{ form.tss_password(id="password-field_2", class="form-control") }}
             <span onclick="togglePasswordVisibility('password-field_2', this)" > 👁️ </span>
         </div>
-
-        <div class="field"></div>
     </div>
     <hr>
 
     
     <h2>Sonstiges</h2>
-    <div class="grid">
+    <div class="grid three-columns">
         <div class="field">
-            {{ form.timetowait.label }} {{
-            form.timetowait(class="form-control") }}
+            {{ form.timetowait.label }} 
+            {{ form.timetowait(class="form-control") }}
         </div>
-        <div class="field"><label></label></div>
-        <div class="field"><label></label></div>
+
     </div>
     <hr>
     <h2>Mailserver</h2>
@@ -55,7 +53,9 @@
             {{ form.mail_encryption.label }} 
             {{ form.mail_encryption(class="form-control") }}
         </div>
-
+    </div>        
+    
+    <div class="grid">
         <div class="field">
             {{ form.mail_username.label }} 
             {{ form.mail_username(class="form-control") }}
@@ -63,9 +63,8 @@
         <div class="field password">
             {{ form.mail_password.label }} 
             {{ form.mail_password(id="password-field_3", class="form-control") }}
-            <span onclick="togglePasswordVisibility('password-field_3', this)" > 👁️ </span>
+            <span onclick="togglePasswordVisibility('password-field_3', this)"> 👁️ </span>
         </div>
-
         <div class="field">
             {{ form.mail_default_sender.label }} {{
             form.mail_default_sender(class="form-control") }}

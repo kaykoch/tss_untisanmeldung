@@ -83,7 +83,6 @@ def _bootstrap(app: Flask) -> None:
         state.set_data(
             app,
             infofile=INFOFILE,
-            tomlfile=TOMLFILE,
             prototypeazubi=PROTOTYPE_AZUBI,
             prototypeausbilder=PROTOTYPE_AUSBILDER,
         )

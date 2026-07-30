@@ -1,127 +1,158 @@
-{% extends "base.html" %} {% block content %}
+<!-- Überprüft durch Claude 4 -->
+
+{% extends "base.html" %} 
+{% block content %}
+
   <div class="flash success">
     Nach der Auswahl einer Klasse werden alle Azubis mit der verknüpften Mailadresse angezeigt.<br>
     Auf Wunsch kann:
     <ul class="square">
       <li>die Liste anschließend heruntergeladen werden</li>
       <li>die Liste direkt per Mail an die Kontaktperson versendet werden → {{kontaktperson.komplett}}</li>
-      <li>alle Ausbilder per Mail über den angelegten Untis-Account informiert werden </li>
-  </ul>
-</div> 
+      <li>alle Ausbilder per Mail über den angelegten Untis-Account informiert werden</li>
+    </ul>
+  </div> 
         
-<hr>
-<form method="POST">
-  {{ form.csrf_token }} 
+  <hr>
+  <form method="POST">
+    {{ form.csrf_token }} 
 
-  {{ form.klassen.label }} 
-  {{ form.klassen }} 
+    {{ form.klassen.label }} 
+    {{ form.klassen }} 
 
-  <div class="container-wrapper">   
-      <div class="tooltip"  data-tooltip="Download der angezeigten Schülern als CSV-Datei">
+    <div class="container-wrapper">   
+      <div class="tooltip" data-tooltip="Download der angezeigten Schülern als CSV-Datei">
         {{ form.submit_csv }}
       </div>
-      <div class="tooltip"  data-tooltip="CSV-Datei an TSS-Verantwortlichen">
+      <div class="tooltip" data-tooltip="CSV-Datei an TSS-Verantwortlichen">
         {{ form.submit_mail_tss }}
       </div>
-      <div class="tooltip"  data-tooltip="Benachrichtigung an Ausbilder (Untis-Account ist angelegt)">
+      <div class="tooltip" data-tooltip="Benachrichtigung an Ausbilder (Untis-Account ist angelegt)">
         {{ form.submit_mail_untis }}
       </div>
     </div>
-</form>
+  </form>
 
-<div>
   <table id="untisTabelle">
-    <tbody></tbody>
+    <!-- thead und tbody werden dynamisch hinzugefügt -->
   </table>
-</div>
 
-<script>
+  <script>
   document.addEventListener("DOMContentLoaded", () => {
     const klassenSelect = document.getElementById("klassen");
     const table = document.getElementById("untisTabelle");
-    if (!klassenSelect || !table) return;
+    
+    if (!klassenSelect || !table) {
+      console.error('Erforderliche DOM-Elemente nicht gefunden');
+      return;
+    }
 
+    // Hilfsfunktionen
+    const createHeaderRow = (klasseName) => {
+      const headRow = document.createElement("tr");
+      const headers = [
+        { text: "Profilname", width: "100px" },
+        { text: "Nachname", width: "150px" },
+        { text: "Vorname", width: "100px" },
+        ...(klasseName === "all" ? [{ text: "Klasse", width: "70px" }] : []),
+        { text: "Ausbilder" }
+      ];
+      
+      headers.forEach(({ text, width }) => {
+        const th = document.createElement("th");
+        th.textContent = text;
+        if (width) th.style.width = width;
+        headRow.appendChild(th);
+      });
+      
+      return headRow;
+    };
+
+    const createTableRow = (azubi, klasseName, cssClass) => {
+      const tr = document.createElement("tr");
+      tr.classList.add(cssClass);
+      
+      const cells = [
+        azubi.schueler_untis_id || "",
+        azubi.schueler_familienname || "",
+        azubi.schueler_rufname || "",
+        ...(klasseName === "all" ? [azubi.klasse || ""] : []),
+        azubi.ausbilder_email ?? ""
+      ];
+      
+      cells.forEach(cellText => {
+        const td = document.createElement("td");
+        td.textContent = cellText;
+        tr.appendChild(td);
+      });
+      
+      return tr;
+    };
+
+    const renderTable = (klasseName, azubis) => {
+      table.innerHTML = "";
+
+      // Caption
+      const caption = document.createElement("caption");
+      caption.textContent = klasseName === "all" 
+        ? "Klasse: Alle Klassen" 
+        : `Klasse: ${klasseName}`;
+      table.appendChild(caption);
+
+      // Kopf
+      const thead = document.createElement("thead");
+      thead.appendChild(createHeaderRow(klasseName));
+      table.appendChild(thead);
+
+      // Body
+      const tbody = document.createElement("tbody");
+      let letzteKlasse = "";
+      let cssClass = "odd";
+
+      azubis.forEach((azubi) => {
+        if (azubi.klasse !== letzteKlasse) {
+          cssClass = cssClass === "even" ? "odd" : "even";
+          letzteKlasse = azubi.klasse;
+        }
+        tbody.appendChild(createTableRow(azubi, klasseName, cssClass));
+      });
+
+      table.appendChild(tbody);
+    };
+
+    // Event Listener
     klassenSelect.addEventListener("change", async function () {
       const klasseName = (this.value || "").trim();
       if (!klasseName) return;
 
+      // Loading-State
+      table.innerHTML = '<caption>Lädt...</caption>';
+
       try {
-        const res = await fetch(`/api/zugeordnete_schueler/${encodeURIComponent(klasseName)}`, {
-          headers: { Accept: "application/json" },
-          cache: "no-store",
-        });
+        const res = await fetch(
+          `/api/zugeordnete_schueler/${encodeURIComponent(klasseName)}`,
+          {
+            headers: { Accept: "application/json" },
+            cache: "no-store",
+          }
+        );
+
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        
         const azubis = await res.json();
 
-        // Tabelle leeren: thead/tbody neu aufbauen
-        table.innerHTML = "";
+        if (!Array.isArray(azubis)) {
+          throw new Error('Ungültige Antwort: erwartet Array');
+        }
 
-        // Caption
-        const caption = document.createElement("caption");
-        caption.textContent = klasseName === "all" ? "Klasse: Alle Klassen" : `Klasse: ${klasseName}`;
-        table.appendChild(caption);
-
-        // Kopf (thead)
-        const thead = document.createElement("thead");
-        const headRow = document.createElement("tr");
-        const addTh = (text, width) => {
-          const th = document.createElement("th");
-          th.textContent = text;
-          if (width) th.style.width = width;
-          return th;
-        };
-        headRow.appendChild(addTh("Profilname", "100px"));
-        headRow.appendChild(addTh("Nachname", "150px"));
-        headRow.appendChild(addTh("Vorname", "100px"));
-        if (klasseName === "all") headRow.appendChild(addTh("Klasse", "70px"));
-        headRow.appendChild(addTh("Ausbilder"));
-        thead.appendChild(headRow);
-        table.appendChild(thead);
-
-        // Body (tbody)
-        const tbody = document.createElement("tbody");
-        let letzteKlasse = "";
-        let cssClass = "odd"; // Startzustand, wird direkt getoggelt
-
-        const toggleCss = () => (cssClass = cssClass === "even" ? "odd" : "even");
-
-        azubis.forEach((azubi) => {
-          if (azubi.klasse !== letzteKlasse) {
-            toggleCss();
-            letzteKlasse = azubi.klasse;
-          }
-
-          const tr = document.createElement("tr");
-          tr.classList.add(cssClass);
-
-          const tdProfil = document.createElement("td");
-          tdProfil.textContent = azubi.schueler_untis_id || "";
-          tr.appendChild(tdProfil);
-
-          const tdNachname = document.createElement("td");
-          tdNachname.textContent = azubi.schueler_familienname || "";
-          tr.appendChild(tdNachname);
-
-          const tdVorname = document.createElement("td");
-          tdVorname.textContent = azubi.schueler_rufname || "";
-          tr.appendChild(tdVorname);
-
-          if (klasseName === "all") {
-            const tdKlasse = document.createElement("td");
-            tdKlasse.textContent = azubi.klasse || "";
-            tr.appendChild(tdKlasse);
-          }
-
-          const tdMail = document.createElement("td");
-          tdMail.textContent = azubi.ausbilder_email ?? "";
-          tr.appendChild(tdMail);
-
-          tbody.appendChild(tr);
-        });
-
-        table.appendChild(tbody);
+        renderTable(klasseName, azubis);
       } catch (err) {
         console.error("Fehler beim Laden der Azubi-Daten:", err);
+        table.innerHTML = `
+          <caption style="color: red;">
+            Fehler beim Laden der Daten. Bitte versuchen Sie es später erneut.
+          </caption>
+        `;
       }
     });
   });
